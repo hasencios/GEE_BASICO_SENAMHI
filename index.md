@@ -3,36 +3,38 @@ layout: lesson
 root: .
 
 maintainers:
-  - Paula Andrea Martinez
-  - Heladia Salgado
-  - Rayna Harris
-  - Estamos buscando personas interesadas en ser **maintainers** de esta versión.
+  - Henry Asencios
 ---
 
 **Lesson Maintainers:** {{ page.maintainers | join: ', ' }}
 
-**Python** es un lenguaje de programación general que es útil para escribir **scripts** para trabajar con datos de manera efectiva y reproducible.
+[Google Earth Engine (GEE)](https://www.google.com/intl/es_in/earth/education/tools/google-earth-engine/#!/) es una plataforma de geomática basada en la nube que permite a los usuarios visualizar y analizar imágenes de satélite de nuestro planeta. Los científicos y las organizaciones sin ánimo de lucro utilizan GEE para llevar a cabo estudios de sensoramiento remoto, tales como: predecir brotes de enfermedades, gestionar recursos naturales, monitorear desastres naturales, etc.
 
-Esta es una introducción a **Python** diseñada para participantes sin experiencia en programación. Estas lecciones pueden enseñarse en un día (~ 6 horas). Las lecciones empiezan con información básica sobre la sintaxis de **Python**, la interface de **Jupyter Notebook**, y continúan con cómo importar archivos CSV, usando el paquete **Pandas** para trabajar con **DataFrames**, cómo calcular la información resumen de un **DataFrame**, y una breve introducción en cómo crear visualizaciones. La última lección demuestra cómo trabajar con bases de datos directamente desde **Python**.
-Nota: los datos no han sido traducidos de la versión original en inglés, por lo que los nombres de variables se mantienen en inglés y los números de cada observación usan la sintaxis de habla inglesa (coma separador de miles y punto separador de decimales).
+Este curso básico de GEE está diseñado para los servidores del [Servicio Nacional de Meteorología e Hidrología del Perú (SENAMHI)](https://www.senamhi.gob.pe/) que no presentan conocimientos previos de la plataforma. Las lecciones tendrán una duración de 2 días (~ 16 horas) de trabajo. 
+
+Se comenzará con una descripción general GEE (Componentes de GEE, Code Editor, Explorer y Clientes API). Se  mostrará un script complejo con un producto final. Se presentará las nociones básicas de Code Editor: Introducción al lenguaje Javascript. Visión General del Code Editor. API Javascript de GEE. Convenciones: Guía de Estilo. Acceso a las funcionalidades de la API. Consultar la documentación de las funciones. Tipo de datos (Listas, Diccionarios, etc.). Funciones definidas por el usuario. En la última sesión se mosrtrará como utilizar la API GEE en un entorno Python.
 
 > ## Antes de empezar
 >
-> La enseñanza en **Data Carpentry** es práctica, y por tanto se fomenta que los participantes usen sus propias computadoras para 
-> asegurar la correcta configuración **setup** de las herramientas para un trabajo eficiente.
-> **Estas lecciones no asumen conocimientos previos sobre los temas presentados o herramientas usadas.**
+> Los participantes deberán utilizar sus propias computadoras con acceso a internet
+> a fin de asegurar un correcto uso de la plataforma para un desarrollo
+> eficiente de los ejercicios. <br>**Estas lecciones asumen que los participantes no presentan conomientos previos de la plataforma GEE.**
 >
-> Para empezar, sigue las direcciones en [Setup](https://datacarpentry.org/python-ecology-lesson-es/setup.html)
-> para bajar los datos a tu computadora y siguen las instrucciones de instalación.
+> Para comenzar, seguir el procedimiento mostrado en la pestaña "[Setup][lesson-setup]"
+> y descargar la data proporcionada para el desarrollo de los ejercicios.
 >
 > #### Prerequisitos
 >
-> Esta lección requiere la instalación de **Python**.
-> Para el uso efectivo de este material, por favor instala todo 
-> *antes* de trabajar en la lección.
+> Las lecciones requieren de conocimientos previos de algún lenguaje de programación tales como: **Python**, **R**, **Matlab**, **Fortran**, **C++**, **C**, **JavaScript**, etc. Asimismo, conocimientos de **Sensoramiento Remoto** y **Sistemas de Información Geográfica**.
+> <br>Para un mayor provecho de los ejercicios, por favor, asegurese de instalar las herramientas necesarias
+> *antes* de iniciar las lecciones.
 {: .prereq}
 
-> ## Para instructores
-> Si enseñas esta lección en un taller, por favor lee las 
-> [Notas de instructor](https://datacarpentry.org/python-ecology-lesson-es/guide/).
+<!--  
+> ## For Instructors
+> If you are teaching this lesson in a workshop, please see the
+> [Instructor notes](guide).
 {: .prereq}
+--> 
+
+{% include links.md %}

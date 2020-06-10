@@ -1,0 +1,34 @@
+I"�
+<p><strong>Lesson Maintainers:</strong> Henry Asencios</p>
+
+<p><a href="https://www.google.com/intl/es_in/earth/education/tools/google-earth-engine/#!/">Google Earth Engine (GEE)</a> es una plataforma de geomática basada en la nube que permite a los usuarios visualizar y analizar imágenes de satélite de nuestro planeta. Los científicos y las organizaciones sin ánimo de lucro utilizan GEE para llevar a cabo estudios de sensoramiento remoto, tales como: predecir brotes de enfermedades, gestionar recursos naturales, monitorear desastres naturales, etc.</p>
+
+<p>Este curso básico de GEE está diseñado para los servidores del <a href="https://www.senamhi.gob.pe/">Servicio Nacional de Meteorología e Hidrología del Perú (SENAMHI)</a> que no presentan conocimientos previos de la plataforma. Las lecciones tendrán una duración de 2 días (~ 16 horas) de trabajo.</p>
+
+<p>Se comenzará con una descripción general GEE (Componentes de GEE, Code Editor, Explorer y Clientes API). Se  mostrará un script complejo con un producto final. Se presentará las nociones básicas de Code Editor: Introducción al lenguaje Javascript. Visión General del Code Editor. API Javascript de GEE. Convenciones: Guía de Estilo. Acceso a las funcionalidades de la API. Consultar la documentación de las funciones. Tipo de datos (Listas, Diccionarios, etc.). Funciones definidas por el usuario. En la última sesión se mosrtrará como utilizar la API GEE en un entorno Python.</p>
+
+<blockquote class="prereq">
+  <h2 id="antes-de-empezar">Antes de empezar</h2>
+
+  <p>Los participantes deberán utilizar sus propias computadoras con acceso a internet
+a fin de asegurar un correcto uso de la plataforma para un desarrollo
+eficiente de los ejercicios. <br /><strong>Estas lecciones asumen que los participantes no presentan conomientos previos de la plataforma GEE.</strong></p>
+
+  <p>Para comenzar, seguir el procedimiento mostrado en la pestaña “[Setup][lesson-setup]”
+y descargar la data proporcionada para el desarrollo de los ejercicios.</p>
+
+  <h4 id="prerequisitos">Prerequisitos</h4>
+
+  <p>Las lecciones requieren de conocimientos previos de algún lenguaje de programación tales como: <strong>Python</strong>, <strong>R</strong>, <strong>Matlab</strong>, <strong>Fortran</strong>, <strong>C++</strong>, <strong>C</strong>, <strong>JavaScript</strong>, etc. Asimismo, conocimientos de <strong>Sensoramiento Remoto</strong> y <strong>Sistemas de Información Geográfica</strong>.
+<br />Para un mayor provecho de los ejercicios, por favor, asegurese de instalar las herramientas necesarias
+<em>antes</em> de iniciar las lecciones.</p>
+</blockquote>
+
+<!--  
+> ## For Instructors
+> If you are teaching this lesson in a workshop, please see the
+> [Instructor notes](guide).
+{: .prereq}
+-->
+
+:ET

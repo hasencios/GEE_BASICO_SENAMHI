@@ -1,0 +1,296 @@
+I"��<h1 id="visión-general-catálogo-de-imágenes-satelitales-a-escala-regional">Visión general: Catálogo de imágenes satelitales a escala regional</h1>
+<p>La mayoría de los productos satelitales se dividen en bloques para su distribución. Los datos globales de Landsat se dividen en escenas de ~180 km<sup>2</sup>, con identificadores únicos de path/row. 455 escenas cubren los Estados Unidos. Cada escena es actualmente fotografiada cada 16 días por Landsat 8, y cada 16 días por Landsat 7 (aproximadamente 45 veces al año). Los bordes de cada trayectoria se superponen, proporcionando una mayor frecuencia temporal en estas áreas. Sin embargo, los cielos nublados durante el paso de los satélites y otras anomalías de adquisición hacen que ciertas escenas o píxeles sean inutilizables.</p>
+
+<p><br />
+<strong>455 escenas de Landsat cubren los Estados Unidos:</strong>
+<br />
+<img src="../fig/03_conusLandsat.png" border="10" />
+<br /><br /></p>
+
+<p>Para la mayoría de las aplicaciones a escala regional, se tendrá que combinar múltiples imágenes de satélite para cubrir completamente su extensión espacial y completar los datos faltantes causados por las nubes, etc. Google Earth Engine (GEE) es particularmente adecuado para estas tareas.</p>
+
+<p>Se puede acceder a una versión estática del script aquí: <a href="https://code.earthengine.google.com/cbb204bbe485986b63485ee39c8382cc">https://code.earthengine.google.com/cbb204bbe485986b63485ee39c8382cc</a>*</p>
+
+<h1 id="ejericio-flujo-básico-de-trabajo-gee">Ejericio: Flujo básico de trabajo GEE</h1>
+<p>Aquí, aprovecharemos GEE para crear un composite que represente el pico de la temporada de crecimiento de cultivos para una cuenca de interés.</p>
+
+<h3 id="image-collections">Image Collections</h3>
+<p>Una pila o serie temporal de imágenes se llaman <code class="language-plaintext highlighter-rouge">Image Collections</code>. Cada fuente de datos disponible en GEE tiene su propia Image Collection y su propio ID (por ejemplo, el <a href="https://code.earthengine.google.com/dataset/LANDSAT/LT5_SR">Landsat 5 SR collection</a>, o la <a href="https://code.earthengine.google.com/dataset/IDAHO_EPSCOR/GRIDMET">GRIDMET meteorological data collection</a>). También se puede crear Image Collection a partir de imágenes individuales o fusionar colecciones existentes. Puede encontrar más información sobre las Image Collection <a href="https://developers.google.com/earth-engine/ic_creating">here in the GEE Developer’s Guide</a>.</p>
+
+<p>Para generar imágenes que cubran grandes áreas espaciales y para llenar los huecos de imagen debidos a las nubes, etc., podemos cargar una <code class="language-plaintext highlighter-rouge">ImageCollection</code> completa, pero filtrar la colección para devolver sólo los períodos de tiempo o las ubicaciones espaciales que sean de interés. Hay filtros de acceso directo para los que se utilizan comúnmente (imageCollection.filterDate(), imageCollection.filterBounds()…), pero pueden utilizarse la mayoría de los filtros de la sección <code class="language-plaintext highlighter-rouge">ee.Filter()</code> de la pestaña Docs. Más información sobre <a href="https://developers.google.com/earth-engine/ic_filtering">filters on the Developer’s Guide</a>.</p>
+
+<h3 id="cargar-archivos-vectoriales">Cargar archivos vectoriales</h3>
+<p>Trabajaremos en la creación de un composite para una cuenca de los EE.UU. La forma más fácil de filtrar una ubicación irregular sin tener que identificar las rutas y filas de los mosaicos de la imagen satelital es usar un polígono vectorial.
+We’ll work on making a composite satellite image for a US watershed. The easiest way to filter for an irregular location without having to identify the paths and rows of the satellite image tiles is to use a vector polygon.</p>
+
+<p>There are four ways to obtain vector data in GEE:</p>
+
+<ul>
+  <li><a href="https://developers.google.com/earth-engine/importing">Upload a shapefile</a> directly to your personal <em>Asset</em> folder in the top left panel. You can create subfolders and set sharing permissions on these as needed. We use an asset vector file in the <a href="https://geohackweek.github.io/GoogleEarthEngine/03-load-imagery/">Accessing Satellite Imagery module</a>.</li>
+  <li>Import an existing <a href="https://support.google.com/fusiontables#topic=1652595">Google Fusion Table</a>, or <a href="https://fusiontables.google.com/data?dsrcid=implicit">create your own</a> fusion table from a KML in WGS84.  Each fusion table has a unique Id (File &gt; About this table) that can be used to load it into GEE. GEE only recently added the Asset option, so you may see folks still using fusion tables in the forums, etc. If you have the choice, I’d use an asset.</li>
+  <li>Use an existing vector dataset in GEE. (Browse the vector dataset catalog here)[https://developers.google.com/earth-engine/vector_datasets].</li>
+  <li>Manually draw points, lines, and polygons using the geometry tools in the code editor. We do this in the <a href="https://geohackweek.github.io/GoogleEarthEngine/05-classify-imagery/">Classify Imagery Module</a>.</li>
+</ul>
+
+<p>Here, we will use an existing vector asset, the <a href="https://code.earthengine.google.com/dataset/USGS/WBD/2017/HUC12">USGS Watershed Boundaries - HUC12</a></p>
+
+<p>In order to load a vector file from your Assets into your workspace, we need to use the “filepath” and cast it to a <code class="language-plaintext highlighter-rouge">ee.FeatureCollection</code> data type. Read more here under <a href="https://developers.google.com/earth-engine/asset_manager#importing-assets-to-your-script">“Managing Assets” in the Developer’s Guide</a>.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// load a polygon watershed boundary (here, a public vector dataset already in GEE)</span>
+<span class="c1">// note: see tutorial linked above for guidance on importing vector datasets</span>
+<span class="kd">var</span> <span class="nx">WBD</span> <span class="o">=</span> <span class="nx">ee</span><span class="p">.</span><span class="nx">FeatureCollection</span><span class="p">(</span><span class="dl">"</span><span class="s2">USGS/WBD/2017/HUC06</span><span class="dl">"</span><span class="p">);</span>
+<span class="nx">print</span><span class="p">(</span><span class="nx">WBD</span><span class="p">.</span><span class="nx">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">));</span>
+<span class="nb">Map</span><span class="p">.</span><span class="nx">addLayer</span><span class="p">(</span><span class="nx">WBD</span><span class="p">,</span> <span class="p">{},</span> <span class="dl">'</span><span class="s1">watersheds</span><span class="dl">'</span><span class="p">)</span></code></pre></figure>
+
+<p><br />
+<img src="../fig/03_wbd.png" border="10" />
+<br /><br /></p>
+
+<h3 id="la-herramienta-inspector">La herramienta Inspector</h3>
+<p>The “Inspector” tool allows you to query map layers at a point. We will use this to help us select a specific watershed. To use the inspector tool, click on the “Inspector” tab in the upper right panel to activate it. Then click anywhere within the Map Viewer. The coordinates of your click will be displayed, along with the value for map layers at that point.</p>
+
+<p>We can use this to find the “name” attribute of our watershed of interest (pick any you want!).</p>
+
+<p><br />
+<img src="../fig/03_inspector.png" border="10" />
+<br /><br /></p>
+
+<p>Once you’ve determined the “name” property for your watershed, use the featureCollection.filterMetadata() function to extract this watershed from the full dataset.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// use the inspector tool to find the name of a watershed that interests you</span>
+<span class="kd">var</span> <span class="nx">watershed</span> <span class="o">=</span> <span class="nx">WBD</span><span class="p">.</span><span class="nx">filterMetadata</span><span class="p">(</span><span class="dl">'</span><span class="s1">name</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">equals</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">Republican</span><span class="dl">'</span><span class="p">);</span>
+<span class="nx">print</span><span class="p">(</span><span class="nx">watershed</span><span class="p">);</span>
+
+<span class="c1">// set the map view and zoom level, and add watershed to map</span>
+<span class="nb">Map</span><span class="p">.</span><span class="nx">centerObject</span><span class="p">(</span><span class="nx">watershed</span><span class="p">,</span><span class="mi">7</span><span class="p">);</span>
+<span class="nb">Map</span><span class="p">.</span><span class="nx">addLayer</span><span class="p">(</span><span class="nx">watershed</span><span class="p">,</span> <span class="p">{},</span> <span class="dl">'</span><span class="s1">watershed</span><span class="dl">'</span><span class="p">);</span></code></pre></figure>
+
+<p>Watershed of interest: The Republican River Basin
+<br />
+<img src="../fig/03_republican.png" border="10" />
+<br /><br /></p>
+
+<h3 id="filtrar-una-image-collection">Filtrar una Image Collection</h3>
+<p>Here, we are selecting all imagery in the <a href="https://code.earthengine.google.com/dataset/LANDSAT/LC08/C01/T1_SR">Landsat 8 Surface Reflectance collection</a> acquired over our watershed anytime during last year.</p>
+
+<p><em>Tip: Image collection IDs are found in the “Search” toolbar at the top of the code editor or through searching the <a href="https://code.earthengine.google.com/datasets/">data archive</a>.</em></p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// load all Landsat 8 SR image within polygon boundary for last year</span>
+<span class="kd">var</span> <span class="nx">l8collection</span> <span class="o">=</span> <span class="nx">ee</span><span class="p">.</span><span class="nx">ImageCollection</span><span class="p">(</span><span class="dl">'</span><span class="s1">LANDSAT/LC08/C01/T1_SR</span><span class="dl">'</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">filterBounds</span><span class="p">(</span><span class="nx">watershed</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">filterDate</span><span class="p">(</span><span class="dl">'</span><span class="s1">2017-01-01</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">2017-12-31</span><span class="dl">'</span><span class="p">);</span>
+<span class="nx">print</span><span class="p">(</span><span class="nx">l8collection</span><span class="p">);</span></code></pre></figure>
+
+<p>Printing our filtered collection to console tells us how many images are in our filter (173) as well as the band names and properties for the images in our collection:
+<br />
+<img src="../fig/03_collection.png" border="10" width="50%" height="50%" />
+<br /><br /></p>
+
+<h3 id="aplicar-funciones">Aplicar funciones</h3>
+<p>As you can see by browsing the <code class="language-plaintext highlighter-rouge">Docs</code> tab in the upper left panel of the code editor, there are GEE functions specific to both the <code class="language-plaintext highlighter-rouge">Image</code> and <code class="language-plaintext highlighter-rouge">ImageCollection</code> data types. There are a lot, including mathematical and boolean operators, convolutions and focal statistics, and spectral transformations and analyses of spatial texture. Browse the list, or read about general operations available in the <a href="https://developers.google.com/earth-engine/image_overview">GEE Developer’s Guide “Image Overview”” section</a>.</p>
+
+<p>Often, we want to use a function over each image in an image collection. To do so, we need to essentially “loop” through each image in the image collection. In GEE, “loops” are accomplished with the .map() function.</p>
+
+<p><strong>Avoid actual loops at all costs.</strong> Using a for loop brings the operation into the browser (bad).
+Using imageCollection.map() sends the operation to Google’s servers for distributed runs (good). Loops implemented in typical for loop fashion bring the operation into the browser, and won’t work well, if at all.</p>
+
+<p>More information about mapping functions over image collections can be found <a href="https://developers.google.com/earth-engine/ic_mapping">here in the Developer’s Guide</a>.</p>
+
+<p>The .map() concept applies to <code class="language-plaintext highlighter-rouge">featureCollections</code> as well - to apply a function to each feature in a collection, we map that function across the featureCollection with featureCollection.map(). See <a href="https://developers.google.com/earth-engine/feature_collection_mapping">“Mapping over a Feature Collection”</a> in the Developer’s Guide.</p>
+
+<h3 id="enmascarar-nubes">Enmascarar nubes</h3>
+<p>Here, we’ll make use of the <code class="language-plaintext highlighter-rouge">pixel_qa</code> cloud band provided with the SR products to mask pixels with clouds, cloud shadows, and snow. We will mask pixels in the image based on the value of pixel_qa.</p>
+
+<p>We explicitly define a new function called “maskClouds” and apply it to each image in the imageCollection by using <code class="language-plaintext highlighter-rouge">imageCollection.map()</code>. Functions need to explicitly <strong>return</strong> the final output.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// Mask pixels with clouds and cloud shadows -------------------------------------</span>
+
+<span class="c1">// Surface reflectance products come with a 'pixel_qa' band</span>
+<span class="c1">// that is based on the cfmask. Read more here:</span>
+<span class="c1">// https://landsat.usgs.gov/landsat-surface-reflectance-quality-assessment</span>
+
+<span class="c1">// create function to mask clouds, cloud shadows, snow</span>
+<span class="kd">var</span> <span class="nx">maskClouds</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">image</span><span class="p">){</span>
+  <span class="c1">// make a new single band image from the pixel qa band</span>
+  <span class="kd">var</span> <span class="nx">pixel_qa</span> <span class="o">=</span> <span class="nx">image</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="dl">'</span><span class="s1">pixel_qa</span><span class="dl">'</span><span class="p">);</span>
+  <span class="c1">// keep clear (0) and water (1) pixels</span>
+  <span class="k">return</span> <span class="nx">image</span><span class="p">.</span><span class="nx">updateMask</span><span class="p">(</span><span class="nx">pixel_qa</span><span class="p">.</span><span class="nx">eq</span><span class="p">(</span><span class="mi">322</span><span class="p">));</span>   
+<span class="p">};</span>
+
+<span class="c1">// use "map" to apply the function to each image in the collection</span>
+<span class="kd">var</span> <span class="nx">l8masked</span> <span class="o">=</span> <span class="nx">l8collection</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">maskClouds</span><span class="p">);</span>
+
+<span class="c1">// visualize the first image in the collection, pre- and post- mask</span>
+<span class="kd">var</span> <span class="nx">visParams</span> <span class="o">=</span> <span class="p">{</span><span class="na">bands</span><span class="p">:</span> <span class="p">[</span><span class="dl">'</span><span class="s1">B4</span><span class="dl">'</span><span class="p">,</span><span class="dl">'</span><span class="s1">B3</span><span class="dl">'</span><span class="p">,</span><span class="dl">'</span><span class="s1">B2</span><span class="dl">'</span><span class="p">],</span> <span class="na">min</span><span class="p">:</span> <span class="mi">150</span><span class="p">,</span> <span class="na">max</span><span class="p">:</span> <span class="mi">2000</span><span class="p">}</span>
+
+<span class="nb">Map</span><span class="p">.</span><span class="nx">addLayer</span><span class="p">(</span><span class="nx">ee</span><span class="p">.</span><span class="nx">Image</span><span class="p">(</span><span class="nx">l8masked</span><span class="p">.</span><span class="nx">first</span><span class="p">()),</span> <span class="nx">visParams</span><span class="p">,</span> <span class="dl">'</span><span class="s1">clouds masked</span><span class="dl">'</span><span class="p">,</span> <span class="kc">false</span><span class="p">)</span>
+<span class="nb">Map</span><span class="p">.</span><span class="nx">addLayer</span><span class="p">(</span><span class="nx">ee</span><span class="p">.</span><span class="nx">Image</span><span class="p">(</span><span class="nx">l8collection</span><span class="p">.</span><span class="nx">first</span><span class="p">()),</span> <span class="nx">visParams</span><span class="p">,</span> <span class="dl">'</span><span class="s1">original</span><span class="dl">'</span><span class="p">,</span> <span class="kc">false</span><span class="p">)</span></code></pre></figure>
+
+<p><br />
+<img src="../fig/03_masked.png" border="10" />
+<br /><br /></p>
+
+<h3 id="calcular-el-índice-ndvi-como-una-nueva-banda">Calcular el índice NDVI como una nueva banda</h3>
+<p>Similarly, if we want to calculate the NDVI in each image and add it as a new band, we need to create a function and map it over the collection. Here, we use the <code class="language-plaintext highlighter-rouge">normalizedDifference()</code> function. The <a href="https://developers.google.com/earth-engine/image_math">Mathematical Operations page in the GEE Developer’s Guide</a> provides more information about simple and complex raster calculations.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// create function to add NDVI using NIR (B5) and the red band (B4)</span>
+<span class="kd">var</span> <span class="nx">getNDVI</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">img</span><span class="p">){</span>
+  <span class="k">return</span> <span class="nx">img</span><span class="p">.</span><span class="nx">addBands</span><span class="p">(</span><span class="nx">img</span><span class="p">.</span><span class="nx">normalizedDifference</span><span class="p">([</span><span class="dl">'</span><span class="s1">B5</span><span class="dl">'</span><span class="p">,</span><span class="dl">'</span><span class="s1">B4</span><span class="dl">'</span><span class="p">]).</span><span class="nx">rename</span><span class="p">(</span><span class="dl">'</span><span class="s1">NDVI</span><span class="dl">'</span><span class="p">));</span>
+<span class="p">};</span>
+
+<span class="c1">// extra example: an equivalent function using straight band math</span>
+<span class="kd">var</span> <span class="nx">getNDVI2</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">img</span><span class="p">){</span>
+  <span class="k">return</span> <span class="nx">img</span><span class="p">.</span><span class="nx">addBands</span><span class="p">(</span><span class="nx">img</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="dl">'</span><span class="s1">B5</span><span class="dl">'</span><span class="p">).</span><span class="nx">subtract</span><span class="p">(</span><span class="nx">img</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="dl">'</span><span class="s1">B4</span><span class="dl">'</span><span class="p">))</span>
+            <span class="p">.</span><span class="nx">divide</span><span class="p">(</span><span class="nx">img</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="dl">'</span><span class="s1">B5</span><span class="dl">'</span><span class="p">).</span><span class="nx">add</span><span class="p">(</span><span class="nx">img</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="dl">'</span><span class="s1">B3</span><span class="dl">'</span><span class="p">))));</span>
+<span class="p">};</span>
+
+<span class="c1">// map over image collection</span>
+<span class="kd">var</span> <span class="nx">l8ndvi</span> <span class="o">=</span> <span class="nx">l8masked</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">getNDVI</span><span class="p">);</span>
+
+<span class="c1">// print one image to see the band is now there</span>
+<span class="nx">print</span><span class="p">(</span><span class="nx">ee</span><span class="p">.</span><span class="nx">Image</span><span class="p">(</span><span class="nx">l8ndvi</span><span class="p">.</span><span class="nx">first</span><span class="p">()));</span></code></pre></figure>
+
+<h3 id="crear-un-composite-greenest-pixel">Crear un Composite “Greenest Pixel”</h3>
+<p>We now need to assemble the image collection to create one continuous image across the watershed. There are several mosaicking/compositing options available, from simple maximum value composites (<code class="language-plaintext highlighter-rouge">imageCollection.max()</code>) and straightforward mosaics with the most recent image on top (<code class="language-plaintext highlighter-rouge">imageCollection.mosaic()</code>). The <a href="https://developers.google.com/earth-engine/ic_composite_mosaic">Compositing and Mosaicking page on the Developer’s Guide</a> provides examples of these.</p>
+
+<p>Here, we will use the <code class="language-plaintext highlighter-rouge">imageCollection.qualityMosaic()</code> function. By prioritizing the image to use based on one specific band, this method ensures that the values across all bands are taken from the same image. Each pixel gets assigned the values from the image with the highest value of the desired band.</p>
+
+<p>We will use this to make a “greenest pixel composite” for our watershed based on the NDVI band we just calculated. The final composite image will retain all bands in the input (unless we were to specify otherwise). Each pixel in the composite image could potentially come from imagery acquired on different dates, but all bands within each pixel are from the same image. In general, this provides the best available snapshot of the landscape at the peak of the growing season, regardless of the phenological timing within the year.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// for each pixel, select the "best" set of bands from available images</span>
+<span class="c1">// based on the maximum NDVI/greenness</span>
+<span class="kd">var</span> <span class="nx">composite</span> <span class="o">=</span> <span class="nx">l8ndvi</span><span class="p">.</span><span class="nx">qualityMosaic</span><span class="p">(</span><span class="dl">'</span><span class="s1">NDVI</span><span class="dl">'</span><span class="p">).</span><span class="nx">clip</span><span class="p">(</span><span class="nx">watershed</span><span class="p">);</span>
+<span class="nx">print</span><span class="p">(</span><span class="nx">composite</span><span class="p">);</span>
+
+<span class="c1">// Visualize NDVI</span>
+<span class="kd">var</span> <span class="nx">ndviPalette</span> <span class="o">=</span> <span class="p">[</span><span class="dl">'</span><span class="s1">FFFFFF</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">CE7E45</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">DF923D</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">F1B555</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">FCD163</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">99B718</span><span class="dl">'</span><span class="p">,</span>
+               <span class="dl">'</span><span class="s1">74A901</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">66A000</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">529400</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">3E8601</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">207401</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">056201</span><span class="dl">'</span><span class="p">,</span>
+               <span class="dl">'</span><span class="s1">004C00</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">023B01</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">012E01</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">011D01</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">011301</span><span class="dl">'</span><span class="p">];</span>
+<span class="nb">Map</span><span class="p">.</span><span class="nx">addLayer</span><span class="p">(</span><span class="nx">composite</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="dl">'</span><span class="s1">NDVI</span><span class="dl">'</span><span class="p">),</span>
+            <span class="p">{</span><span class="na">min</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span> <span class="na">max</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="na">palette</span><span class="p">:</span> <span class="nx">ndviPalette</span><span class="p">},</span> <span class="dl">'</span><span class="s1">ndvi</span><span class="dl">'</span><span class="p">);</span></code></pre></figure>
+
+<p>Annual maximum NDVI across this watershed highlight irrigated agricultural areas:</p>
+
+<p><br />
+<img src="../fig/03_ndvi.png" border="10" />
+<br /><br /></p>
+
+<p>We can also use this composite image to visualize a true color composite using the RGB bands:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// Visualize true color composite</span>
+<span class="nb">Map</span><span class="p">.</span><span class="nx">addLayer</span><span class="p">(</span><span class="nx">composite</span><span class="p">,</span> <span class="p">{</span><span class="na">bands</span><span class="p">:</span> <span class="p">[</span><span class="dl">'</span><span class="s1">B4</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">B3</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">B2</span><span class="dl">'</span><span class="p">],</span> <span class="na">min</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="na">max</span><span class="p">:</span> <span class="mi">2000</span><span class="p">},</span> <span class="dl">'</span><span class="s1">true color composite</span><span class="dl">'</span><span class="p">,</span> <span class="kc">false</span><span class="p">);</span></code></pre></figure>
+
+<p><br />
+<img src="../fig/03_tcc.png" border="10" />
+<br /><br /></p>
+
+<h3 id="visuallizar-los-resultados-en-un-chart">Visuallizar los resultados en un Chart</h3>
+<p>To briefly illustrate GEE’s ability to display data charts, we load a MODIS NDVI data product to chart the annual time series of mean NDVI for our watershed. Charting is also covered in the <a href="https://geohackweek.github.io/GoogleEarthEngine/04-reducers/">Spatial and Temporal Reducers Module</a>.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// Chart annual time series of mean NDVI in watershed</span>
+<span class="c1">// from our Landsat 8 computed NDVI</span>
+<span class="kd">var</span> <span class="nx">chart</span> <span class="o">=</span> <span class="nx">ui</span><span class="p">.</span><span class="nx">Chart</span><span class="p">.</span><span class="nx">image</span><span class="p">.</span><span class="nx">series</span><span class="p">({</span>
+    <span class="na">imageCollection</span><span class="p">:</span> <span class="nx">l8ndvi</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="dl">'</span><span class="s1">NDVI</span><span class="dl">'</span><span class="p">),</span>
+    <span class="na">region</span><span class="p">:</span> <span class="nx">watershed</span><span class="p">,</span>
+    <span class="na">reducer</span><span class="p">:</span> <span class="nx">ee</span><span class="p">.</span><span class="nx">Reducer</span><span class="p">.</span><span class="nx">mean</span><span class="p">(),</span>
+    <span class="na">scale</span><span class="p">:</span> <span class="mi">250</span><span class="p">,</span>
+<span class="p">})</span>
+<span class="nx">print</span><span class="p">(</span><span class="nx">chart</span><span class="p">)</span>  <span class="c1">//** Can export the figure or data in the pop-out</span>
+
+
+<span class="c1">// You can also compare to the MODIS 16 day product</span>
+
+<span class="c1">// add satellite time series: MODIS NDVI 250m 16 day product</span>
+<span class="kd">var</span> <span class="nx">modis</span> <span class="o">=</span> <span class="nx">ee</span><span class="p">.</span><span class="nx">ImageCollection</span><span class="p">(</span><span class="dl">'</span><span class="s1">MODIS/006/MOD13Q1</span><span class="dl">'</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">filterBounds</span><span class="p">(</span><span class="nx">watershed</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">filterDate</span><span class="p">(</span><span class="dl">'</span><span class="s1">2017-01-01</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">2017-12-31</span><span class="dl">'</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="dl">'</span><span class="s1">NDVI</span><span class="dl">'</span><span class="p">);</span>
+
+<span class="c1">// Chart annual time series of mean NDVI in watershed</span>
+<span class="c1">// from the smoothed MODIS 16 day product</span>
+<span class="kd">var</span> <span class="nx">chart</span> <span class="o">=</span> <span class="nx">ui</span><span class="p">.</span><span class="nx">Chart</span><span class="p">.</span><span class="nx">image</span><span class="p">.</span><span class="nx">series</span><span class="p">({</span>
+    <span class="na">imageCollection</span><span class="p">:</span> <span class="nx">modis</span><span class="p">,</span>
+    <span class="na">region</span><span class="p">:</span> <span class="nx">watershed</span><span class="p">,</span>
+    <span class="na">reducer</span><span class="p">:</span> <span class="nx">ee</span><span class="p">.</span><span class="nx">Reducer</span><span class="p">.</span><span class="nx">mean</span><span class="p">(),</span>
+    <span class="na">scale</span><span class="p">:</span> <span class="mi">250</span>
+<span class="p">})</span>
+<span class="nx">print</span><span class="p">(</span><span class="nx">chart</span><span class="p">)</span></code></pre></figure>
+
+<p>Note you can export the chart’s underlying data using the arrow pop-out icon..
+<br />
+<img src="../fig/03_chart.png" border="10" width="50%" height="50%" />
+<br /><br /></p>
+
+<h3 id="exportar-los-resultados-como-una-table">Exportar los resultados como una Table</h3>
+<p>The most memory-efficient way to get data out of GEE is in a table. This way has the benefit of being scripted and thus fully reproducible. Table exports also require much less compute power than exporting a whole image. When you are constructing an analysis, think hard about how you can leave the raster in the cloud and just extract the data you need as an array.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// Use the buttons on the pop-out chart to export the .csv, or you can script</span>
+<span class="c1">// the export as follows using a reducer:</span>
+
+<span class="c1">// get the mean value for the region from each image</span>
+<span class="kd">var</span> <span class="nx">ts</span> <span class="o">=</span> <span class="nx">modis</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">image</span><span class="p">){</span>
+  <span class="kd">var</span> <span class="nx">date</span> <span class="o">=</span> <span class="nx">image</span><span class="p">.</span><span class="kd">get</span><span class="p">(</span><span class="dl">'</span><span class="s1">system:time_start</span><span class="dl">'</span><span class="p">);</span>
+  <span class="kd">var</span> <span class="nx">mean</span> <span class="o">=</span> <span class="nx">image</span><span class="p">.</span><span class="nx">reduceRegion</span><span class="p">({</span>
+    <span class="na">reducer</span><span class="p">:</span> <span class="nx">ee</span><span class="p">.</span><span class="nx">Reducer</span><span class="p">.</span><span class="nx">mean</span><span class="p">(),</span>
+    <span class="na">geometry</span><span class="p">:</span> <span class="nx">watershed</span><span class="p">,</span>
+    <span class="na">scale</span><span class="p">:</span> <span class="mi">250</span>
+  <span class="p">});</span>
+  <span class="c1">// and return a feature with 'null' geometry with properties (dictionary)  </span>
+  <span class="k">return</span> <span class="nx">ee</span><span class="p">.</span><span class="nx">Feature</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="p">{</span><span class="dl">'</span><span class="s1">mean</span><span class="dl">'</span><span class="p">:</span> <span class="nx">mean</span><span class="p">.</span><span class="kd">get</span><span class="p">(</span><span class="dl">'</span><span class="s1">NDVI</span><span class="dl">'</span><span class="p">),</span>
+                            <span class="dl">'</span><span class="s1">date</span><span class="dl">'</span><span class="p">:</span> <span class="nx">date</span><span class="p">})</span>
+<span class="p">});</span>
+
+<span class="c1">// Export a .csv table of date, mean NDVI for watershed</span>
+<span class="nx">Export</span><span class="p">.</span><span class="nx">table</span><span class="p">.</span><span class="nx">toDrive</span><span class="p">({</span>
+  <span class="na">collection</span><span class="p">:</span> <span class="nx">ts</span><span class="p">,</span>
+  <span class="na">description</span><span class="p">:</span> <span class="dl">'</span><span class="s1">geohack_2017_MODIS_NDVI_stats</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">folder</span><span class="p">:</span> <span class="dl">'</span><span class="s1">GEE_geohackweek</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">fileFormat</span><span class="p">:</span> <span class="dl">'</span><span class="s1">CSV</span><span class="dl">'</span>
+<span class="p">});</span>
+
+<span class="c1">// AND HIT 'RUN' IN THE TASKS TAB IN THE UPPER RIGHT PANEL</span></code></pre></figure>
+
+<p>To execute export tasks, you need to then go to the ‘Tasks’ tab in the upper right panel and hit ‘Run’.</p>
+
+<p><br />
+<img src="../fig/03_runTask.png" border="10" width="50%" height="50%" />
+<br /><br /></p>
+
+<h3 id="exportar-images">Exportar Images</h3>
+<p>Users can export the results of their image manipulations to their GEE Asset folder for downstream use within GEE or to their personal Google Drive or Google Cloud Storage accounts. Here, we export a single-band image of annual maximum NDVI for our watershed. Examples are provided for asset and Google Drive exports. More information on exporting can be found <a href="https://developers.google.com/earth-engine/exporting">here in the Developers Guide</a>.</p>
+
+<p>In the JavaScript API, all exports are sent to the ‘Tasks’ tab in the upper right panel. To prevent users from inadvertently overwhelming the system with gratuitous, accidental tasks, you need to explicitly run individual exports from the ‘Tasks’ tab. You can change filenames and other parameters here if necessary, or hard code these into your script.</p>
+
+<p>When exporting to Google Drive, GEE will find the named folder specified and does not need the full file path. If this folder does not yet exist, it will create it for you in your Drive.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// Export is unnecessary, but here are code examples for out to save a</span>
+<span class="c1">// image composite if desired.  </span>
+
+<span class="c1">// select only the ndvi band</span>
+<span class="kd">var</span> <span class="nx">ndvi</span> <span class="o">=</span> <span class="nx">composite</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="dl">'</span><span class="s1">NDVI</span><span class="dl">'</span><span class="p">);</span>
+
+<span class="c1">// Google Drive Export Example</span>
+<span class="c1">// (note: need to hit 'Run' in the task tab in upper right panel)</span>
+<span class="nx">Export</span><span class="p">.</span><span class="nx">image</span><span class="p">.</span><span class="nx">toDrive</span><span class="p">({</span>
+  <span class="na">image</span><span class="p">:</span> <span class="nx">ndvi</span><span class="p">,</span>
+  <span class="na">description</span><span class="p">:</span> <span class="dl">'</span><span class="s1">geohack_2017_L8_NDVI_image</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">scale</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span>
+  <span class="na">region</span><span class="p">:</span> <span class="nx">watershed</span><span class="p">.</span><span class="nx">geometry</span><span class="p">().</span><span class="nx">bounds</span><span class="p">(),</span> <span class="c1">// .geometry().bounds() needed for multipolygon</span>
+  <span class="na">crs</span><span class="p">:</span> <span class="dl">'</span><span class="s1">EPSG:5070</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">folder</span><span class="p">:</span> <span class="dl">'</span><span class="s1">GEE_geohackweek</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">maxPixels</span><span class="p">:</span> <span class="mi">2000000000</span>
+<span class="p">});</span>
+
+<span class="c1">// Asset Folder Export Example</span>
+<span class="c1">// (note: need to hit 'Run' in the task tab in upper right panel)</span>
+<span class="nx">Export</span><span class="p">.</span><span class="nx">image</span><span class="p">.</span><span class="nx">toAsset</span><span class="p">({</span>
+  <span class="na">image</span><span class="p">:</span> <span class="nx">ndvi</span><span class="p">,</span>
+  <span class="na">description</span><span class="p">:</span> <span class="dl">'</span><span class="s1">geohack_2017_L8_NDVI_image</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">assetId</span><span class="p">:</span> <span class="dl">'</span><span class="s1">users/yourname/geohack_2017_L8_NDVI_image</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">scale</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span>
+  <span class="na">region</span><span class="p">:</span> <span class="nx">watershed</span><span class="p">.</span><span class="nx">geometry</span><span class="p">().</span><span class="nx">bounds</span><span class="p">(),</span>
+  <span class="na">pyramidingPolicy</span><span class="p">:</span> <span class="p">{</span><span class="dl">'</span><span class="s1">.default</span><span class="dl">'</span><span class="p">:</span><span class="dl">'</span><span class="s1">mean</span><span class="dl">'</span><span class="p">},</span> <span class="c1">// use {'.default':'sample'} for discrete data</span>
+  <span class="na">maxPixels</span><span class="p">:</span> <span class="mi">2000000000</span>
+<span class="p">});</span></code></pre></figure>
+
+:ET

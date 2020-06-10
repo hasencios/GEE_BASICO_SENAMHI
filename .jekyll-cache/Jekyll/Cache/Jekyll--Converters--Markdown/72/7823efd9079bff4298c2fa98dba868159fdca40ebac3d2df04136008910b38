@@ -1,0 +1,89 @@
+I"|
+<script>
+  window.onload = function() {
+    var lesson_episodes = [
+    
+    "/00-access-javascript/index.html",
+    
+    "/01-introduction/index.html",
+    
+    "/02-code-editor/index.html",
+    
+    "/03-load-imagery/index.html",
+    
+    "/04-reducers/index.html",
+    
+    "/05-classify-imagery/index.html",
+    
+    "/06-time-series/index.html",
+    
+    "/07-wrap-up/index.html"
+    
+    ];
+
+    var xmlHttp = [];  /* Required since we are going to query every episode. */
+    for (i=0; i < lesson_episodes.length; i++) {
+
+      xmlHttp[i] = new XMLHttpRequest();
+      xmlHttp[i].episode = lesson_episodes[i];  /* To enable use this later. */
+      xmlHttp[i].onreadystatechange = function() {
+
+        if (this.readyState == 4 && this.status == 200) {
+          var parser = new DOMParser();
+          var htmlDoc = parser.parseFromString(this.responseText,"text/html");
+          var htmlDocArticle = htmlDoc.getElementsByTagName("article")[0];
+
+          var article_here = document.getElementById(this.episode);
+          var images = htmlDocArticle.getElementsByTagName("img");
+
+          if (images.length > 0) {
+            var h1text = htmlDocArticle.getElementsByTagName("h1")[0].innerHTML;
+
+            var htitle = document.createElement('h2');
+            htitle.innerHTML = h1text;
+            article_here.appendChild(htitle);
+
+            var image_num = 0;
+            for (let image of images) {
+              image_num++;
+
+              var title = document.createElement('p');
+              title.innerHTML = "<strong>Figure " + image_num + ".</strong> " + image.alt;
+              article_here.appendChild(title);
+
+              var img = document.createElement('img');
+              img.src = image.src;
+              article_here.appendChild(img);
+
+              if (image_num < images.length) {
+                var hr = document.createElement('hr');
+                article_here.appendChild(hr);
+              }
+            }
+          }
+        }
+      }
+      episode_url = ".." + lesson_episodes[i];
+      xmlHttp[i].open("GET", episode_url);
+      xmlHttp[i].send(null);
+    }
+  }
+</script>
+
+<article id="/00-access-javascript/index.html" class="figures"></article>
+
+<article id="/01-introduction/index.html" class="figures"></article>
+
+<article id="/02-code-editor/index.html" class="figures"></article>
+
+<article id="/03-load-imagery/index.html" class="figures"></article>
+
+<article id="/04-reducers/index.html" class="figures"></article>
+
+<article id="/05-classify-imagery/index.html" class="figures"></article>
+
+<article id="/06-time-series/index.html" class="figures"></article>
+
+<article id="/07-wrap-up/index.html" class="figures"></article>
+
+:ET

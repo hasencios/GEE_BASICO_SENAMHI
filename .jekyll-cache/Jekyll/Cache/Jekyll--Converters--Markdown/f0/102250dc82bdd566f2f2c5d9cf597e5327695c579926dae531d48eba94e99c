@@ -1,0 +1,38 @@
+I"<p>Los materiales en este repositorio <strong>python-ecology-lesson</strong> fueron inicialmente desarrollados, adaptados y son constantemente revisados por muchos colaboradores. Algunas partes de esta lección fueron adaptadas de los materiales de Software Carpentry.</p>
+
+<p>El primer taller de Python de Data Carpentry se llevó a cabo en la Universidad de Miami el 30 de marzo de 2015 por John Gossoset y François Michonneau. Durante ese tiempo los materiales fueron refinados y se presentaron nuevamente en la conferencia de la UCAR Software Engineering Assembly (SEA) en Boulder, Colorado por Leah Wasser (NEON, Inc) y Mariela Perignon.</p>
+
+<h2 id="datos">Datos</h2>
+
+<p>Los datos son del artículo S. K. Morgan Ernest, Thomas J. Valone, and James H. Brown. 2009. Long-term monitoring and experimental manipulation of a Chihuahuan Desert ecosystem near Portal, Arizona, USA. Ecology 90:1708.</p>
+
+<p>http://esapubs.org/archive/ecol/E090/118/</p>
+
+<p>Los datos en Excel son del artículo Bahlai, C.A., Schaafsma, A.W., Lagos, D., Voegtlin, D., Smith, J.L., Welsman, J.A., Xue, Y., DiFonzo, C., Hallett, R.H., 2014. Factors inducing migratory forms of soybean aphid and an examination of North American spatial dynamics of this species in the context of migratory behavior. Agriculture and Forest Entomology. 16, 240-250.</p>
+
+<p>http://onlinelibrary.wiley.com/doi/10.1111/afe.12051/full</p>
+
+<p><code class="language-plaintext highlighter-rouge">Master_suction_trap_data_list_uncleaned.csv</code> es una versión pre-procesada de un conjunto de datos disponibles públicamente por David Voegtlin, Doris Lagos, Douglas Landis and Christie Bahlai, http://lter.kbs.msu.edu/datatables/122</p>
+
+<h2 id="lecciones">Lecciones</h2>
+
+<p>La lista actual de los episodios de esta leccion.</p>
+
+<p>Nota: estos episodios fueron reorganizados, limpiados y desarrollados por Leah Wasser, Mariela Perignon, John Gosset y François Michonneau en abril de 2015.</p>
+
+<ul>
+  <li>Breve introducción a la programación en Python</li>
+  <li>Comenzando con datos</li>
+  <li>Indexación, segmentación y creación de subconjuntos a partir de <code class="language-plaintext highlighter-rouge">DataFrames</code> en Python</li>
+  <li>Tipos de datos y formatos</li>
+  <li>Unión de datos usando Pandas</li>
+  <li>Automatización de análisis de datos: bucles y funciones (Desarrollado por Mariela Perignon con ediciones menores, tanto de ella como de Leah Wasser)</li>
+  <li>Creando gráficos con plotnine (Desarrollado por Jeremy Zucker, noviembre 2016)</li>
+  <li>Poniendo todo junto (Desarrollado por Mariela Perignon con revisiones menores de Leah Wasser, abril 2015)</li>
+  <li>Acceso a base de datos SQLite usando Python y Pandas (Añadido poy John Gosset con revisiones menores de Leah Wasser, abril 2015)</li>
+</ul>
+
+<h2 id="traducción">Traducción</h2>
+
+<p>La traducción de esta lección a sido un esfuerzo grupal de varios colaboradores durante noviembre 2018. Queremos agradecer a todos ellos con una mención especial <a href="https://github.com/agbeltran">Alejandra Gonzalez-Beltran</a>, <a href="https://github.com/arredondo23">Sergio Arredondo</a>, <a href="https://github.com/chekos">Sergio Sánchez</a>, <a href="https://github.com/ComplejoC">Sofía Meléndez</a>,  <a href="https://github.com/enricescorsa">Enric Escorsa O’Callaghan</a>, <a href="https://github.com/fergarciafer">Fernando Garcia</a>, <a href="https://github.com/fmichonneau">François Michonneau</a>, <a href="https://github.com/Helysalgado">Heladia Salgado</a>, <a href="https://github.com/jmbarrios">Juan Martín Barrios</a>, <a href="https://github.com/LauCIFASIS">Laura Angelone</a>, <a href="https://github.com/LUS24">Leonardo Ulises Spairani</a>, <a href="https://github.com/miguelgondu">Miguel González Duque</a>, <a href="https://github.com/monialo2000">Monica Alonso</a>, <a href="https://github.com/NPalopoli">Nicolas Palopoli</a>, <a href="https://github.com/nohemihuanca">Nohemi Huanca Nunez</a>, <a href="https://github.com/orchid00">Paula Andrea Martinez</a>, <a href="https://github.com/raynamharris">Rayna M Harris</a>, <a href="https://github.com/rzayas">Romualdo Zayas Lagunas</a>, <a href="https://github.com/spencerbh">Spencer Harris</a>, <a href="https://github.com/spereyra">Silvana Pereyra</a> y <a href="https://github.com/welozano">Wilson Lozano-Rolón</a>.</p>
+:ET
