@@ -42,7 +42,7 @@ El código Javascript está escrito en esta ventana. El editor también tiene al
 Por ejemplo, puedes escribir comentarios usando una doble barra. Escriba lo siguiente en su editor y haga clic en el botón "Run".
 
 {% highlight javascript %}
-// This is just a comment.
+// Esto es sólo un comentario.
 {% endhighlight %}
 
 #### La pestaña de la consola
@@ -50,7 +50,7 @@ Por ejemplo, puedes escribir comentarios usando una doble barra. Escriba lo sigu
 También se puede usar `print()` para mostrar los objetos en la consola. Escriba esto y haga clic en "Run":
 
 {% highlight javascript %}
-// Print something to the console
+// Imprime algo en la consola
 print("Hola Mundo!");
 {% endhighlight %}
 
@@ -96,7 +96,7 @@ Usted debería de haber accedido al repositorio de scripts compartidos en el Cod
 
 <!-- 
   - Únase al grupo de Google Earth Engine SENAMHI haciendo clic en este enlace. <a href="https://goo.gl/JsnWZH" target="_blank">https://goo.gl/JsnWZH</a> . No se preocupe por los permisos de publicación. -->
-- Acepte el repositorio compartido haciendo clic en este enlace: <a href="https://code.earthengine.google.com/?accept_repo=users/hasencios/GEE_BASICO_SENAMHI" target="_blank">https://code.earthengine.google.com/?accept_repo=users/hasencios/GEE_BASICO_SENAMHI</a>
+- Acceder al repositorio compartido haciendo clic en este enlace: <a href="https://code.earthengine.google.com/?accept_repo=users/hasencios/GEE_BASICO_SENAMHI" target="_blank">https://code.earthengine.google.com/?accept_repo=users/hasencios/GEE_BASICO_SENAMHI</a>
 - En el Code Editor, vaya a la pestaña **Scripts** en el panel superior izquierdo, desplázate hacia abajo y expande la sección "Shared". Un directorio llamado *GEE_BASIC_SENAMHI* debería aparecer con versiones de sólo lectura de los scripts completos de cada episodio.
 
 Cualquier actualización se reflejará en estas versiones del script. Como todos los scripts GEE, estas son versiones controladas. Los permisos de lectura o escritura para individuos o grupos se pueden establecer en el Code Editor usando el pequeño icono gris de compartir que aparece a la derecha si pasas el ratón por encima del nombre del directorio en la pestaña *Scripts*. Deberías tener acceso de sólo lectura a este repositorio.
@@ -171,7 +171,7 @@ Vamos a filtrar la colección a una imagen por:
 En esencia, esto nos permite ordenar la colección completa de Landsat 8 y cargar la mejor imagen disponible para nuestra región de interés para el 2018.
 
 {% highlight javascript %}
-// Load Landsat 8 input imagery
+// Cargar imágenes de Landsat 8
 var image = ee.Image((landsat8Collection)
     // Filter to get only images under the region of interest.
     .filterBounds(lakePowell)
@@ -281,14 +281,14 @@ Para un ejemplo de script que utiliza datos importados, véase <a href="https://
 #### Exportando y la pestaña Tasks
 En lugar de imprimir en la consola, para tareas más grandes puede que quieras exportar las salidas a tu Google Drive o Cloud Storage usando las funciones `Export` en tu código. Cuando se ejecutan, estas generan una nueva tarea en la pestaña `Task` en el panel superior derecho. Necesitarás entonces "Run" esta tarea para iniciar realmente la transferencia de información. Una vez que inicie una tarea, se le pedirá que introduzca los detalles sobre la resolución, tamaño, formato y destino si no lo incluyó en su código. Puedes pasar el ratón por encima de la tarea y hacer clic en el icono "?" para ver el estado y también para obtener el número de la tarea. Si tu tarea no se está ejecutando, puedes compartir este número como referencia en el foro de desarrolladores.
 
-Exportaremos información vectorial en <a href="https://hasencios.github.io/GEE_BASICO_SENAMHI/03-load-imagery/" target="_blank">Leccion 03: Cargar Imágenes</a> de este tutorial.
+Exportaremos información vectorial en <a href="https://hasencios.github.io/GEE_BASICO_SENAMHI/03-load-imagery/" target="_blank">Leccion 03 Cargar Imágenes</a> de este tutorial.
 
 Para instrucciones detalladas sobre Export, véase la <a href="https://developers.google.com/earth-engine/exporting" target="_blank">Exporting Data page</a> en el sitio web de GEE. También presentaremos algunos ejemplos para exportar en módulos posteriores de este tutorial.
 
 <br>
 <br>
 
-Enlace al código completo que usamos en esta lección:
-<a href="https://code.earthengine.google.com/926160c96272a205b91b5ed7b68981ab" target="_blank">https://code.earthengine.google.com/926160c96272a205b91b5ed7b68981ab</a>
+Enlace del código completo que usamos en esta lección:
+<a href="https://code.earthengine.google.com/1cbba818c21b948f0ae43ae3716e75ee" target="_blank">https://code.earthengine.google.com/1cbba818c21b948f0ae43ae3716e75ee</a>
 
 ### Diviértete con el Code Editor!!!

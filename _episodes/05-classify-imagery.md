@@ -36,9 +36,9 @@ El propósito es obtener un mapa clasificado de la cobertura terrestre en un ár
 Primero, necesitamos definir una región de interés (ROI). En lugar de utilizar un Asset importado, utilizaremos una única coordenada que definiremos manualmente. Estamos interesado en hacer una clasificación alrededor de Houston, así que usaré el centro de la ciudad como mi lat/lon.
 
 {% highlight javascript %}
-// Define a region of interest as a point.  Change the coordinates
-// to select an ROI in your area of interest.
-// You can use the inspector tool to find your coordinates
+// Definir una región de interés como un punto.  Cambiar las coordenadas
+// para seleccionar ROI en su área de interés.
+// Puede usar la herramienta de inspección para encontrar sus coordenadas
 var roi = ee.Geometry.Point(-95.6223, 29.7381);
 {% endhighlight %}
 
@@ -48,17 +48,17 @@ Ahora cargaremos las imágenes de Landsat y filtraremos el área y las fechas de
 
 {% highlight javascript %}
 
-// Load the Landsat 8 scaled radiance image collection.
+// Cargue la image collection: Landsat 8 scaled radiance.
 var landsatCollection = ee.ImageCollection('LANDSAT/LC08/C01/T1')
     .filterDate('2017-01-01', '2017-12-31');
 
-// Make a cloud-free composite.
+// Haz un compuesto sin nubes.
 var composite = ee.Algorithms.Landsat.simpleComposite({
   collection: landsatCollection,
   asFloat: true
 });
 
-// Visualize the Composite
+// Visualizar el compuesto
 Map.addLayer(composite, {bands: ['B4', 'B3', 'B2'], max: 0.5, gamma: 2}, 'L8 Image', false);
 
 
@@ -77,7 +77,7 @@ Localice puntos en la nueva capa en áreas urbanas o edificadas (edificios, carr
 Cuando termines de hacer una `FeatureCollection` para cada clase (3 en total), puedes fusionarlas en una `FeatureCollection` usando `featureCollection.merge()`. Esto lo convertirá en una colección en la que la propiedad **landcover** tiene un valor que es la clase (0, 1, 2).
 
 {% highlight javascript %}
-// Merge points together
+// Fusionar los puntos
 var newfc = water.merge(urban).merge(forest);
 print(newfc, 'newfc')
 {% endhighlight %}
@@ -93,10 +93,10 @@ Ahora que has creado los puntos y sus etiquetas, necesitas probar las imágenes 
 <br><br>
 
 {% highlight javascript %}
-// Select the bands for training
+// Selecciona las bandas para el entrenamiento
 var bands = ['B2', 'B3', 'B4', 'B5', 'B6', 'B7'];
 
-// Sample the input imagery to get a FeatureCollection of training data.
+// Muestre las imágenes de entrada para obtener una FeatureCollection de datos de entrenamiento.
 var training = composite.select(bands).sampleRegions({
   collection: newfc,
   properties: ['landcover'],
@@ -110,7 +110,7 @@ La `FeatureCollection` llamada **training** tiene el valor de reflectancia de ca
 Ahora inicializaremos un `classifier` usando `ee.Classifier.randomForest()` y `train` en los datos de entrenamiento especificando las características a usar (entrenamiento), las categorías de la cobertura del suelo como `classProperty` en la que queremos categorizar las imágenes, y la reflectancia en B2 - B7 de las imágenes Landsat como las `inputProperties`.
 
 {% highlight javascript %}
-// Make a Random Forest classifier and train it.
+// Haz un clasificador de Random Forest y entrénalo.
 var classifier = ee.Classifier.randomForest().train({
   features: training,
   classProperty: 'landcover',
@@ -126,17 +126,17 @@ Otros clasificadores, incluyendo Support Vector Machines (SVM) y Classification 
 Usa el nuevo `classifier` para clasificar el resto de las imágenes.
 
 {% highlight javascript %}
-// Classify the input imagery.
+// Clasificar las imágenes de entrada.
 var classified = composite.select(bands).classify(classifier);
 
-// Define a palette for the Land Use classification.
+// Definir una paleta para la clasificación del uso de la tierra.
 var palette = [
   'D3D3D3', // urban (0)  // grey
   '0000FF', // water (1)  // blue
   '008000' //  forest (2) // green
 ];
 
-// Display the classification result and the input image.
+// Muestra el resultado de la clasificación y la imagen de entrada.
 Map.setCenter(-96.0171, 29.6803);
 Map.addLayer(classified, {min: 0, max: 2, palette: palette}, 'Land Use Classification');
 {% endhighlight %}
@@ -154,7 +154,7 @@ Podemos evaluar la precisión del `classifier` entrenado usando una `confusionMa
 
 {% highlight javascript %}
 
-// Get a confusion matrix representing resubstitution accuracy.
+// Estima la matriz de confusión que represente la precisión de la clasificación.
 print('RF error matrix: ', classifier.confusionMatrix());
 print('RF accuracy: ', classifier.confusionMatrix().accuracy());
 
@@ -163,4 +163,4 @@ print('RF accuracy: ', classifier.confusionMatrix().accuracy());
 Advertencia: En este ejemplo en particular, sólo estamos observando el `trainAccuracy`, que básicamente describe lo bien que el `classifier` fue capaz de etiquetar correctamente los datos de entrenamiento sustituidos, es decir, los datos que el `classifier` ya había reconocido. Para obtener una verdadera precisión de validación, necesitamos mostrarle al clasificador los nuevos datos de 'testing'. El script del repositorio tiene una sección extra al final que mantiene los datos para las pruebas, aplica el clasificador a los datos de las pruebas y evalúa la `errorMatrix` para estos datos de validación. El último ejemplo en el [Supervised Classification User Guide](https://developers.google.com/earth-engine/classification) también da un script ejemplo para este proceso.
 
 Enlace al código completo que usamos en esta sesión:
-[https://code.earthengine.google.com/84027208bf2a94e77b5f14075fc5a938](https://code.earthengine.google.com/84027208bf2a94e77b5f14075fc5a938)
+[https://code.earthengine.google.com/86b72b6fb9040967b66f09b17ce26c84](https://code.earthengine.google.com/86b72b6fb9040967b66f09b17ce26c84)

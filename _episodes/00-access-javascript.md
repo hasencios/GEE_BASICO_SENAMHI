@@ -54,20 +54,20 @@ A lo largo de las lecciones, accederemos a Google Earth Engine introduciendo com
 
 
 {% highlight javascript %}
-// Line comments start with two forward slashes. Like this line.
+// Los comentarios de la línea comienzan con dos barras oblicuas. Como esta línea.
 
-/* Multi-line comments start with a forward slash and a star,
-and end with a star and a forward slash. */
+/* Los comentarios de varias líneas comienzan con una barra y una estrella,
+y terminan con una estrella y una barra. */
 {% endhighlight %}
 
 Las variables se usan para almacenar objetos y se definen usando la palabra clave **var**.
 {% highlight javascript %}
 var theAnswer = 42;
 
-// string objects start and end with a single quote
+// los objetos string empiezan y terminan con una sola cita
 var myVariable = 'I am a string';
 
-// string objects can also use double quotes, but don't mix and match
+// los objetos string también pueden usar comillas dobles, pero no mezclan y combinan
 var myOtherVariable = "I am also a string";
 {% endhighlight %}
 
@@ -79,24 +79,24 @@ var test2 = 'I feel complete!';
 
 Aplicar los parámetros de la función y utilizar las listas.
 {% highlight javascript %}
-// Parentheses are used to pass parameters to functions
+// Los paréntesis se utilizan para pasar parámetros a las funciones
 print('This string will print in the Console tab.');
 
-/* Square brackets are used for items in a list.
-The zero index refers to the first item in a list*/
+/* SLos corchetes se utilizan para los elementos de una lista.
+El índice cero se refiere al primer elemento de una lista*/
 var myList = ['eggplant','apple','wheat'];
 print(myList[0]); // would print 'eggplant'
 {% endhighlight %}
 
 Usando diccionarios.
 {% highlight javascript %}
-// Curly brackets (or braces) can be used to define dictionaries (key:value pairs).
+// Los corchetes (o llaves) pueden ser usados para definir diccionarios (key:value pairs).
 var myDict = {'food':'bread', 'color':'red', 'number':42};
 
-// Square brackets can be used to access dictionary items by key.
+// Los corchetes se pueden utilizar para acceder a los elementos del diccionario mediante una tecla.
 print(myDict['color']);
 
-//Or you can use the dot notation to get the same result.
+// O puedes usar la notación de puntos para obtener el mismo resultado.
 print(myDict.color);
 {% endhighlight %}
 
@@ -113,9 +113,9 @@ print(myHelloFunction('world'));
 El JavaScript usa camelCase. JavaScript (según la academia W3) es fácil de aprender. Como otros lenguajes de programación, puedes usar guías de estilo para aprender a escribir código estándar y reproducirlo.
 
 Para una orientación a la industria, Google publica su propia guía <a href="http://google.github.io/styleguide/jsguide.html" target="_blank">Guía de estilos JavaScript</a>.
-
+<!--
 Dana Tomlin también ha creado <a href="https://drive.google.com/file/d/0B3H1GYZLzLKCckwwVjZfVmdPNDA/view)" target="_blank">JavaScript Quick Start Guide</a> que sólo toma unos pocos minutos de trabajo, pero que tiene algunos aspectos básicos. Puedes encontrarlo haciendo clic en ese enlace o yendo a la página principal de GEE, haciendo clic en la pestaña EDU en la parte superior izquierda, y bajando a la sección de Ejercicios de Diseño de Software Geoespacial.
-
+-->
 
 <br>
 <img src="../fig/00_spaceland.png" border = "10">

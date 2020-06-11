@@ -1,0 +1,99 @@
+I")*<h1 id="pre-requisitos">Pre-requisitos</h1>
+
+<p>Por favor, complete este el procedimiento antes de tomar las lecciones. Siga los pasos que se indican a continuación para registrarse en una cuenta de Google Earth Engine y únase a nuestro repositorio compartido.</p>
+
+<h3 id="1-registering-for-a-google-earth-engine-account">1. Registering for a Google Earth Engine account</h3>
+
+<ul>
+  <li>Ir a la <a href="https://signup.earthengine.google.com/#!/">página web de GEE sign up</a> e ingresar &gt; el correo electrónico que deseas usar para tu cuenta GEE. Una cuenta gmail es mejor la mejor opción.</li>
+  <li>Introduzca su correo electrónico, su afiliación y su región/país. Cuando le pregunte qué desea lograr, mencione que labora en una institución del estado peruano (SENAMHI).</li>
+  <li>Revise los términos, verifique su identificación de no-robot y haga clic en ‘Submit’.</li>
+  <li>Revise su correo electrónico, incluida la carpeta de spam, para ver si hay un enlace del equipo de desarrolladores de Google. El correo electrónico de confirmación tendrá instrucciones sobre cómo acceder al Code Editor.</li>
+</ul>
+
+<p>¿No estás seguro de tener acceso? Utilice <a href="https://code.earthengine.google.com/">este link</a> para verificar. Si no ha conseguido acceso, recibirá mensale indicándole error de autorización, que significa que su cuenta no está registrada. Si tiene acceso, el enlace abrirá el IDE de Javascript. Este enlace constituye su portal permanente de acceso a GEE.</p>
+
+<h3 id="2-unirse-a-nuestro-repositorio-compartido-de-gee">2. Unirse a nuestro repositorio compartido de GEE</h3>
+
+<p>GEE nos permite tener carpetas de grupo compartidas/repositorios para los scripts que vayamos desarrollando. Se ha organizado el código presentado en estas lecciones de la siguiente manera. En lugar de añadir cada uno de vuestros correos electrónicos uno a uno (¡lo cual es muy tedioso!), se unirá a un grupo de Google que nos permitirá acceder al repositorio de código compartido. Por favor, sigua estos pasos:</p>
+
+<!-- 
+  - Únase al grupo de Google Earth Engine SENAMHI haciendo clic en este enlace. <a href="https://goo.gl/JsnWZH" target="_blank">https://goo.gl/JsnWZH</a> . No se preocupe por los permisos de publicación.
+ -->
+<ul>
+  <li>Aceptar el repositorio compartido haciendo clic en este enlace:
+  <a href="https://code.earthengine.google.com/?accept_repo=users/hasencios/GEE_BASICO_SENAMHI " target="_blank">https://code.earthengine.google.com/?accept_repo=users/hasencios/GEE_BASICO_SENAMHI</a></li>
+  <li>En el Code Editor, vaya al <strong>Scripts tab</strong> en el panel superior izquierdo, desplácese hacia abajo y amplíe la sección “Reader”. Un directorio llamado <em>users/hasencios/GEE_BASICO_SENAMHI</em> debe aparecer con versiones de sólo lectura de los scripts completos de cada lección.</li>
+</ul>
+
+<h3 id="3-tips-de-javascript">3. Tips de Javascript</h3>
+
+<p>JavaScript, que no debe confundirse con Java, es un lenguaje de programación ampliamente utilizado en el desarrollo web junto con HTML y CSS. Puede aprender JavaScript usando cualquier tutoriales en línea, como los que ofrece <a href="https://www.w3schools.com/js/" target="_blank">w3schools</a> .</p>
+
+<p>At geohackweek, we access Google Earth Engine by entering JavaScript commands into an online integrated development environment (IDE) called the Code Editor. It is not necessary to formally learn JavaScript to work with Google Earth Engine. Below we provide examples and resources for getting started.</p>
+
+<p>A lo largo de las lecciones, accederemos a Google Earth Engine introduciendo comandos de JavaScript en un entorno de desarrollo integrado (IDE) en línea denominado Code Editor. No es necesario aprender formalmente JavaScript para trabajar con Google Earth Engine. A continuación te proporcionamos ejemplos y recursos para empezar.</p>
+
+<h4 id="javascript-básico-para-gee">JavaScript básico para GEE</h4>
+<p>Aquí hay algunas herramientas útiles para GEE, reproducidos de la. <a href="https://docs.google.com/document/d/1ZxRKMie8dfTvBmUNOO0TFMkd7ELGWf3WjX0JvESZdOE/edit" target="_blank">Earth Engine 101 Beginner’s Curriculum</a>.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// Los comentarios de la línea comienzan con dos barras oblicuas. Como esta línea.</span>
+
+<span class="cm">/* Los comentarios de varias líneas comienzan con una barra y una estrella,
+y terminan con una estrella y una barra. */</span></code></pre></figure>
+
+<p>Las variables se usan para almacenar objetos y se definen usando la palabra clave <strong>var</strong>.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">theAnswer</span> <span class="o">=</span> <span class="mi">42</span><span class="p">;</span>
+
+<span class="c1">// string objects start and end with a single quote</span>
+<span class="kd">var</span> <span class="nx">myVariable</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">I am a string</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="c1">// string objects can also use double quotes, but don't mix and match</span>
+<span class="kd">var</span> <span class="nx">myOtherVariable</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">I am also a string</span><span class="dl">"</span><span class="p">;</span></code></pre></figure>
+
+<p>Las declaraciones deben terminar en punto y coma, o de lo contrario le aparecerá un aviso.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">test</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">I feel incomplete...</span><span class="dl">'</span>
+<span class="kd">var</span> <span class="nx">test2</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">I feel complete!</span><span class="dl">'</span><span class="p">;</span></code></pre></figure>
+
+<p>Aplicar los parámetros de la función y utilizar las listas.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// Parentheses are used to pass parameters to functions</span>
+<span class="nx">print</span><span class="p">(</span><span class="dl">'</span><span class="s1">This string will print in the Console tab.</span><span class="dl">'</span><span class="p">);</span>
+
+<span class="cm">/* Square brackets are used for items in a list.
+The zero index refers to the first item in a list*/</span>
+<span class="kd">var</span> <span class="nx">myList</span> <span class="o">=</span> <span class="p">[</span><span class="dl">'</span><span class="s1">eggplant</span><span class="dl">'</span><span class="p">,</span><span class="dl">'</span><span class="s1">apple</span><span class="dl">'</span><span class="p">,</span><span class="dl">'</span><span class="s1">wheat</span><span class="dl">'</span><span class="p">];</span>
+<span class="nx">print</span><span class="p">(</span><span class="nx">myList</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span> <span class="c1">// would print 'eggplant'</span></code></pre></figure>
+
+<p>Usando diccionarios.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// Curly brackets (or braces) can be used to define dictionaries (key:value pairs).</span>
+<span class="kd">var</span> <span class="nx">myDict</span> <span class="o">=</span> <span class="p">{</span><span class="dl">'</span><span class="s1">food</span><span class="dl">'</span><span class="p">:</span><span class="dl">'</span><span class="s1">bread</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">color</span><span class="dl">'</span><span class="p">:</span><span class="dl">'</span><span class="s1">red</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">number</span><span class="dl">'</span><span class="p">:</span><span class="mi">42</span><span class="p">};</span>
+
+<span class="c1">// Square brackets can be used to access dictionary items by key.</span>
+<span class="nx">print</span><span class="p">(</span><span class="nx">myDict</span><span class="p">[</span><span class="dl">'</span><span class="s1">color</span><span class="dl">'</span><span class="p">]);</span>
+
+<span class="c1">//Or you can use the dot notation to get the same result.</span>
+<span class="nx">print</span><span class="p">(</span><span class="nx">myDict</span><span class="p">.</span><span class="nx">color</span><span class="p">);</span></code></pre></figure>
+
+<p>Las funciones pueden definirse como una forma de reutilizar el código y facilitar su lectura.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">myHelloFunction</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">string</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="dl">'</span><span class="s1">Hello </span><span class="dl">'</span> <span class="o">+</span> <span class="nx">string</span> <span class="o">+</span> <span class="dl">'</span><span class="s1">!</span><span class="dl">'</span><span class="p">;</span>
+<span class="p">};</span>
+<span class="nx">print</span><span class="p">(</span><span class="nx">myHelloFunction</span><span class="p">(</span><span class="dl">'</span><span class="s1">world</span><span class="dl">'</span><span class="p">));</span></code></pre></figure>
+
+<h4 id="otros-recursos-javascript">Otros recursos JavaScript</h4>
+<p>El JavaScript usa camelCase. JavaScript (según la academia W3) es fácil de aprender. Como otros lenguajes de programación, puedes usar guías de estilo para aprender a escribir código estándar y reproducirlo.</p>
+
+<p>Para una orientación a la industria, Google publica su propia guía <a href="http://google.github.io/styleguide/jsguide.html" target="_blank">Guía de estilos JavaScript</a>.
+<!--
+Dana Tomlin también ha creado <a href="https://drive.google.com/file/d/0B3H1GYZLzLKCckwwVjZfVmdPNDA/view)" target="_blank">JavaScript Quick Start Guide</a> que sólo toma unos pocos minutos de trabajo, pero que tiene algunos aspectos básicos. Puedes encontrarlo haciendo clic en ese enlace o yendo a la página principal de GEE, haciendo clic en la pestaña EDU en la parte superior izquierda, y bajando a la sección de Ejercicios de Diseño de Software Geoespacial.
+--></p>
+
+<p><br />
+<img src="../fig/00_spaceland.png" border="10" />
+<br /><br /></p>
+:ET

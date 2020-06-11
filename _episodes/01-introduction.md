@@ -62,7 +62,7 @@ En 2016 el European Commission's Joint Research Centre publicó una base de dato
 
   - El <a href="https://global-surface-water.appspot.com/" target="_blank">Global Surface Water Data Explorer</a> que se publicó junto con la base de datos para permitir a los usuarios visualizar los cambios en los cuerpos de aguas superficiales.
 
-  - Un <a href="https://storage.googleapis.com/global-surface-water/downloads_ancillary/DataUsersGuidev2.pdf" target="_blank">Data Users Guide</a> describiendo el conjunto de datos en detalle.  
+  - Un <a href="https://storage.googleapis.com/global-surface-water/downloads_ancillary/DataUsersGuidev2.pdf" target="_blank">Data Users Guide</a> describiendo la base de datos en detalle.  
 
 ***
 > **Caso 3: Tiempo de viaje a escala global**
@@ -118,7 +118,7 @@ El equipo de desarrollo de GEE ha trabajado duro para hacer que la plataforma se
   - La interfaz gráfica de JavaScript es una plataforma web en la que se puede hacer requerimientos a través de la API principal de GEE. Los desarrolladores han pasado años perfeccionando esta plataforma para facilitar a los usuarios el almacenamiento, el intercambio y la versión de los resultados del código, la ejecución de tareas y, lo que es más importante, la visualización de los resultados sobre la marcha en gráficos y mapas renderizados directamente en la ventana del navegador. También se encargan de la autenticación del usuario con sólo iniciar sesión a través de su gmail.
   - La **API de Python** requiere que los usuarios se encarguen de la autenticación y la visualización de los resultados, con el beneficio de permitir a los usuarios personalizar más plenamente los requerimientos más allá de la biblioteca de funciones disponibles de forma nativa en GEE. No hay ningún sitio web al que se acceda para realizar el análisis: el código se construye desde cero utilizando flujos de trabajo que se desarrollan de forma individual.
 
-Para estas lecciones vamos a utilizar el JavaScript API, sin embargo el <a href="https://developers.google.com/earth-engine/python_install" target="_blank"> material de entrenamiento para acceder a GEE usando Python</a> está ahora disponible en la website de GEE. Si estás interesado en usar el Python API, segir las instrucciones mostradas en el link para la instalación y revisa los ejemplos notebooks <a href="https://github.com/g07kore/Google-Earth-Engine-Python-Examples/blob/master/001_ee_classification_ls8_toa.ipynb " target="_blank">here</a>. La Javascript API ha incorporado herramientas de visualización de mapas, así que eso es lo que usaremos para aprender la plataforma inicialmente.
+Para estas lecciones vamos a utilizar el JavaScript API, sin embargo el <a href="https://developers.google.com/earth-engine/python_install" target="_blank"> material de entrenamiento para acceder a GEE usando Python</a> está ahora disponible en la website de GEE. Si estás interesado en usar el Python API, segir las instrucciones mostradas en el link para la instalación y revisa los ejemplos notebooks <a href="https://github.com/renelikestacos/Google-Earth-Engine-Python-Examples/ " target="_blank">here</a>. La Javascript API ha incorporado herramientas de visualización de mapas, así que eso es lo que usaremos para aprender la plataforma inicialmente.
 
 
 Si todavía no estás seguro de para qué sirve GEE, puedes revisar la siguiente presentación <a href="https://docs.google.com/presentation/d/1hT9q6kWigM1MM3p7IEcvNQlpPvkedW-lgCCrIqbNeis/edit#slide=id.gf251d1053_0_1005" target="_blank">What is Google Earth Engine?</a> disponible del equipo GEE.

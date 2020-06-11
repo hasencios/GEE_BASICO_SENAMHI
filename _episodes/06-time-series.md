@@ -26,7 +26,7 @@ Este código permite a los usuarios generar gráficos de series de tiempo a part
 Este script está estructurado para facilitar al usuario la selección de diferentes imágenes, fechas y regiones. Para este ejercicio, vamos a dejar los parámetros tal como están para establecer la extensión como área de estudio en el Medio Oeste, la Cuenca Republican River Basin
 
 {% highlight javascript %}
-// load WBD dataset & select the Republican watershed
+// cargue la base de datos WBD y seleccione la Republican watershed
 var WBD = ee.FeatureCollection("USGS/WBD/2017/HUC06");
 Map.addLayer(WBD, {}, 'watersheds');
 var setExtent = WBD.filterMetadata('name', 'equals', 'Republican');
@@ -45,10 +45,10 @@ Aquí estamos cargando tres tipos diferentes de imágenes de cultivos de alta re
 3. Un Greenness Index derivado de las imágenes del Landsat (30 m) específicas de la zona de estudio. Este índice se calcula tomando un compuesto del píxel más verde, definido como el píxel con el NDVI más alto, durante un período de tiempo determinado.
 
 {% highlight javascript %}
-// CDL: USDA Cropland Data Layers
+// CDL: Capas de datos de tierras de cultivo del USDA
 var cdl = ee.Image('USDA/NASS/CDL/2010').select('cropland').clip(setExtent);
 
-// NAIP aerial photos
+// Fotos aéreas del NAIP
 var StartDate = '2010-01-01';
 var EndDate = '2010-12-31';
 
@@ -56,9 +56,9 @@ var naip = ee.ImageCollection('USDA/NAIP/DOQQ')
     .filterBounds(setExtent)
     .filterDate(StartDate, EndDate);
 
-// Derived Landsat Composites --------------------
+// Compuestos derivados de Landsat --------------------
 
-// annual max greenness image for background (previously exported asset)
+// imagen de máximo verdor anual (asset previamente exportado)
 var annualGreenest = ee.Image('users/jdeines/HPA/2010_14_Ind_001')
                     .select(['GI_max_14','EVI_max_14'])
                     .clip(setExtent);
@@ -70,13 +70,13 @@ El NDVI y el EVI son dos índices de vegetación diferentes que pueden ser calcu
 
 {% highlight javascript %}
 
-// add satellite time series: MODIS EVI 250m 16 day -------------
+// añadir series temporales de satélites: MODIS EVI 250m 16 días -------------
 var collectionModEvi = ee.ImageCollection('MODIS/006/MOD13Q1')
     .filterDate(StartDate,EndDate)
     .filterBounds(setExtent)
     .select('EVI');
 
-// add satellite time series: MODIS NDVI 250m 16 day -------------
+// añadir series temporales de satélites: MODIS NDVI 250m 16 días -------------
 var collectionModNDVI = ee.ImageCollection('MODIS/006/MOD13Q1')
     .filterDate(StartDate,EndDate)
     .filterBounds(setExtent)
@@ -93,20 +93,20 @@ Aquí realizaremos un mapa de los compuestos de CDL, NAIP y Annual Greenest Pixe
 
  {% highlight javascript %}
 
-// Visualize ----------------------------------------------------------------------------------
+// Visualizar ----------------------------------------------------------------------------------
 Map.centerObject(setExtent, 8);
 
-// A nice EVI palette
+// Una paleta EVI
 var palette = [
   'FFFFFF', 'CE7E45', 'DF923D', 'F1B555', 'FCD163', '99B718',
   '74A901', '66A000', '529400', '3E8601', '207401', '056201',
   '004C00', '023B01', '012E01', '011D01', '011301'];
 
-// greenest images
+// imágenes de verdor
 Map.addLayer(annualGreenest.clip(setExtent).select('GI_max_14'),
     {min:.75, max: 15, palette: palette}, 'GI - annual');
 
-// cdl and naip
+// cdl y naip
 Map.addLayer(cdl, {}, 'cdl', false);
 Map.addLayer(naip, {}, 'naip', false);
 {% endhighlight %}
@@ -123,12 +123,12 @@ La idea general es que se hace un widget, que puede ser simple (un botón) o com
 
 {% highlight javascript %}
 
-// Create User Interface portion --------------------------------------------------
-// Create a panel to hold our widgets.
+// Crear la parte de la interfaz de usuario --------------------------------------------------
+// Crear un panel para guardar nuestros widgets.
 var panel = ui.Panel();
 panel.style().set('width', '300px');
 
-// Create an intro panel with labels.
+// Crea un panel de introducción con etiquetas.
 var intro = ui.Panel([
   ui.Label({
     value: 'Two Chart Inspector',
@@ -138,14 +138,14 @@ var intro = ui.Panel([
 ]);
 panel.add(intro);
 
-// panels to hold lon/lat values
+// paneles para mantener los valores lon/lat
 var lon = ui.Label();
 var lat = ui.Label();
 panel.add(ui.Panel([lon, lat], ui.Panel.Layout.flow('horizontal')));
 
-// Register a callback on the default map to be invoked when the map is clicked
+// Registrar una llamada en el mapa por defecto para ser invocada cuando se haga clic en el mapa
 Map.onClick(function(coords) {
-  // Update the lon/lat panel with values from the click event.
+  // Actualiza el panel lon/lat con los valores del evento click.
   lon.setValue('lon: ' + coords.lon.toFixed(2)),
   lat.setValue('lat: ' + coords.lat.toFixed(2));
   var point = ee.Geometry.Point(coords.lon, coords.lat);
@@ -159,7 +159,7 @@ Ahora que hemos configurado nuestra interfaz de usuario y construido el 'call-ba
 
   {% highlight javascript %}
 
-  // Create an MODIS EVI chart.
+  // Crear un gráfico MODIS EVI.
   var eviChart = ui.Chart.image.series(collectionModEvi, point, ee.Reducer.mean(), 250);
   eviChart.setOptions({
     title: 'MODIS EVI',
@@ -168,7 +168,7 @@ Ahora que hemos configurado nuestra interfaz de usuario y construido el 'call-ba
   });
   panel.widgets().set(2, eviChart);
 
-  // Create an MODIS NDVI chart.
+  // Crear un gráfico MODIS NDVI.
   var ndviChart = ui.Chart.image.series(collectionModNDVI, point, ee.Reducer.mean(), 250);
   ndviChart.setOptions({
     title: 'MODIS NDVI',
@@ -180,7 +180,7 @@ Ahora que hemos configurado nuestra interfaz de usuario y construido el 'call-ba
 
 Map.style().set('cursor', 'crosshair');
 
-// Add the panel to the ui.root.
+// Añade el panel a la ui.root.
 ui.root.insert(0, panel);
 {% endhighlight %}
 
@@ -198,7 +198,7 @@ Activar y desactivar las capas de imágenes de Greenness, CDL y NAIP. Utiliza el
 ## Extraer las series de tiempo para grandes regiones o puntos de interés
 
 Si estás calculando los índices sobre la marcha, o tienes muchos puntos o áreas de interés, puedes tener la desagradable experiencia de que tu código se demora mucho. Una forma de evitarlo es exportar las series temporales como un .csv a Google Drive o Cloud Storage. Un ejemplo de cómo hacer esto se puede encontrar en
- [Episode 04: Reducers](https://geohackweek.github.io/GoogleEarthEngine/04-reducers/) de este tutorial.
+ [Módulo 04: Reductores espaciales y temporales](https://hasencios.github.io/GEE_BASICO_SENAMHI/04-reducers/) de este tutorial.
 
 Enlace a una versión estática del script completo utilizado en este módulo:
-[https://code.earthengine.google.com/a47b635ed6a11a99199674364afb9944](https://code.earthengine.google.com/a47b635ed6a11a99199674364afb9944)
+[https://code.earthengine.google.com/c5d83beb8d7c31404517eb127f6a1e06](https://code.earthengine.google.com/c5d83beb8d7c31404517eb127f6a1e06)

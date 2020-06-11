@@ -35,7 +35,7 @@ Aquí, aprovecharemos GEE para crear un composite que represente el pico de la t
 
 
 ### Image Collections
-Una pila o serie temporal de imágenes se llaman `Image Collections`. Cada fuente de datos disponible en GEE tiene su propia Image Collection y su propio ID (por ejemplo, el [Landsat 5 SR collection](https://code.earthengine.google.com/dataset/LANDSAT/LT5_SR), o la [GRIDMET meteorological data collection](https://code.earthengine.google.com/dataset/IDAHO_EPSCOR/GRIDMET)). También se puede crear Image Collection a partir de imágenes individuales o fusionar colecciones existentes. Puede encontrar más información sobre las Image Collection [here in the GEE Developer's Guide](https://developers.google.com/earth-engine/ic_creating).
+Una pila o serie temporal de imágenes se llaman `Image Collections`. Cada fuente de datos disponible en GEE tiene su propia Image Collection y su propio ID (por ejemplo, el [Landsat 5 SR collection](https://developers.google.com/earth-engine/datasets/catalog/LANDSAT_LT05_C01_T1_SR), o la [GRIDMET meteorological data collection](https://code.earthengine.google.com/dataset/IDAHO_EPSCOR/GRIDMET)). También se puede crear Image Collection a partir de imágenes individuales o fusionar colecciones existentes. Puede encontrar más información sobre las Image Collection [here in the GEE Developer's Guide](https://developers.google.com/earth-engine/ic_creating).
 
 Para generar imágenes que cubran grandes áreas espaciales y para llenar los huecos de imagen debidos a las nubes, etc., podemos cargar una `ImageCollection` completa, pero filtrar la colección para devolver sólo los períodos de tiempo o las ubicaciones espaciales que sean de interés. Hay filtros de acceso directo para los que se utilizan comúnmente (imageCollection.filterDate(), imageCollection.filterBounds()...), pero pueden utilizarse la mayoría de los filtros de la sección `ee.Filter()` de la pestaña Docs. Más información sobre [filters on the Developer's Guide](https://developers.google.com/earth-engine/ic_filtering).
 
@@ -53,11 +53,12 @@ Aquí, usaremos un activo vectorial existente, el [USGS Watershed Boundaries - H
 Para cargar un archivo vectorial de sus Assets en su espacio de trabajo, necesitamos usar el "filepath" y lanzarlo a un tipo de datos `ee.FeatureCollection`. Lee más aquí: ["Managing Assets" in the Developer's Guide](https://developers.google.com/earth-engine/asset_manager#importing-assets-to-your-script).
 
 {% highlight javascript %}
-// load a polygon watershed boundary (here, a public vector dataset already in GEE)
-// note: see tutorial linked above for guidance on importing vector datasets
+// cargar un polígono de límite de cuenca (una base de datos vectorial pública ya en GEE)
+// nota: véase el tutorial mencionado arriba para obtener orientación sobre la importación de bases de datos de vectores
 var WBD = ee.FeatureCollection("USGS/WBD/2017/HUC06");
 print(WBD.limit(5));
 Map.addLayer(WBD, {}, 'watersheds')
+
 {% endhighlight %}
 
 <br>
@@ -76,11 +77,11 @@ Podemos usar esto para encontrar el atributo "name" de nuestra cuenca de interé
 Una vez que hayas determinado la propiedad "name" de tu cuenca, usa la función featureCollection.filterMetadata() para extraer esta cuenca de la base de datos completa.
 
 {% highlight javascript %}
-// use the inspector tool to find the name of a watershed that interests you
+// use la herramienta del inspector para encontrar el nombre de una cuenca que le interese
 var watershed = WBD.filterMetadata('name', 'equals', 'Republican');
 print(watershed);
 
-// set the map view and zoom level, and add watershed to map
+// establecer la vista del mapa y el nivel de zoom, y añadir la cuenca al mapa
 Map.centerObject(watershed,7);
 Map.addLayer(watershed, {}, 'watershed');
 {% endhighlight %}
@@ -97,7 +98,7 @@ Aquí, estamos seleccionando todas las imágenes en el [Landsat 8 Surface Reflec
 *Consejo: Los ID de las Image collection se encuentran en la barra de herramientas de "Search" en la parte superior del editor de códigos o a través de la búsqueda en el [data archive](https://code.earthengine.google.com/datasets/).*
 
 {% highlight javascript %}
-// load all Landsat 8 SR image within polygon boundary for last year
+// cargue todas las imágenes Landsat 8 SR dentro de los límites del polígono para el año 2017
 var l8collection = ee.ImageCollection('LANDSAT/LC08/C01/T1_SR')
           .filterBounds(watershed)
           .filterDate('2017-01-01', '2017-12-31');
@@ -128,13 +129,13 @@ Definimos explícitamente una nueva función llamada "maskClouds" y la aplicamos
 
 {% highlight javascript %}
 
-// Mask pixels with clouds and cloud shadows -------------------------------------
+// Enmascarar píxeles con nubes y sombras de nubes -------------------------------------
 
-// Surface reflectance products come with a 'pixel_qa' band
-// that is based on the cfmask. Read more here:
+// Los productos de reflectancia superficial vienen con una banda 'pixel_qa'.
+// que se basa en la cfmask. Lea más aquí:
 // https://landsat.usgs.gov/landsat-surface-reflectance-quality-assessment
 
-// create function to mask clouds, cloud shadows, snow
+// crear la función de enmascarar nubes, sombras de nubes, nieve
 var maskClouds = function(image){
   // make a new single band image from the pixel qa band
   var pixel_qa = image.select('pixel_qa');
@@ -142,10 +143,10 @@ var maskClouds = function(image){
   return image.updateMask(pixel_qa.eq(322));   
 };
 
-// use "map" to apply the function to each image in the collection
+// usar "map" para aplicar la función a cada imagen de la colección
 var l8masked = l8collection.map(maskClouds);
 
-// visualize the first image in the collection, pre- and post- mask
+// visualizar la primera imagen de la colección, antes y después de la máscara
 var visParams = {bands: ['B4','B3','B2'], min: 150, max: 2000}
 
 Map.addLayer(ee.Image(l8masked.first()), visParams, 'clouds masked', false)
@@ -157,41 +158,41 @@ Map.addLayer(ee.Image(l8collection.first()), visParams, 'original', false)
 <br><br>
 
 ### Calcular el índice NDVI como una nueva banda
-Del mismo modo, si queremos calcular el NDVI en cada imagen y añadirlo como una nueva banda, tenemos que crear una función y mapearla sobre la colección. Aquí, usamos la función `normalizedDifference()`. La [Mathematical Operations page in the GEE Developer's Guide](https://developers.google.com/earth-engine/image_math) proporciona más información sobre cálculos raster simples y complejos.
+Del mismo modo, si queremos calcular el NDVI en cada imagen y añadirlo como una nueva banda, tenemos que crear una función y mapearla sobre la colección. Aquí, usamos la función `normalizedDifference()`. [Mathematical Operations page in the GEE Developer's Guide](https://developers.google.com/earth-engine/image_math) proporciona más información sobre cálculos raster simples y complejos.
 
 {% highlight javascript %}
-// create function to add NDVI using NIR (B5) and the red band (B4)
+// crear una función para añadir el NDVI usando la banda NIR (B5) y roja (B4)
 var getNDVI = function(img){
   return img.addBands(img.normalizedDifference(['B5','B4']).rename('NDVI'));
 };
 
-// extra example: an equivalent function using straight band math
+// ejemplo extra: una función equivalente usando álgebra de mapas
 var getNDVI2 = function(img){
   return img.addBands(img.select('B5').subtract(img.select('B4'))
             .divide(img.select('B5').add(img.select('B3'))));
 };
 
-// map over image collection
+// aplicar la función sobre la image collection
 var l8ndvi = l8masked.map(getNDVI);
 
-// print one image to see the band is now there
+// imprime una imagen para ver que la banda está ahora allí
 print(ee.Image(l8ndvi.first()));
 {% endhighlight %}
 
 ### Crear un Composite "Greenest Pixel"
-Ahora necesitamos reunir la Image Collection para crear una imagen continua a través de la cuenca. Hay varias opciones de mosaico/composición disponibles, desde simples composiciones de valor máximo (`imageCollection.max()`) y mosaicos sencillos con la imagen más reciente (`imageCollection.mosaic()`). El  [Compositing and Mosaicking page on the Developer's Guide](https://developers.google.com/earth-engine/ic_composite_mosaic) proporciona ejemplos de estos.
+Ahora necesitamos reunir la Image Collection para crear una imagen continua a través de la cuenca. Hay varias opciones de mosaico/composición disponibles, desde simples composiciones de valor máximo (`imageCollection.max()`) y mosaicos sencillos con la imagen más reciente (`imageCollection.mosaic()`).   [Compositing and Mosaicking page on the Developer's Guide](https://developers.google.com/earth-engine/ic_composite_mosaic) proporciona ejemplos de estos.
 
 Aquí, usaremos la función `imageCollection.qualityMosaic()`. Al priorizar la imagen a utilizar en base a una banda específica, este método asegura que los valores de todas las bandas se tomen de la misma imagen. A cada píxel se le asignan los valores de la imagen con el valor más alto de la banda deseada.
 
 Usaremos esto para hacer un "greenest pixel composite" para nuestra cuenca basado en la banda del NDVI que acabamos de calcular. La imagen compuesta final retendrá todas las bandas en la entrada (a menos que especifiquemos lo contrario). Cada píxel en la imagen compuesta podría potencialmente provenir de imágenes adquiridas en fechas diferentes, pero todas las bandas dentro de cada píxel son de la misma imagen. En general, esto proporciona la mejor instantánea disponible del paisaje en el pico de la temporada de crecimiento, independientemente del momento fenológico dentro del año.
 
 {% highlight javascript %}
-// for each pixel, select the "best" set of bands from available images
-// based on the maximum NDVI/greenness
+// para cada pixel, seleccione el "mejor" conjunto de bandas de las imágenes disponibles
+// basado en el máximo NDVI/greenness
 var composite = l8ndvi.qualityMosaic('NDVI').clip(watershed);
 print(composite);
 
-// Visualize NDVI
+// Visualizar el NDVI
 var ndviPalette = ['FFFFFF', 'CE7E45', 'DF923D', 'F1B555', 'FCD163', '99B718',
                '74A901', '66A000', '529400', '3E8601', '207401', '056201',
                '004C00', '023B01', '012E01', '011D01', '011301'];
@@ -208,7 +209,7 @@ El máximo anual de NDVI a través de esta cuenca hidrográfica destaca las zona
 También podemos usar esta imagen compuesta para visualizar una composición de color verdadero usando las bandas RGB:
 
 {% highlight javascript %}
-// Visualize true color composite
+// Visualizar el compuesto en color verdadero 
 Map.addLayer(composite, {bands: ['B4', 'B3', 'B2'], min: 0, max: 2000}, 'true color composite', false);
 {% endhighlight %}
 
@@ -217,31 +218,31 @@ Map.addLayer(composite, {bands: ['B4', 'B3', 'B2'], min: 0, max: 2000}, 'true co
 <br><br>
 
 ### Visualizar los resultados en un gráfico
-Para ilustrar brevemente la capacidad de GEE de generar gráficos de datos, cargamos el producto de datos MODIS NDVI para trazar la serie temporal anual de NDVI medio de nuestra cuenca. La generación de gráficos también está cubierto en el [modulo Reductores espaciales y temporales](https://hasencios.github.io/GEE_BASICO_SENAMHI/04-reducers/).
+Para ilustrar brevemente la capacidad de GEE de generar gráficos de datos, cargamos el producto de datos MODIS NDVI para trazar la serie temporal anual de NDVI medio de nuestra cuenca. La generación de gráficos también está cubierto en el [módulo 04 Reductores espaciales y temporales](https://hasencios.github.io/GEE_BASICO_SENAMHI/04-reducers/).
 
 {% highlight javascript %}
 
-// Chart annual time series of mean NDVI in watershed
-// from our Landsat 8 computed NDVI
+// Gráfico de series temporales anuales del NDVI medio en la cuenca
+// de nuestro compuesto calculado de Landsat 8
 var chart = ui.Chart.image.series({
     imageCollection: l8ndvi.select('NDVI'),
     region: watershed,
     reducer: ee.Reducer.mean(),
     scale: 250,
 })
-print(chart)  //** Can export the figure or data in the pop-out
+print(chart)  //** Puede exportar la figura o los datos en la ventana
 
 
-// You can also compare to the MODIS 16 day product
+// También se puede comparar con el producto MODIS de 16 días
 
-// add satellite time series: MODIS NDVI 250m 16 day product
+// añadir series temporales de satélites: producto MODIS NDVI 250m de 16 días
 var modis = ee.ImageCollection('MODIS/006/MOD13Q1')
           .filterBounds(watershed)
           .filterDate('2017-01-01', '2017-12-31')
           .select('NDVI');
 
-// Chart annual time series of mean NDVI in watershed
-// from the smoothed MODIS 16 day product
+// Gráfico de series temporales anuales del NDVI medio en la cuenca
+// del producto suavizado MODIS 16 días
 var chart = ui.Chart.image.series({
     imageCollection: modis,
     region: watershed,
@@ -262,10 +263,10 @@ La manera más eficiente de obtener datos de GEE es en una tabla. Esta forma tie
 
 {% highlight javascript %}
 
-// Use the buttons on the pop-out chart to export the .csv, or you can script
-// the export as follows using a reducer:
+// Use los botones de la tabla emergente para exportar el .csv, o puede hacer un guión
+// la exportación como sigue utilizando un reductor:
 
-// get the mean value for the region from each image
+// obtener el valor medio de la región de cada imagen
 var ts = modis.map(function(image){
   var date = image.get('system:time_start');
   var mean = image.reduceRegion({
@@ -273,20 +274,20 @@ var ts = modis.map(function(image){
     geometry: watershed,
     scale: 250
   });
-  // and return a feature with 'null' geometry with properties (dictionary)  
+  // y devuelve una característica con geometría 'null' con propiedades (dictionary)  
   return ee.Feature(null, {'mean': mean.get('NDVI'),
                             'date': date})
 });
 
-// Export a .csv table of date, mean NDVI for watershed
+// Exportar una tabla de fecha .csv, media NDVI para la cuenca
 Export.table.toDrive({
   collection: ts,
-  description: 'geohack_2017_MODIS_NDVI_stats',
-  folder: 'GEE_geohackweek',
+  description: 'SENAMHI_2017_MODIS_NDVI_stats',
+  folder: 'GEE_SENAMHI',
   fileFormat: 'CSV'
 });
 
-// AND HIT 'RUN' IN THE TASKS TAB IN THE UPPER RIGHT PANEL
+// Y PULSE "RUN" EN LA PESTAÑA DE TAREAS EN EL PANEL SUPERIOR DERECHO
 
 {% endhighlight %}
 
@@ -307,30 +308,30 @@ Al exportar a Google Drive, GEE encontrará la carpeta con el nombre especificad
 
 {% highlight javascript %}
 
-// Export is unnecessary, but here are code examples for out to save a
-// image composite if desired.  
+// La exportación es innecesaria, pero aquí están los ejemplos de código para salvar un
+// imagen compuesta si se desea.  
 
-// select only the ndvi band
+// seleccione sólo la banda de ndvi
 var ndvi = composite.select('NDVI');
 
-// Google Drive Export Example
-// (note: need to hit 'Run' in the task tab in upper right panel)
+// Ejemplo de exportación a Google Drive
+// (nota: hay que pulsar 'Run' en la pestaña de tareas en el panel superior derecho)
 Export.image.toDrive({
   image: ndvi,
-  description: 'geohack_2017_L8_NDVI_image',
+  description: 'SENAMHI_2017_L8_NDVI_image',
   scale: 30,
   region: watershed.geometry().bounds(), // .geometry().bounds() needed for multipolygon
   crs: 'EPSG:5070',
-  folder: 'GEE_geohackweek',
+  folder: 'GEE_SENAMHI',
   maxPixels: 2000000000
 });
 
-// Asset Folder Export Example
-// (note: need to hit 'Run' in the task tab in upper right panel)
+// Ejemplo de exportación de una carpeta de assets
+// (nota: hay que pulsar 'Run' en la pestaña de tareas en el panel superior derecho)
 Export.image.toAsset({
   image: ndvi,
-  description: 'geohack_2017_L8_NDVI_image',
-  assetId: 'users/yourname/geohack_2017_L8_NDVI_image',
+  description: 'SENAMHI_2017_L8_NDVI_image',
+  assetId: 'users/yourname/SENAMHI_2017_L8_NDVI_image',
   scale: 30,
   region: watershed.geometry().bounds(),
   pyramidingPolicy: {'.default':'mean'}, // use {'.default':'sample'} for discrete data
@@ -339,4 +340,4 @@ Export.image.toAsset({
 
 {% endhighlight %}
 
-Se puede acceder a una versión estática del script aquí: [https://code.earthengine.google.com/cbb204bbe485986b63485ee39c8382cc](https://code.earthengine.google.com/cbb204bbe485986b63485ee39c8382cc)
+Se puede acceder a una versión estática del script aquí: [https://code.earthengine.google.com/8418ba2b48095a765720d79982bcfab7](https://code.earthengine.google.com/8418ba2b48095a765720d79982bcfab7)

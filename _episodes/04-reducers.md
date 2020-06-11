@@ -53,7 +53,7 @@ Para la [GRIDMET description](https://code.earthengine.google.com/dataset/IDAHO_
 
 {% highlight javascript %}
 
-// load precip data (mm, daily total): 365 images per year
+// carga datos de precipitación (mm/día): 365 imágenes por año
 var precipCollection = ee.ImageCollection('IDAHO_EPSCOR/GRIDMET')
                     .select('pr')   // select  precip band only
                     .filterDate('2017-01-01', '2017-12-31');
@@ -74,20 +74,20 @@ Algunos reductores comúnmente usados tienen una sintaxis abreviada, como `image
 
 {% highlight javascript %}
 
-// load precip data (mm, daily total): 365 images per year
+// carga datos de precipitación (mm/día): 365 imágenes por año
 var precipCollection = ee.ImageCollection('IDAHO_EPSCOR/GRIDMET')
                     .select('pr')   // select  precip band only
                     .filterDate('2017-01-01', '2017-12-31');
 print(precipCollection);  
 
-// reduce the image collection to one image by summing the 365 daily rasters
+// reducir la colección de imágenes a una sola imagen sumando los 365 patrones diarios
 var annualPrecip = precipCollection.reduce(ee.Reducer.sum());
 print(annualPrecip);
 
-// equivalent shortcut syntax
+// sintaxis equivalente
 var annualPrecip2 = precipCollection.sum();
 
-// visualize annual precipitation
+// visualizar la precipitación anual
 var precipPal = ['white','blue'] // store palette as variable               
 Map.addLayer(annualPrecip, {min: 60, max: 3000, palette: precipPal}, 'precip');
 
@@ -104,7 +104,7 @@ Ahora tomemos la imagen de la precipitación anual que acabamos de crear y obten
 
   >*Una nota importante sobre el parámetro de escala**
 
-  > GEE utiliza una evaluación de su código que sólo ejecuta las partes de su script necesarias para los resultados esperados - en el caso del entorno de la API de JavaScript. *GEE ejecutará sus cálculos con la resolución de su vista actual del mapa en el Code Editor, a menos que usted le diga lo contrario*. Siempre que sea posible, establezca explícitamente los argumentos de escala para forzar a GEE a trabajar en una escala que tenga sentido para sus imágenes/análisis. Lea el wiki [modifiable areal unit problem](https://en.wikipedia.org/wiki/Modifiable_areal_unit_problem) o la [Developers Docs](https://developers.google.com/earth-engine/scale) para observar porque esto es importante.
+  > GEE utiliza una evaluación de su código que sólo ejecuta las partes de su script necesarias para los resultados esperados - en el caso del entorno de la API de JavaScript. *GEE ejecutará sus cálculos con la resolución de su vista actual del mapa en el Code Editor, a menos que usted le diga lo contrario*. Siempre que sea posible, establezca explícitamente los argumentos de escala para forzar a GEE a trabajar en una escala que tenga sentido para sus imágenes/análisis. Lea el wiki [modifiable areal unit problem](https://en.wikipedia.org/wiki/Modifiable_areal_unit_problem) o el [Developers Docs](https://developers.google.com/earth-engine/scale) para observar porque esto es importante.
 
 #### Cargar los límites de países (Data Vectorial)
 
@@ -114,14 +114,14 @@ Hay tres maneras de obtener datos de vectores en GEE, como se examina en el [mó
 Este base de datos incluye entidades fuera de los Estados Unidos como Alaska, Puerto Rico y Samoa Americana. Las eliminaremos basándonos en sus ID en un atributo de propiedad que contiene códigos FIPS "state" para demostrar el filtrado de vectores.
 
 {% highlight javascript %}
-// load regions: counties from a public fusion table, removing non-conus states
-// by using a custom filter
+// cargar regiones: condados de una tabla de fusión pública, eliminando los estados que no nos interesan
+// usando un filtro personalizado
 var nonCONUS = [2,15,60,66,69,72,78] // state FIPS codes that we don't want
 var counties = ee.FeatureCollection('ft:1ZMnPbFshUI3qbk9XE0H7t1N5CjsEGyl8lZfWfVn4')
         .filter(ee.Filter.inList('STATEFP',nonCONUS).not());
 print(counties, 'counties');
 
-// visualize
+// visualizar
 Map.addLayer(counties,{},'counties');  
 {% endhighlight %}
 
@@ -134,7 +134,7 @@ Al imprimir el featureCollection, vemos que hay 3108 polígonos de condado y 11 
 #### Aplicar el spatial reducer
 
 {% highlight javascript %}
-// get mean precipitation values by county polygon
+// obtener los valores medios de precipitación por polígono de condado
 var countyPrecip = annualPrecip.reduceRegions({
   collection: counties,
   reducer: ee.Reducer.mean(),
@@ -155,24 +155,24 @@ El formato incluye:
 
 {% highlight javascript %}
 
-// drop .geo column (not needed if goal is tabular data)
+// Dejar caer la columna .geo (no es necesario si el objetivo son los datos tabulares)
 var polyOut = countyPrecip.select(['.*'],null,false);
 
-// add a new column for year to each feature in the feature collection
+// añadir una nueva columna de año a cada característica de la feature collection
 polyOut = polyOut.map(function(feature){
 return feature.set('Year',2017);
 });
 
-// Table to Drive Export Example
+// Ejemplo para exportar tablas
 
 Export.table.toDrive({
   collection: polyOut,
   description: 'GRIDMET_annual_precip_by_county',
-  folder: 'GEE_geohackweek',
+  folder: 'GEE_SENAMHI',
   fileFormat: 'CSV'
 });   
 
-// AND HIT 'RUN' IN THE TASKS TAB IN THE UPPER RIGHT PANEL
+// Y PULSE 'RUN' EN LA PESTAÑA DE TAREAS EN EL PANEL SUPERIOR DERECHO
 {% endhighlight %}
 
 Nota sobre el nombre de la carpeta: si esta carpeta existe dentro de su unidad de Google, GEE la encontrará y exportará aquí independientemente de la ruta completa de su archivo. Si la carpeta no existe, GEE la creará al momento de la exportación.
@@ -188,4 +188,4 @@ Se ha añadido una nueva y útil función en la que se puede mantener el ratón 
 <br><br>
 
 Enlace a una versión estática del script completo usado en este módulo:
-[https://code.earthengine.google.com/269a0d4a6b9854e6f81ac87187a72559](https://code.earthengine.google.com/269a0d4a6b9854e6f81ac87187a72559)
+[https://code.earthengine.google.com/89436bb293b0dc412ed813499a820fe1](https://code.earthengine.google.com/89436bb293b0dc412ed813499a820fe1)
