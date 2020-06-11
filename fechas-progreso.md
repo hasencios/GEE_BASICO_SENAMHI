@@ -1,3 +1,4 @@
+<!--
 # Distribución de roles y progreso
 
 La meta es traducir toda la lección hasta el final del mes de Nov 2018 y luego revisar. Para actualizaciones de todas las tareas puedes ver [la tabla de proyectos](https://github.com/Carpentries-ES/python-ecology-lesson-es/projects/1). Esta tabla de progreso está siendo actualizada manualmente por [@raynamharris](https://github.com/raynamharris) and [@orchid00](https://github.com/orchid00), si no ves tu nombre contáctanos.
@@ -20,3 +21,4 @@ Instructor guide | _extras/guide.md | @NPalopoli | nov 12  | nov 23 | @Helysalga
 Contributors | _extras/CONTRIBUTORS.md | @orchid00 @rzayas | nov 21 | nov 22 | @orchid00 | nov 21 | nov 22
 Overview of Jupyter Notebooks | _extras/jupyter_notebooks.md | @chekos | nov 12 | nov 15 | @miguelgondu @orchid00 | nov 19, nov 21  | nov , nov 22
 Setup | setup.md | @raynamharris | nov 12 | nov 12 | @orchid00 | nov 13 | nov 17
+-->

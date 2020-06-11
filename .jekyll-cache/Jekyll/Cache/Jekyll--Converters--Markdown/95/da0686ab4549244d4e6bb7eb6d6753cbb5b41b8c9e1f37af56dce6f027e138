@@ -1,7 +1,4 @@
----
-layout: reference
----
-<!--
+I"»<!--
 ## Glossary
 
 {:auto_ids}
@@ -113,3 +110,4 @@ tupla
     secuencia es ordenada e indexada por __integers__, empezando desde cero. Los elementos
     de una __list__ pueden ser accedidos por su Ã­ndice pero no pueden ser modificados.
 -->
+:ET
