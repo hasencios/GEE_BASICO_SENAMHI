@@ -25,10 +25,6 @@ GEE tiene un entorno de desarrollo integrado (IDE) llamado Editor de código. El
 
 
 
-Enlace al código completo que usamos en esta lección:
-<a href="https://code.earthengine.google.com/926160c96272a205b91b5ed7b68981ab" target="_blank">https://code.earthengine.google.com/926160c96272a205b91b5ed7b68981ab</a>
-
-
 # Ejercicios: Explorando el Code Editor
 
 ## 1. Para empezar
@@ -81,7 +77,6 @@ Guarde los scripts haciendo clic en el botón **Save**. Para incluir un mensaje 
 
 *Note: Si no hiciste ningún cambio en el script, el botón* **Save** *se oscurecerá.*
 
-If you look at the top left panel, you can see the script is now saved in your **Scripts** manager. You have three categories of scripts: private, shared and examples. Each script is backed up on Git. If you move your mouse over the name of the script, three icons will pop up that allow you to revert to older versions, rename or delete the script. You can also make folders and click and drags scripts into those directories.
 Si se observa en el panel superior izquierdo, se podrá ver que el script está ahora guardado en tu gestor de **Scripts**. Tienes tres categorías de scripts: privado, compartido y ejemplos. Cada script está respaldado en Git. Si pasas el ratón por encima del nombre del script, aparecerán tres iconos que te permitirán volver a versiones anteriores, renombrar o eliminar el script. También puedes crear carpetas y hacer clic y arrastrar los scripts a esos directorios.
 
 
@@ -99,8 +94,9 @@ Para colaborar de forma interactiva en el desarrollo de los scripts con otros us
 
 Usted debería de haber accedido al repositorio de scripts compartidos en el Code Editor con los siguientes pasos:
 
-- Únase a nuestro grupo de Google para acceder al repositorio de scripts compartidos haciendo clic en este enlace: [https://goo.gl/maZwVa](https://goo.gl/maZwVa). 
-- Acepte el repositorio compartido haciendo clic en este enlace: <a href="https://code.earthengine.google.com/?accept_repo=users/victorialy/geohackweek2019" target="_blank">https://code.earthengine.google.com/?accept_repo=users/victorialy/geohackweek2019</a>
+<!-- 
+  - Únase al grupo de Google Earth Engine SENAMHI haciendo clic en este enlace. <a href="https://goo.gl/JsnWZH" target="_blank">https://goo.gl/JsnWZH</a> . No se preocupe por los permisos de publicación. -->
+- Acepte el repositorio compartido haciendo clic en este enlace: <a href="https://code.earthengine.google.com/?accept_repo=users/hasencios/GEE_BASICO_SENAMHI" target="_blank">https://code.earthengine.google.com/?accept_repo=users/hasencios/GEE_BASICO_SENAMHI</a>
 - En el Code Editor, vaya a la pestaña **Scripts** en el panel superior izquierdo, desplázate hacia abajo y expande la sección "Shared". Un directorio llamado *GEE_BASIC_SENAMHI* debería aparecer con versiones de sólo lectura de los scripts completos de cada episodio.
 
 Cualquier actualización se reflejará en estas versiones del script. Como todos los scripts GEE, estas son versiones controladas. Los permisos de lectura o escritura para individuos o grupos se pueden establecer en el Code Editor usando el pequeño icono gris de compartir que aparece a la derecha si pasas el ratón por encima del nombre del directorio en la pestaña *Scripts*. Deberías tener acceso de sólo lectura a este repositorio.
@@ -158,7 +154,7 @@ Ahora ha creado un nuevo objeto punto y lo ha cargado como una `FeatureCollectio
 <br><br>
 
 
-¿Divertido? Puedes explorar más a fondo cómo configurar las geometrías en la sección <a href="https://geohackweek.github.io/GoogleEarthEngine/05-classify-imagery/" target="_blank">Classifying Imagery</a> de este tutorial.  
+¿Divertido? Puedes explorar más a fondo cómo configurar las geometrías en la sección <a href="https://hasencios.github.io/GEE_BASICO_SENAMHI/05-classify-imagery/" target="_blank">Clasificación Supervisada de Imágenes de Satélite</a> de este tutorial.  
 
 
 #### Filtrar la Image Collection
@@ -278,20 +274,21 @@ Cuando publiques en el foro, asegúrate de marcar la casilla "Anyone Can Read" e
 <img src="../fig/02_sharingassets.png" border = "10">
 <br><br>
 
-Para un ejemplo de script que utiliza datos importados, véase <a href="https://geohackweek.github.io/GoogleEarthEngine/06-time-series/" target="_blank">Episode 06 Time Series</a>. Para obtener instrucciones detalladas de Google sobre cómo subir, compartir y administrar activos, consulte el <a href="https://developers.google.com/earth-engine/asset_manager" target="_blank">Assets Manager page</a> en el sitio web de GEE.
+Para un ejemplo de script que utiliza datos importados, véase <a href="https://hasencios.github.io/GEE_BASICO_SENAMHI/06-time-series/" target="_blank">Leccion 06 Series de Tiempo</a>. Para obtener instrucciones detalladas de Google sobre cómo subir, compartir y administrar activos, consulte el <a href="https://developers.google.com/earth-engine/asset_manager" target="_blank">Assets Manager page</a> en el sitio web de GEE.
 
 
 
 #### Exportando y la pestaña Tasks
 En lugar de imprimir en la consola, para tareas más grandes puede que quieras exportar las salidas a tu Google Drive o Cloud Storage usando las funciones `Export` en tu código. Cuando se ejecutan, estas generan una nueva tarea en la pestaña `Task` en el panel superior derecho. Necesitarás entonces "Run" esta tarea para iniciar realmente la transferencia de información. Una vez que inicie una tarea, se le pedirá que introduzca los detalles sobre la resolución, tamaño, formato y destino si no lo incluyó en su código. Puedes pasar el ratón por encima de la tarea y hacer clic en el icono "?" para ver el estado y también para obtener el número de la tarea. Si tu tarea no se está ejecutando, puedes compartir este número como referencia en el foro de desarrolladores.
 
-Exportaremos información vectorial en <a href="https://geohackweek.github.io/GoogleEarthEngine/03-load-imagery/" target="_blank">Episode 3: Load Imagery</a> de este tutorial.
+Exportaremos información vectorial en <a href="https://hasencios.github.io/GEE_BASICO_SENAMHI/03-load-imagery/" target="_blank">Leccion 03: Cargar Imágenes</a> de este tutorial.
 
 Para instrucciones detalladas sobre Export, véase la <a href="https://developers.google.com/earth-engine/exporting" target="_blank">Exporting Data page</a> en el sitio web de GEE. También presentaremos algunos ejemplos para exportar en módulos posteriores de este tutorial.
 
 <br>
 <br>
 
-
+Enlace al código completo que usamos en esta lección:
+<a href="https://code.earthengine.google.com/926160c96272a205b91b5ed7b68981ab" target="_blank">https://code.earthengine.google.com/926160c96272a205b91b5ed7b68981ab</a>
 
 ### Diviértete con el Code Editor!!!

@@ -19,7 +19,7 @@ keypoints:
 - Las imágenes y las tablas pueden ser exportadas para su uso posterior con GEE o otras herramientas como **QGIS**
 ---
 
-# Visión general: Catálogo de imágenes satelitales a escala regional
+# Descripción general: Catálogo de imágenes satelitales a escala regional
 La mayoría de los productos satelitales se dividen en bloques para su distribución. Los datos globales de Landsat se dividen en escenas de ~180 km<sup>2</sup>, con identificadores únicos de path/row. 455 escenas cubren los Estados Unidos. Cada escena es actualmente fotografiada cada 16 días por Landsat 8, y cada 16 días por Landsat 7 (aproximadamente 45 veces al año). Los bordes de cada trayectoria se superponen, proporcionando una mayor frecuencia temporal en estas áreas. Sin embargo, los cielos nublados durante el paso de los satélites y otras anomalías de adquisición hacen que ciertas escenas o píxeles sean inutilizables.
 
 <br>
@@ -29,9 +29,6 @@ La mayoría de los productos satelitales se dividen en bloques para su distribuc
 <br><br>
 
 Para la mayoría de las aplicaciones a escala regional, se tendrá que combinar múltiples imágenes de satélite para cubrir completamente su extensión espacial y completar los datos faltantes causados por las nubes, etc. Google Earth Engine (GEE) es particularmente adecuado para estas tareas.
-
-Se puede acceder a una versión estática del script aquí: [https://code.earthengine.google.com/cbb204bbe485986b63485ee39c8382cc](https://code.earthengine.google.com/cbb204bbe485986b63485ee39c8382cc)*
-
 
 # Ejericio: Flujo básico de trabajo GEE
 Aquí, aprovecharemos GEE para crear un composite que represente el pico de la temporada de crecimiento de cultivos para una cuenca de interés.
@@ -45,11 +42,11 @@ Para generar imágenes que cubran grandes áreas espaciales y para llenar los hu
 ### Cargar archivos vectoriales
 Trabajaremos en la creación de un composite para una cuenca de los EE.UU. La forma más fácil de filtrar una ubicación irregular sin tener que identificar las rutas y filas de los mosaicos de la imagen satelital es usar un polígono vectorial.
 
-Hay cuatro maneras de obtener datos de vectores en GEE:
+Hay tres maneras de obtener datos de vectores en GEE:
 
-  * [Cargar un shapefile](https://developers.google.com/earth-engine/importing) directamente a su carpeta personal *Asset* en el panel superior izquierdo. Puedes crear subcarpetas y establecer permisos para compartir según sea necesario. Utilizamos un archivo vectorial Asset en el [Accessing Satellite Imagery module](https://geohackweek.github.io/GoogleEarthEngine/03-load-imagery/).
+  * [Cargar un shapefile](https://developers.google.com/earth-engine/importing) directamente a su carpeta personal *Asset* en el panel superior izquierdo. Puedes crear subcarpetas y establecer permisos para compartir según sea necesario. Utilizamos un archivo vectorial Asset en el [modulo Accediendo al catálogo de imágenes de satélite](https://hasencios.github.io/GEE_BASICO_SENAMHI/03-load-imagery/).
   * Utilizar un conjunto de datos de vectores existente en GEE. [Navegue por el catálogo de datos vectoriales aquí](https://developers.google.com/earth-engine/vector_datasets).
-  * Dibuje manualmente puntos, líneas y polígonos usando las herramientas de geometría del Code Editor. Haremos esto en el [Modulo de Clasificación Supervisada de Imágenes de Satélite](https://geohackweek.github.io/GoogleEarthEngine/05-classify-imagery/).
+  * Dibuje manualmente puntos, líneas y polígonos usando las herramientas de geometría del Code Editor. Haremos esto en el [Modulo de Clasificación Supervisada de Imágenes de Satélite](https://hasencios.github.io/GEE_BASICO_SENAMHI/05-classify-imagery/).
 
 Aquí, usaremos un activo vectorial existente, el [USGS Watershed Boundaries - HUC12](https://code.earthengine.google.com/dataset/USGS/WBD/2017/HUC12)
 
@@ -219,8 +216,8 @@ Map.addLayer(composite, {bands: ['B4', 'B3', 'B2'], min: 0, max: 2000}, 'true co
 <img src="../fig/03_tcc.png" border = "10">
 <br><br>
 
-### Visuallizar los resultados en un Chart
-Para ilustrar brevemente la capacidad de GEE de generar gráficos de datos, cargamos el producto de datos MODIS NDVI para trazar la serie temporal anual de NDVI medio de nuestra cuenca. La generación de gráficos también está cubierto en el [Spatial and Temporal Reducers Module](https://geohackweek.github.io/GoogleEarthEngine/04-reducers/).
+### Visualizar los resultados en un gráfico
+Para ilustrar brevemente la capacidad de GEE de generar gráficos de datos, cargamos el producto de datos MODIS NDVI para trazar la serie temporal anual de NDVI medio de nuestra cuenca. La generación de gráficos también está cubierto en el [modulo Reductores espaciales y temporales](https://hasencios.github.io/GEE_BASICO_SENAMHI/04-reducers/).
 
 {% highlight javascript %}
 
@@ -341,3 +338,5 @@ Export.image.toAsset({
 });
 
 {% endhighlight %}
+
+Se puede acceder a una versión estática del script aquí: [https://code.earthengine.google.com/cbb204bbe485986b63485ee39c8382cc](https://code.earthengine.google.com/cbb204bbe485986b63485ee39c8382cc)

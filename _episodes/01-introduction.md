@@ -58,7 +58,7 @@ En 2016 el European Commission's Joint Research Centre publicó una base de dato
 
   - <a href="https://www.nature.com/articles/nature20584" target="_blank">High-resolution mapping of global surface water and its long-term changes</a> - El artículo original publicado en *Nature*.
 
-  - Tutorial en línea para jugar con los datos.  <a href="https://developers.google.com/earth-engine/tutorial_global_surface_water_01" target="_blank">Global Surface Water Tutorial for GEE</a>
+  - Tutorial en línea para revisar los datos:  <a href="https://developers.google.com/earth-engine/tutorial_global_surface_water_01" target="_blank">Global Surface Water Tutorial for GEE</a>
 
   - El <a href="https://global-surface-water.appspot.com/" target="_blank">Global Surface Water Data Explorer</a> que se publicó junto con la base de datos para permitir a los usuarios visualizar los cambios en los cuerpos de aguas superficiales.
 
@@ -143,8 +143,8 @@ Utilizando una de las API, los usuarios pueden filtrar enormes colecciones de im
 ### ¿Cuáles son los usos comunes de GEE?
 
 - operar en petabytes de imágenes usando los servidores en la nube de Google
-- incrustar los resultados en aplicaciones
-- almacenar, compartir y controlar la versión de tu código
+- incluir los resultados en aplicaciones
+- almacenar, compartir y controlar la versión de tu script
 - importar y exportar sus propios datos raster y vectoriales (assets)
 - compartir sus propios datos raster y vectoriales
 - exportar su análisis

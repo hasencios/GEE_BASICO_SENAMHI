@@ -4,11 +4,11 @@ teaching: 5
 exercises: 10
 questions:
 - "¿Cómo generar una serie de tiempo para una coordenada específica?"
-- "¿Cómo plotear la serie de tiempo en Google Earth Engine?"
+- "¿Cómo graficar la serie de tiempo en Google Earth Engine?"
 - "¿Cómo realizar gráficos interactivos?"
 objectives:
 - "Cargar una base de datos de cultivos de alta resolución."
-- "Seleccionar de forma dinámica lat/lon para crear gráficos de series de tiempo."
+- "Seleccionar de forma dinámica la lat/lon para crear gráficos de series de tiempo."
 - "Generar una serie de tiempo de NDVI y EVI para los puntos seleccionados."
 keypoints:
 - "Se puede extraer series de tiempo y realizar gráficos desde Image Collections para puntos y regiones."
@@ -19,14 +19,11 @@ keypoints:
 
 ## Descripción general
 
-This code allows users to dynamically generate time series plots for from points that are dynamically chosen on a map on the fly. The time series show the 16 day composites of Normalized Difference Vegetation Index and Enhanced Vegetation Index at 250 m resolution. These indices are derived from MODIS.
-
-Link to a static version of the full script used in this module:
-[https://code.earthengine.google.com/a47b635ed6a11a99199674364afb9944](https://code.earthengine.google.com/a47b635ed6a11a99199674364afb9944)
+Este código permite a los usuarios generar gráficos de series de tiempo a partir de puntos que son elegidos dinámicamente en un mapa. Las series temporales muestran los compuestos de 16 días del Normalized Difference Vegetation Index (NDVI) y Enhanced Vegetation Index (EVI) con una resolución de 250 m. Estos índices se derivan de MODIS.
 
 ## Definir especificaciones
 
-This script is structured to make it easy for the user to select different images, dates and regions. For this exercise, we are going to leave the parameters as they are to set the extent as a study area in the Midwest, the Republican River Basin
+Este script está estructurado para facilitar al usuario la selección de diferentes imágenes, fechas y regiones. Para este ejercicio, vamos a dejar los parámetros tal como están para establecer la extensión como área de estudio en el Medio Oeste, la Cuenca Republican River Basin
 
 {% highlight javascript %}
 // load WBD dataset & select the Republican watershed
@@ -39,13 +36,13 @@ var setExtent = WBD.filterMetadata('name', 'equals', 'Republican');
 
 ## Cargar una base de datos de imágenes de cultivos de alta resolución
 
-Here we are loading three different types of high resolution crop imagery. The first two datasets are already in Earth Engine. The third dataset is an Greenness index calculated from Landsat imagery. Instead of calculating the GI on the fly in this code, Jill pre-computed the index, exported the raster and is calling the pre-made raster. Practices like this can help speed up your code.
+Aquí estamos cargando tres tipos diferentes de imágenes de cultivos de alta resolución. Las dos primeras bases de datos ya están en GEE. La tercera base de datos es un Greenness Index (GI) calculado a partir de las imágenes Landsat. En lugar de calcular el GI sobre la marcha de este script, Jill previamente calculó el índice, exportó el raster y está llamandolo en la consola. Prácticas como esta pueden ayudar a acelerar su script.
 
-1. Cropland Data Layer (CDL) from the USDA National Agriculture Statistics Service at 30 meters resolution. This is generated annually from 2008-present. Each pixel is assigned a value that corresponds to a specific crop.
+1. La Cropland Data Layer (CDL) del National Agriculture Statistics Service (USDA) con una resolución de 30 metros. Esto se genera anualmente desde 2008 hasta el presente. A cada píxel se le asigna un valor que corresponde a un cultivo específico.
 
-2. The National Agricultural Imagery Program (NAIP) aerial imagery from the USDA. This imagery has a 1 meter (!) ground sampling distance. This is a three band raster used to depict natural color imagery (RGB). States are imaged every 2-3 years on a rotating cycle.
+2. Las imágenes aéreas del National Agricultural Imagery Program (NAIP) del USDA. Estas imágenes tienen una distancia de muestreo de 1 metro (!). Este es un mapa de tres bandas usado para representar imágenes en colores naturales (RGB). Los estados son fotografiados cada 2-3 años en un ciclo rotativo.
 
-3.  A derived Greenness Index derived from Landsat imagery (30 m) specific to the study area. This index is computed by taking a composite of the greenest pixel, defined as the pixel with the highest NDVI, for a given time period.
+3. Un Greenness Index derivado de las imágenes del Landsat (30 m) específicas de la zona de estudio. Este índice se calcula tomando un compuesto del píxel más verde, definido como el píxel con el NDVI más alto, durante un período de tiempo determinado.
 
 {% highlight javascript %}
 // CDL: USDA Cropland Data Layers
@@ -69,7 +66,7 @@ var annualGreenest = ee.Image('users/jdeines/HPA/2010_14_Ind_001')
 
 ## Cargar los productos derivados de MODIS: NDVI y EVI
 
-NDVI and EVI are two different vegetation indices that can be calculated from red and near-infrared bands. Here we are using a derived MODIS 16 day composite product that has pre-computed bands for NDVI and EVI. You could also compute them yourself using the  `normalizedDifference` function. Again we will filter the collection to the dates, bands and region of interest.
+El NDVI y el EVI son dos índices de vegetación diferentes que pueden ser calculados a partir de bandas rojas e infrarrojas cercanas. Aquí estamos usando un producto compuesto derivado de MODIS de 16 días que tiene bandas precalculadas para el NDVI y el EVI. También podrías calcularlas tú mismo usando la función `normalizedDifference`. De nuevo filtraremos la colección a las fechas, bandas y región de interés.
 
 {% highlight javascript %}
 
@@ -89,10 +86,10 @@ var collectionModNDVI = ee.ImageCollection('MODIS/006/MOD13Q1')
 
 ## Visualizar la base de datos de imágenes de alta resolución
 
-Here we map the CDL, NAIP and Annual Greenest Pixel composites.
- - *Time Saving Tip:* If you are using a public dataset, often you can find nice palettes by sifting through forum posts. Some like the CDL come with a palette embedded.
- - *Tip:* Hexadecimal browser color picker plug-ins are helpful for figuring out which colors correspond to which codes.
- - *Tip:*: Use the `false` argument if you want to load a layer to the map but NOT have it turned on each time you run the code.
+Aquí realizaremos un mapa de los compuestos de CDL, NAIP y Annual Greenest Pixel.
+ - *Consejo para ahorrar tiempo:* Si estás usando un conjunto de datos públicos, a menudo puedes encontrar  paletas tamizando los mensajes del foro. Algunas como la CDL vienen con una paleta incrustada.
+ - *Consejo:* Los plugins de selección de colores de los navegadores hexadecimales son útiles para averiguar qué colores corresponden a qué códigos.
+ - *Consejo:*: Usa el argumento `false` si quieres cargar una capa en el mapa pero NO la tienes activada cada vez que ejecutas el código.
 
  {% highlight javascript %}
 
@@ -120,8 +117,9 @@ Map.addLayer(naip, {}, 'naip', false);
 
 ## Crear una User Interface
 
-You can alter the client-side user interface (UI) through the ui package by adding widgets to the Code Editor interface. You can read about the ui package in the [UI Overview section](https://developers.google.com/earth-engine/ui) of the Developers Guide
-The general idea is that you make a widget, which could be simple (a button) or complex (a chart). Then you define the behavior of the widget and then add it to the display. Here we create a panel, define the contents of the panel using labels, and create a callback function so the user can click a point and it will record the lat/long as an object called `points.` You can read more about how to define the panel and layouts in the [Panels section](https://developers.google.com/earth-engine/ui_panels) of the Developers Guide.
+Puedes alterar la client-side user interface (UI) a través del paquete ui añadiendo widgets a la interfaz del Code Editor. Puedes leer sobre el paquete ui en el [UI Overview section](https://developers.google.com/earth-engine/ui) de la Guía del Desarrollador.
+La idea general es que se hace un widget, que puede ser simple (un botón) o complejo (un gráfico). Luego defines el comportamiento del widget y luego lo agregas a la pantalla. Aquí creamos un panel, definimos el contenido del panel usando etiquetas y creamos una función de respuesta al requerimiento para que el usuario pueda hacer clic en un punto y éste registre la lat/lon como un objeto llamado `points`. Puedes leer más acerca de cómo definir el panel y los diseños en el [Panels section](https://developers.google.com/earth-engine/ui_panels) de la Guía del Desarrollador.
+
 
 {% highlight javascript %}
 
@@ -156,7 +154,7 @@ Map.onClick(function(coords) {
 
 ## Agregar los gráficos de series de tiempo a los paneles
 
-Now that we have set up our user interface and built the call-back, we can define a time series chart. The chart uses the lat/long selected by the user and builds a time series for NDVI or EVI at that point. It takes the average NDVI or EVI at that point, extracts it, and then adds it to the time series. This series is then plotting as a chart.
+Ahora que hemos configurado nuestra interfaz de usuario y construido el 'call-back', podemos definir un gráfico de series de tiempo. El gráfico utiliza la lat/lon seleccionada por el usuario y construye una serie temporal para el NDVI o el EVI en ese punto. Toma el promedio del NDVI o EVI en ese punto, lo extrae y luego lo agrega a la serie de tiempo. Entonces esta serie se traza como un gráfico.
 
 
   {% highlight javascript %}
@@ -186,7 +184,7 @@ Map.style().set('cursor', 'crosshair');
 ui.root.insert(0, panel);
 {% endhighlight %}
 
-You should see something like this appear in the bottom left:
+Deberías ver algo como esto en la parte inferior izquierda:
 
 <br>
 <img src="../fig/06_twoChart.png" border = "10" width="75%" height="75%">
@@ -194,10 +192,13 @@ You should see something like this appear in the bottom left:
 
 ## Explorar los gráficos NDVI y EVI para diferentes tipos de cultivos.
 
-Toggle the Greenness, CDL and NAIP imagery layers on and off. Use the inspector to click on pixels with different levels of Greenness or different crop types and explore the differences in the NDVI time series between different pixels.
-
+Activar y desactivar las capas de imágenes de Greenness, CDL y NAIP. Utiliza el inspector para hacer clic en los píxeles con diferentes niveles de verdor o diferentes tipos de cultivo y explora las diferencias en las series temporales del NDVI entre los diferentes píxeles.
 
 
 ## Extraer las series de tiempo para grandes regiones o puntos de interés
 
-If you are computing the indices on the fly, or you have many points or areas of interest, you may have the unpleasant experience of your code timing out. One way to avoid that is to just export the time series as a .csv to Google Drive or Cloud Storage. An example of how to do this can be found in [Episode 04: Reducers](https://geohackweek.github.io/GoogleEarthEngine/04-reducers/) of this tutorial.
+Si estás calculando los índices sobre la marcha, o tienes muchos puntos o áreas de interés, puedes tener la desagradable experiencia de que tu código se demora mucho. Una forma de evitarlo es exportar las series temporales como un .csv a Google Drive o Cloud Storage. Un ejemplo de cómo hacer esto se puede encontrar en
+ [Episode 04: Reducers](https://geohackweek.github.io/GoogleEarthEngine/04-reducers/) de este tutorial.
+
+Enlace a una versión estática del script completo utilizado en este módulo:
+[https://code.earthengine.google.com/a47b635ed6a11a99199674364afb9944](https://code.earthengine.google.com/a47b635ed6a11a99199674364afb9944)

@@ -18,39 +18,38 @@ keypoints:
 - Los resultados pueden ser exportados a **Google Drive** o **Google Cloud**
 ---
 
-Link to a static version of the full script used in this module:
-[https://code.earthengine.google.com/269a0d4a6b9854e6f81ac87187a72559](https://code.earthengine.google.com/269a0d4a6b9854e6f81ac87187a72559)
+# Reductores: Descripción general
 
-# Reducers: Visión general
 
-In Google Earth Engine (GEE), [reducers](https://developers.google.com/earth-engine/reducers_intro) are used to aggregate data over time, space, and other data structures. They belong to the `ee.Reducer` class and include summary statistics, histograms, and linear regression, among others. Here's a visual from Google demonstrating a reducer applied to an `ImageCollection`:
+En Google Earth Engine (GEE), [reducers](https://developers.google.com/earth-engine/reducers_intro) se utilizan para agregar datos en el tiempo, el espacio y otras estructuras de datos. Pertenecen a la clase `ee.Reducer` e incluyen estadísticas de resumen, histogramas y regresión lineal, entre otros. Aquí se presenta una demostración visual que muestra un reductor aplicado a una `ImageCollection`:
 
 <br>
 <img src="../fig/04_reducers.png" border = "10">
 <br><br>
 
-Reductions can also occur in space, over bands within an image, or over the attributes of a `FeatureCollection`. See the [Reducer Overview](https://developers.google.com/earth-engine/reducers_intro) in the Google Developer's Guide for more information.
+Las reducciones también pueden ocurrir en el espacio, sobre las bandas dentro de una imagen, o sobre los atributos de una `FeatureCollection`. Ver el [Reducer Overview](https://developers.google.com/earth-engine/reducers_intro) en la Guía del Desarrollador de Google para más información.
 
-In Episode 3: Accessing Satellite Imagery, we used a vector boundary and date range to filter an image collection, mapped an algorithm (NDVI) over that collection, and then reduced that collection to one image in which each pixel value was its maximum NDVI. Here we follow the same workflow, but instead reduce using `imageCollection.sum()` to calculate total annual precipitation for each pixel in the US (temporal reducers). We then take it a step further and use the spatial reducer 'reduceRegions' to calculate total annual precip for each US county.
+En el Módulo 03: Accediendo al Catálogo de Imágenes de Satélite, usamos un límite vectorial y un rango de fechas para filtrar una colección de imágenes, aplicamos un algoritmo (NDVI) sobre esa colección, y luego la redujimos a una imagen en la que cada valor de píxel era su máximo NDVI. Aquí seguimos el mismo flujo de trabajo, pero en su lugar reduciremos usando `imageCollection.sum()` para calcular la precipitación anual total para cada píxel en los EE.UU. (reductores temporales). Luego daremos un paso más y usaremos el reductor espacial 'reduceRegions' para calcular la precipitación anual total para cada condado de los EE.UU.
 
 # Ejercicio: Obtener datos climáticos desde GEE
-Here, we will demonstrate a temporal reducer and a spatial reducer by obtaining data on annual precipitation by US county.
+Aquí demostraremos cómo aplicar un reductor temporal y espacial para obtener datos de precipitación anual por condado para los EE.UU.
 
 ### El catálogo de datos de GEE
-A secondary objective to this exercise is to use GEE to access common datasets stored in the data archive that may appeal to those not directly interested in remote sensing applications. As described in the [Introduction](https://geohackweek.github.io/GoogleEarthEngine/01-introduction/), GEE has co-located a number of datasets relevant to earth systems analyses. The full archive can be browsed [here](https://code.earthengine.google.com/datasets/). In this exercise, we will use the [GRIDMET Meteorological Dataset](https://code.earthengine.google.com/dataset/IDAHO_EPSCOR/GRIDMET) to obtain precipitation. Briefly, GRIDMET blends PRISM and NLDAS to produce a daily, 4 km gridded climate dataset for the contiguous United States from 1979 - present.
+Un objetivo secundario de este ejercicio es utilizar GEE para acceder a bases de datos comunes almacenados en archivo que puedan resultar atractivos para quienes no estén directamente relacionados con el sensoramiento remoto. Como se describe en la [Introducción](https://hasencios.github.io/GEE_BASICO_SENAMHI/01-introduction/), GEE provee diferentes bases de datos pertinentes para los análisis de los sistemas terrestres. El archivo completo puede ser consultado [here](https://code.earthengine.google.com/datasets/). En este ejercicio, usaremos el [GRIDMET Meteorological Dataset](https://code.earthengine.google.com/dataset/IDAHO_EPSCOR/GRIDMET) para obtener precipitaciones. GRIDMET combina PRISM y NLDAS para producir una base de datos climáticos diarios, en grillas de 4 km, para los Estados Unidos desde 1979 hasta el presente.
 
 ### Temporal Reducer: Generar un Image Statistics en el tiempo
-As discussed in [Accessing Satellite Imagery](https://geohackweek.github.io/GoogleEarthEngine/03-load-imagery/), an `ImageCollection` is a stack or time series of images. Reducers are used to derive a single `Image` based on the `ImageCollection`. Operations occur on a per pixel basis. We will follow this workflow:
+Tal como se discutió en el [módulo Accediendo al catálogo de imágenes de satélite
+](https://hasencios.github.io/GEE_BASICO_SENAMHI/03-load-imagery/), una `ImageCollection` es una pila o serie temporal de imágenes. Los reductores se usan para derivar una sola `Image` basada en la `ImageCollection`. Las operaciones ocurren en por píxeles. Seguiremos este flujo de trabajo:
 
-  * "Load" the GRIDMET data as an `ImageCollection`
-  * Filter for the precipitation data band and dates desired
-  * **Reduce** 365 "raster" images of daily precipitation into one raster image of annual precipitation totals (aka sum rasters by pixel)
-  * Visualize the result
+  * "Load" los datos de la GRIDMET como una `ImageCollection`
+  * Filtrar la banda de datos de precipitaciones y las fechas deseadas
+  * **Reduce** 365 imágenes "raster" de precipitaciones diarias en una imagen "raster" de totales de precipitaciones anuales (suma de rasters por píxel)
+  * Visualizar el resultado
 
 #### Cargar y filtrar una ImageCollection
-First, we need to identify the **ImageCollection ID** for the GRIDMET data product and the **band name** for the precipitation data (and check any relevant metadata). You can find this either in the [data catalog](https://code.earthengine.google.com/datasets/) or directly in the [GEE Code Editor](https://code.earthengine.google.com/) at the top above  the center panel.
+Primero, necesitamos identificar el **ImageCollection ID** para el producto de datos GRIDMET y el **band name** para los datos de precipitación (y comprobar cualquier metadato relevante). Esto se puede encontrar en el [data catalog](https://code.earthengine.google.com/datasets/) o directamente en el [GEE Code Editor](https://code.earthengine.google.com/) en la parte superior del panel central.
 
-From the [GRIDMET description](https://code.earthengine.google.com/dataset/IDAHO_EPSCOR/GRIDMET), we know the ImageCollection ID = 'IDAHO_EPSCOR/GRIDMET' and the precipitation band name is 'pr'. We will specifically `select` this band only.
+Para la [GRIDMET description](https://code.earthengine.google.com/dataset/IDAHO_EPSCOR/GRIDMET), sabemos que el ID de ImageCollection = 'IDAHO_EPSCOR/GRIDMET' y el nombre de la banda de precipitación es 'pr'. Específicamente `select` esta banda solamente.
 
 {% highlight javascript %}
 
@@ -62,16 +61,16 @@ print(precipCollection, 'precipCollection');
 
 {% endhighlight %}
 
-By printing the resulting collection to the Console, we can see we've accessed 365 images, each with 1 band named 'pr'.
+Al imprimir la colección resultante en la consola, podemos ver que hemos accedido a 365 imágenes, cada una con una banda llamada 'pr'.
 
 #### Aplicar un Sum Reducer y visualizar los resultados
-The `imageCollection.reduce()` operator allows you to apply any function of class `ee.Reducer()` to all images in the collection. If your `ImageCollection` had multiple bands, the reducer is applied separately to all bands (unless the reducer uses multiple bands as inputs, in which case the number of bands in the image collection must match the number of inputs required by the reducer). You can find available reducers and their descriptions in the searchable API reference under the **Docs** tab in the upper left panel of the code editor.
+El operador `imageCollection.reduce()` permite aplicar cualquier función de la clase `ee.Reducer()` a todas las imágenes de la colección. Si tu `ImageCollection` tenía múltiples bandas, el reductor se aplica por separado a todas las bandas (a menos que el reductor utilice múltiples bandas como entradas, en cuyo caso el número de bandas de la colección de imágenes debe coincidir con el número de entradas que requiere el reductor). Puede encontrar los reductores disponibles y sus descripciones en la referencia de la API que se puede buscar en la pestaña **Docs** en el panel superior izquierdo del Code Editor.
 
 <br>
 <img src="../fig/04_reducerMenu.PNG" border = "10">
 <br><br>
 
-Some commonly used reducers have shortcut syntax, such as `imageCollection.mean()`, `imageCollection.min()`, and conveniently, `imageCollection.sum()`. Both syntaxes are demonstrated in the following code chunk.
+Algunos reductores comúnmente usados tienen una sintaxis abreviada, como `imageCollection.mean()`, `imageCollection.min()`, y convenientemente, `imageCollection.sum()`. Ambas sintaxis se demuestran en el siguiente fragmento de código.
 
 {% highlight javascript %}
 
@@ -94,24 +93,25 @@ Map.addLayer(annualPrecip, {min: 60, max: 3000, palette: precipPal}, 'precip');
 
 {% endhighlight %}
 
-By printing the resulting image to the Console, we can see we now have 1 image with 1 band named 'pr_sum'. Here's what it looks like:
+Al imprimir la imagen resultante en la consola, podemos ver que ahora tenemos una imagen con una banda llamada 'pr_sum'. Esto es lo que parece:
 
 <br>
 <img src="../fig/04_annualPrecipMap.PNG" border = "10">
 <br><br>
 
 ### Spatial Reducer: Generar un Image Statistics por regiones
-Now let's take the image of annual precipitation we just created and get the mean annual precipitation by county in the United States. To get image statistics for multiple regions, we can use an [image.reduceRegions()](https://developers.google.com/earth-engine/reducers_reduce_regions) call. We will use a [FeatureCollection](https://developers.google.com/earth-engine/feature_collections) to store our vector dataset of counties. Note that there is also a [image.reduceRegion()](https://developers.google.com/earth-engine/reducers_reduce_region) operator if you wanted to summarize one polygon region only. The result of the `reduceRegions()` operation is added to the properties of each feature in the `FeatureCollection`.
+Ahora tomemos la imagen de la precipitación anual que acabamos de crear y obtengamos la precipitación media areal por condado en los Estados Unidos. Para obtener las estadísticas de la imagen para múltiples regiones, podemos usar una función [image.reduceRegions()](https://developers.google.com/earth-engine/reducers_reduce_regions). Usaremos una [FeatureCollection](https://developers.google.com/earth-engine/feature_collections) para almacenar nuestra base de datos vectorial de los condados. Tengan en cuenta que también hay un operador [image.reduceRegion()](https://developers.google.com/earth-engine/reducers_reduce_region) si quería resumir una región del polígono solamente. El resultado de la operación `reduceRegiones()` se añade a las propiedades de cada característica en la `FeatureCollection`.
 
-  >*An important note on the scale parameter**
+  >*Una nota importante sobre el parámetro de escala**
 
-  > GEE uses lazy code evaluation that only executes parts of your script needed for results - in the case of the JavaScript API code editor environment, that means things needed to fulfill print statements, map visualizations, or export tasks. *GEE will run your computations at the resolution of your current map view in the code editor unless you tell it otherwise.* Whenever possible, explicitly set the scale arguments to force GEE to work in a scale that makes sense for your imagery/analysis. Read the [modifiable areal unit problem](https://en.wikipedia.org/wiki/Modifiable_areal_unit_problem) wiki or the [Developers Docs](https://developers.google.com/earth-engine/scale) to see why this matters.
+  > GEE utiliza una evaluación de su código que sólo ejecuta las partes de su script necesarias para los resultados esperados - en el caso del entorno de la API de JavaScript. *GEE ejecutará sus cálculos con la resolución de su vista actual del mapa en el Code Editor, a menos que usted le diga lo contrario*. Siempre que sea posible, establezca explícitamente los argumentos de escala para forzar a GEE a trabajar en una escala que tenga sentido para sus imágenes/análisis. Lea el wiki [modifiable areal unit problem](https://en.wikipedia.org/wiki/Modifiable_areal_unit_problem) o la [Developers Docs](https://developers.google.com/earth-engine/scale) para observar porque esto es importante.
 
 #### Cargar los límites de países (Data Vectorial)
 
-There are four ways to obtain vector data in GEE as discussed in [03 Accessing Satellite Imagery](https://geohackweek.github.io/GoogleEarthEngine/03-load-imagery/). Here, we will use an [existing public fusion table of county boundaries](https://fusiontables.google.com/data?docid=1xdysxZ94uUFIit9eXmnw1fYc6VcQiXhceFd_CVKa#map:id=2) from the US Census Bureau.
+Hay tres maneras de obtener datos de vectores en GEE, como se examina en el [módulo 03 Accediendo al catálogo de imágenes de satélite
+](https://hasencios.github.io/GEE_BASICO_SENAMHI/03-load-imagery/). Aquí usaremos un [existing public fusion table of county boundaries](https://fusiontables.google.com/data?docid=1xdysxZ94uUFIit9eXmnw1fYc6VcQiXhceFd_CVKa#map:id=2) de la Oficina del Censo de los Estados Unidos.
 
-This dataset includes entities outside of the contiguous US such as Alaska, Puerto Rico, and American Samoa. We will remove these based on their unique ID's in a property attribute containing "state" FIPS codes to demonstrate vector filtering.
+Este base de datos incluye entidades fuera de los Estados Unidos como Alaska, Puerto Rico y Samoa Americana. Las eliminaremos basándonos en sus ID en un atributo de propiedad que contiene códigos FIPS "state" para demostrar el filtrado de vectores.
 
 {% highlight javascript %}
 // load regions: counties from a public fusion table, removing non-conus states
@@ -125,7 +125,7 @@ print(counties, 'counties');
 Map.addLayer(counties,{},'counties');  
 {% endhighlight %}
 
-By printing the county featureCollection, we see there are 3108 county polygons and 11 columns of attribute data.
+Al imprimir el featureCollection, vemos que hay 3108 polígonos de condado y 11 columnas de datos de atributos.
 
 <br>
 <img src="../fig/04_countyMap.png" border = "10">
@@ -143,15 +143,15 @@ var countyPrecip = annualPrecip.reduceRegions({
 print(countyPrecip);
 {% endhighlight %}
 
-By printing the countyPrecip featureCollection, we see there are 3108 county polygons and now 12 columns of attribute data, with the addition of the "mean" column.
+Al imprimir la featureCollection countyPrecip, vemos que hay 3108 polígonos de condado y ahora 12 columnas de datos de atributos, con la adición de la columna "mean".
 
 ### Acondicionar los resultados para exportarlos
-GEE can export tables in CSV (default), GeoJSON, KML, or KMZ. Here, we do a little formatting to prepare our FeatureCollection for export as a CSV.
+GEE puede exportar tablas en CSV (default), GeoJSON, KML o KMZ. Aquí, hacemos un pequeño formateo para preparar nuestra FeatureCollection para exportar como CSV.
 
-Formatting includes:
+El formato incluye:
 
-* removing the .geo column for a tidier dataset (this column can get quite large when polygons are highly detailed, but there's no reason that you have to do this step)
-* Adding a Column Attribute for the year of the precip data to demonstrate attribute manipulation. This can only be done to Features, so we map a function to do this over the features within the Feature Collection
+* Eliminar la columna .geo para un conjunto de datos más ordenado (esta columna puede ser bastante grande cuando los polígonos son muy detallados, pero no hay razón para que tengas que hacer este paso)
+* Añadir un atributo de columna para el año de los datos del precipitación para demostrar la manipulación de los atributos. Esto sólo se puede hacer con las Features, por lo que asignamos una función para hacer esto sobre las Features dentro de la  Feature Collection
 
 {% highlight javascript %}
 
@@ -175,17 +175,17 @@ Export.table.toDrive({
 // AND HIT 'RUN' IN THE TASKS TAB IN THE UPPER RIGHT PANEL
 {% endhighlight %}
 
-Note on the folder name: If this folder exists within  your Google Drive, GEE will find it and export here regardless of the full file path for the folder. If the folder doesn't exist, GEE will create it upon export.
+Nota sobre el nombre de la carpeta: si esta carpeta existe dentro de su unidad de Google, GEE la encontrará y exportará aquí independientemente de la ruta completa de su archivo. Si la carpeta no existe, GEE la creará al momento de la exportación.
 
-### Comenzar la Export Task
+### Comenzar a Exportar
 
-In order to actually export your data, you have to explicitly hit the "Run" button under the "Tasks" tab in the upper right panel of the code editor. It should take 20-30 seconds to export, depending on GEE user loads.
+Para poder exportar realmente tus datos, tienes que pulsar explícitamente el botón "Run" bajo la pestaña "Task" en el panel superior derecho del Code Editor. La exportación debería tomar 20-30 segundos, dependiendo de las cargas de los usuarios de GEE.
 
-A new, helpful feature has been added where you can hold your mouse over right side of the completed task and click on the question mark to open a window with details on the task as in the diagram below.
+Se ha añadido una nueva y útil función en la que se puede mantener el ratón sobre el lado derecho de la tarea completada y hacer clic en el signo de interrogación para abrir una ventana con los detalles de la tarea como en el diagrama siguiente.
 
 <br>
 <img src="../fig/04_runTask.png" border = "10" width="50%" height="50%">
 <br><br>
 
-Link to a static version of the full script used in this module:
-(https://code.earthengine.google.com/269a0d4a6b9854e6f81ac87187a72559)
+Enlace a una versión estática del script completo usado en este módulo:
+[https://code.earthengine.google.com/269a0d4a6b9854e6f81ac87187a72559](https://code.earthengine.google.com/269a0d4a6b9854e6f81ac87187a72559)

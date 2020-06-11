@@ -30,11 +30,13 @@ Por favor, complete este el procedimiento antes de tomar las lecciones. Siga los
 
 GEE nos permite tener carpetas de grupo compartidas/repositorios para los scripts que vayamos desarrollando. Se ha organizado el código presentado en estas lecciones de la siguiente manera. En lugar de añadir cada uno de vuestros correos electrónicos uno a uno (¡lo cual es muy tedioso!), se unirá a un grupo de Google que nos permitirá acceder al repositorio de código compartido. Por favor, sigua estos pasos:
 
-  - Únase al grupo de Google Earth Engine SENAMHI Lessons haciendo clic en este enlace. <a href="https://goo.gl/JsnWZH" target="_blank">https://goo.gl/JsnWZH</a> . No se preocupe por los permisos de publicación.
+<!-- 
+  - Únase al grupo de Google Earth Engine SENAMHI haciendo clic en este enlace. <a href="https://goo.gl/JsnWZH" target="_blank">https://goo.gl/JsnWZH</a> . No se preocupe por los permisos de publicación.
+ -->
   - Aceptar el repositorio compartido haciendo clic en este enlace:
-  <a href="https://code.earthengine.google.com/?accept_repo=users/victorialy/geohackweek2019
-" target="_blank">https://code.earthengine.google.com/?accept_repo=users/victorialy/geohackweek2019</a>
-  - En el Code Editor, vaya al **Scripts tab** en el panel superior izquierdo, desplácese hacia abajo y amplíe la sección "Reader". Un directorio llamado *users/victorialy/geohackweek2019* debe aparecer con versiones de sólo lectura de los guiones completos de cada episodio.
+  <a href="https://code.earthengine.google.com/?accept_repo=users/hasencios/GEE_BASICO_SENAMHI
+" target="_blank">https://code.earthengine.google.com/?accept_repo=users/hasencios/GEE_BASICO_SENAMHI</a>
+  - En el Code Editor, vaya al **Scripts tab** en el panel superior izquierdo, desplácese hacia abajo y amplíe la sección "Reader". Un directorio llamado *users/hasencios/GEE_BASICO_SENAMHI* debe aparecer con versiones de sólo lectura de los scripts completos de cada lección.
 
 
 ### 3. Tips de Javascript 
@@ -112,7 +114,7 @@ El JavaScript usa camelCase. JavaScript (según la academia W3) es fácil de apr
 
 Para una orientación a la industria, Google publica su propia guía <a href="http://google.github.io/styleguide/jsguide.html" target="_blank">Guía de estilos JavaScript</a>.
 
-Dana Tomlin también ha creado un corto <a href="https://drive.google.com/file/d/0B3H1GYZLzLKCckwwVjZfVmdPNDA/view)" target="_blank">JavaScript Quick Start Guide/a> which only takes a few minutes to work through but hits some of the basics. You can find it clicking that link or by going to the GEE homepage, clicking on the EDU tab in the upper left, and scrolling down to the Geospatial Software Design Exercises section.
+Dana Tomlin también ha creado <a href="https://drive.google.com/file/d/0B3H1GYZLzLKCckwwVjZfVmdPNDA/view)" target="_blank">JavaScript Quick Start Guide</a> que sólo toma unos pocos minutos de trabajo, pero que tiene algunos aspectos básicos. Puedes encontrarlo haciendo clic en ese enlace o yendo a la página principal de GEE, haciendo clic en la pestaña EDU en la parte superior izquierda, y bajando a la sección de Ejercicios de Diseño de Software Geoespacial.
 
 
 <br>

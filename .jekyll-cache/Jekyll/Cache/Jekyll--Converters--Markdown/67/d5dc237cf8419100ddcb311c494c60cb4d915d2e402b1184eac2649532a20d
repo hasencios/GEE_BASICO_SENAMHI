@@ -1,0 +1,67 @@
+I"R<h2 id="reflecciones-finales">Reflecciones Finales</h2>
+
+<p>En este tutorial, aprendiste</p>
+<ul>
+  <li><a href="https://geohackweek.github.io/GoogleEarthEngine/01-introduction/">1. Introduction to Google Earth Engine</a>: Una descripción general básica de Google Earth Engine (GEE)</li>
+  <li><a href="https://geohackweek.github.io/GoogleEarthEngine/02-code-editor/">2. Code Editor</a>: Como navegar por el Code Editor</li>
+  <li><a href="https://geohackweek.github.io/GoogleEarthEngine/03-load-imagery/">3. Accessing Satellite Imagery</a>: Como trabajar con imágenes satelitales a escala regional</li>
+  <li><a href="https://geohackweek.github.io/GoogleEarthEngine/04-reducers/">4. Temporal and Spatial Reducers</a>: Como agregar imágenes a través del tiempo y el espacio</li>
+  <li><a href="https://geohackweek.github.io/GoogleEarthEngine/05-classify-imagery/">5. Classifying Satellite Imagery</a>: Como clasificar las imágenes para los diferentes usos de la tierra</li>
+  <li><a href="https://geohackweek.github.io/GoogleEarthEngine/06-time-series/">6. Time Series</a>: Como graficar interactivamente una serie temporal</li>
+</ul>
+
+<p>GEE fue diseñado para el provecho de la ciencia. No dudes en buscar documentación, iniciar discusiones en el foro, sugerir bases de datos y dar retroalimentación a lo largo del camino.
+<br />
+<br /></p>
+
+<h2 id="remarcar-estas-webpages">Remarcar estas Webpages</h2>
+<p>La API de JavaScript y el Code Editor en línea son la mejor manera de desarrollar algoritmos de procesamiento y obtener ayuda de los foros. El API de Python se recomienda generalmente para la implementación a nivel de producción de los algoritmos desarrollados.</p>
+
+<p>Debido a esto, trabajar con GEE es más fácil con un rápido acceso a los elementos en línea. Recomendamos añadir estos marcadores a su navegador web para facilitar su uso:</p>
+
+<ul>
+  <li><a href="https://code.earthengine.google.com/">Code Editor</a>: Donde vas a escribir el script.</li>
+  <li><a href="https://code.earthengine.google.com/datasets/">Data Catalogue</a>: Detalles de las bases de datos disponibles.</li>
+  <li><a href="https://developers.google.com/earth-engine/">Developers Guide</a>: lo más parecido a un manual.</li>
+  <li><a href="https://groups.google.com/forum/?fromgroups#!forum/google-earth-engine-developers">Developers Forum</a>: Donde vas a colocar las preguntas
+    <ul>
+      <li>También hay un enlace al foro desde el menú desplegable “Help” en el Code Editor, pero un marcador puede ser bueno para el uso frecuente</li>
+      <li>El equipo de Google es muy activo en los foros y es un recurso vital. La documentación de GEE no siempre está completa, así que si estás atascado en algo, ¡pregunta!</li>
+      <li><strong>Recommendation:</strong> Set your email delivery preference to “Send daily summaries.” No one wants to receive an email for each post to the forum, but scanning the daily digest for topics you anticipate needing in the future is a great way to pre-emptively find code examples for your work. It’s also likely you’ll discover a use you didn’t know existing through other folks posts.</li>
+      <li><strong>Tip:</strong> When posting questions to the forum, you’ll get the best help if you include a link to your current script that others are able to run in order to help you troubleshoot. Dummy examples can work great, and if you share your actual workspace, be sure that any assets or fusion tables loaded in your script are publicly shared</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="recursos-de-aprendizaje-adicional">Recursos de aprendizaje adicional</h2>
+<p>There are several educational and training resources available to continue learning about GEE.</p>
+
+<ul>
+  <li><a href="https://developers.google.com/earth-engine/tutorials">GEE tutorials</a></li>
+  <li><a href="https://developers.google.com/earth-engine/edu">GEE EDU page</a>
+    <ul>
+      <li>Educational resources: provides remote sensing curricula developed with GEE</li>
+      <li>Training resources: Provides resources for those teaching others to use GEE. This includes a general introductory Powerpoint and the Beginner and Intermediate Workshop materials run by GEE</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="para-avanzar">Para avanzar</h2>
+<ul>
+  <li><a href="https://developers.google.com/earth-engine/debugging">Debugging Guide</a>
+    <ul>
+      <li>Posted by popular demand. An EXCELLENT resource. <strong>Debug a programmer’s code, and you appease her forum posts for the script. Teach a programmer to debug, and you appease her forum posts for a lifetime.</strong></li>
+    </ul>
+  </li>
+  <li><a href="https://groups.google.com/forum/#!searchin/google-earth-engine-developers/benefits$20of$20python%7Csort:relevance/google-earth-engine-developers/LWHTFSH9FRk/NGxiEQ5KEQAJ">The “Under the Hood” forum thread</a>
+    <ul>
+      <li>If you continue to use GEE, you will inevitably begin to have questions about how GEE works under the hood in (possibly vain) attempts to help optimize your workflow. Sometimes operations time out or don’t run. In general, GEE’s inner workings are quite opaque. Typical fixes and approaches that data scientists use don’t really apply in GEE’s framework. This thread provides some useful information about what users can and cannot control. Highly recommended reading for regular GEE users.</li>
+    </ul>
+  </li>
+  <li><a href="http://www.sciencedirect.com/science/article/pii/S0034425717302900">Gorelick et al. 2017</a>
+    <ul>
+      <li>The Earth Engine Team recently published an overview of the GEE platform. It also provides nice tables of currently available datasets and available functions.</li>
+    </ul>
+  </li>
+</ul>
+:ET
