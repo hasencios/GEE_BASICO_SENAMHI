@@ -1,11 +1,7 @@
----
-layout: page
-title: Setup
----
-
-> ## Datos
-> Los datos usados en el desarrollo de las lecciones serán proporcinados a medida que avancemos en el tutorial a través de un archivo compartido en GEE o Google Drive.
-{: .prereq}
+I"�<blockquote>
+  <h2 id="datos">Datos</h2>
+  <p>Los datos usados en el desarrollo de las lecciones serán proporcinados por a medida que avancemos en el tutorial</p>
+</blockquote>
 
 <!--
 > ## Datos
@@ -23,9 +19,9 @@ disponible en **FigShare**](https://figshare.com/articles/Portal_Project_Teachin
 >
 > - [surveys.csv](https://ndownloader.figshare.com/files/10717177)
 > - [species.csv](https://ndownloader.figshare.com/files/3299483)
-> - [speciesSubset.csv]({{ page.root }}/data/speciesSubset.csv)
+> - [speciesSubset.csv](./data/speciesSubset.csv)
 > - [plots.csv](https://ndownloader.figshare.com/files/3299474)
-> - [bouldercreek_09_2013.txt]({{ page.root }}/data/bouldercreek_09_2013.txt)
+> - [bouldercreek_09_2013.txt](./data/bouldercreek_09_2013.txt)
 > - [SQL Database](https://ndownloader.figshare.com/files/11188550)
 {: .prereq}
 -->
@@ -126,3 +122,4 @@ Si no es así, o si deseas utilizar un navegador diferente, abre este enlace: <h
 Para una breve introducción a **Jupyter Notebooks**, consulta nuestra página
 ["Introducción a Jupyter Notebooks"](jupyter_notebooks).
 -->
+:ET

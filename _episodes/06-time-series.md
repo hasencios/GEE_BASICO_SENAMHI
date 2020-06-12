@@ -1,7 +1,7 @@
 ---
 title: "Series de Tiempo"
-teaching: 5
-exercises: 10
+teaching: 60
+exercises: 120
 questions:
 - "¿Cómo generar una serie de tiempo para una coordenada específica?"
 - "¿Cómo graficar la serie de tiempo en Google Earth Engine?"

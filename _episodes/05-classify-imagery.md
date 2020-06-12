@@ -1,7 +1,7 @@
 ---
 title: "Clasificación Supervisada de Imágenes de Satélite"
-teaching: 5
-exercises: 10
+teaching: 60
+exercises: 120
 questions:
 - "¿Qué técnicas de machine learning están disponibles en GEE?"
 - "¿Cómo realizar una calisificación supervisada de imágenes de satélite?"

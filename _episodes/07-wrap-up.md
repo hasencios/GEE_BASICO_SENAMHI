@@ -1,7 +1,7 @@
 ---
 title: "Resumen"
-teaching: 5
-exercises: 0
+teaching: 30
+exercises: 30
 questions:
 - "¿Cuál es el recurso más importante de GEE?"
 - "¿Dónde se puede encontrar ayuda acerca del uso de GEE?"

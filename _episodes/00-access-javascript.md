@@ -1,7 +1,7 @@
 ---
 title: "Acceso a GEE y tips JavaScript"
-teaching: 0
-exercises: 0
+teaching: 30
+exercises: 30
 questions:
 - ¿Cómo obtener una cuenta?
 - ¿Qué es lo básico que se debe de saber acerca de JavaScript?

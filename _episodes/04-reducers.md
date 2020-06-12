@@ -1,7 +1,7 @@
 ---
 title: "Reductores espaciales y temporales"
-teaching: 5
-exercises: 10
+teaching: 60
+exercises: 60
 questions:
 - ¿Cómo agregar las imágenes que comprenden una Image Collection sobre un periodo de tiempo?
 - ¿Cómo estimar medios areales usando regiones vectoriales?

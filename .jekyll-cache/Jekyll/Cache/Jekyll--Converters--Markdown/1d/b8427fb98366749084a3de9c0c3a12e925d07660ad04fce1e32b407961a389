@@ -1,34 +1,30 @@
----
-layout: page
-title: Setup
----
+I"<blockquote>
+  <h2 id="datos">Datos</h2>
+</blockquote>
 
-> ## Datos
-> Los datos usados en el desarrollo de las lecciones serán proporcinados a medida que avancemos en el tutorial a través de un archivo compartido en GEE o Google Drive.
-{: .prereq}
+<blockquote class="prereq">
+  <h2 id="datos-1">Datos</h2>
+  <p>Los datos para esta lección son del <strong>Portal Project Teaching Database</strong> -
+<a href="https://figshare.com/articles/Portal_Project_Teaching_Database/1314459">
+disponible en <strong>FigShare</strong></a>.</p>
 
-<!--
-> ## Datos
-> Los datos para esta lección son del **Portal Project Teaching Database** -
-> [
-disponible en **FigShare**](https://figshare.com/articles/Portal_Project_Teaching_Database/1314459).
->
-> En esta lección usaremos los seis archivos enumerados a continuación.
-> Descarga estos archivos a su computadora haciendo clic en
-> [este enlace](https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/weecology/portal-teachingdb),
-> luego tendrás todo en un archivo comprimido.
-> Tienes que descomprimir este archivo después de descargarlo.
->
-> O descarga cada archivo individualmente con los siguientes enlaces:
->
-> - [surveys.csv](https://ndownloader.figshare.com/files/10717177)
-> - [species.csv](https://ndownloader.figshare.com/files/3299483)
-> - [speciesSubset.csv]({{ page.root }}/data/speciesSubset.csv)
-> - [plots.csv](https://ndownloader.figshare.com/files/3299474)
-> - [bouldercreek_09_2013.txt]({{ page.root }}/data/bouldercreek_09_2013.txt)
-> - [SQL Database](https://ndownloader.figshare.com/files/11188550)
-{: .prereq}
--->
+  <p>En esta lección usaremos los seis archivos enumerados a continuación.
+Descarga estos archivos a su computadora haciendo clic en
+<a href="https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/weecology/portal-teachingdb">este enlace</a>,
+luego tendrás todo en un archivo comprimido.
+Tienes que descomprimir este archivo después de descargarlo.</p>
+
+  <p>O descarga cada archivo individualmente con los siguientes enlaces:</p>
+
+  <ul>
+    <li><a href="https://ndownloader.figshare.com/files/10717177">surveys.csv</a></li>
+    <li><a href="https://ndownloader.figshare.com/files/3299483">species.csv</a></li>
+    <li><a href="./data/speciesSubset.csv">speciesSubset.csv</a></li>
+    <li><a href="https://ndownloader.figshare.com/files/3299474">plots.csv</a></li>
+    <li><a href="./data/bouldercreek_09_2013.txt">bouldercreek_09_2013.txt</a></li>
+    <li><a href="https://ndownloader.figshare.com/files/11188550">SQL Database</a></li>
+  </ul>
+</blockquote>
 
 <!--
 > ## Software
@@ -126,3 +122,4 @@ Si no es así, o si deseas utilizar un navegador diferente, abre este enlace: <h
 Para una breve introducción a **Jupyter Notebooks**, consulta nuestra página
 ["Introducción a Jupyter Notebooks"](jupyter_notebooks).
 -->
+:ET
