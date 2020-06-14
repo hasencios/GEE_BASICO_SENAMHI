@@ -150,7 +150,7 @@ Las herramientas de dibujo geométrico situadas en la parte superior izquierda d
 Ahora ha creado un nuevo objeto punto y lo ha cargado como una `FeatureCollection`. Ahora puede usar esta `FeatureCollection` como una forma de filtrar geográficamente conjuntos de datos sólo para tu región.
 
 <br>
-<img src="../fig/02_lakePowell.png" border = "10">
+<img src="../fig/02_lakeJunin.png" border = "10">
 <br><br>
 
 
@@ -174,7 +174,7 @@ En esencia, esto nos permite ordenar la colección completa de Landsat 8 y carga
 // Cargar imágenes de Landsat 8
 var image = ee.Image((landsat8Collection)
     // Filter to get only images under the region of interest.
-    .filterBounds(lakePowell)
+    .filterBounds(lakeJunin)
     // Filter to get only one year of images.
     .filterDate('2018-01-01', '2018-12-31')
     // Select just the optical bands
@@ -189,7 +189,7 @@ var image = ee.Image((landsat8Collection)
 Usa una declaración impresa para comprobar lo que acabamos de hacer:
 
 {% highlight javascript %}
-print(image, 'Lake Powell L8 image')
+print(image, 'Lake Junin L8 image')
 {% endhighlight %}
 
 Ahora hemos filtrado TODO el archivo de Landsat 8 hasta la imagen menos nublada para nuestra área de estudio en 2018. Sin embargo, todavía tenemos que visualizarla, lo que haremos usando la función `Map.addLayer`.
@@ -211,7 +211,7 @@ Map.addLayer(image, {bands: ['B4', 'B3', 'B2'], max: 0.5, gamma: 2}, 'Better L8 
 Aunque a menudo no es posible conocer el mínimo, máximo y el estiramiento óptimos. Se ha añadido la herramienta **Layer Manager** que se encuentra en la esquina superior derecha del mapa. Esta barra de herramientas le permitirá hacer clic en las capas, así como ajustar su transparencia y configurar interactivamente los parámetros de visualización de cada capa. Puede usar esta herramienta para averiguar qué parámetros pasar al `Map.addLayer`.
 
 <br>
-<img src="../fig/02_layermanager.png" border = "10">
+<img src="../fig/02_layermanagerN.png" border = "10">
 <br><br>
 
 También puedes cambiar entre los botones **Map** o **Satellite** en la parte superior derecha del panel del mapa para cambiar la capa base.
@@ -271,7 +271,7 @@ Además de usar todos los increíbles archivos de Google, los usuarios también 
 Cuando publiques en el foro, asegúrate de marcar la casilla "Anyone Can Read" en la ventana emergente de los recursos de intercambio para que todos los usuarios del foro puedan ejecutar tu código. Si tienes un Asset privado y no lo haces público, otras personas no podrán ejecutar tu código. Si no quieres compartir tus datos privados, puedes crear un ejemplo ficticio para compartir en los foros utilizando puntos o polígonos dibujados a mano.
 
 <br>
-<img src="../fig/02_sharingassets.png" border = "10">
+<img src="../fig/02_sharingassetsN.png" border = "10">
 <br><br>
 
 Para un ejemplo de script que utiliza datos importados, véase <a href="https://hasencios.github.io/GEE_BASICO_SENAMHI/06-time-series/" target="_blank">Leccion 06 Series de Tiempo</a>. Para obtener instrucciones detalladas de Google sobre cómo subir, compartir y administrar activos, consulte el <a href="https://developers.google.com/earth-engine/asset_manager" target="_blank">Assets Manager page</a> en el sitio web de GEE.

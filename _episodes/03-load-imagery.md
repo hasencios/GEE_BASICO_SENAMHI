@@ -20,12 +20,25 @@ keypoints:
 ---
 
 # Descripción general: Catálogo de imágenes satelitales a escala regional
-La mayoría de los productos satelitales se dividen en bloques para su distribución. Los datos globales de Landsat se dividen en escenas de ~180 km<sup>2</sup>, con identificadores únicos de path/row. 455 escenas cubren los Estados Unidos. Cada escena es actualmente fotografiada cada 16 días por Landsat 8, y cada 16 días por Landsat 7 (aproximadamente 45 veces al año). Los bordes de cada trayectoria se superponen, proporcionando una mayor frecuencia temporal en estas áreas. Sin embargo, los cielos nublados durante el paso de los satélites y otras anomalías de adquisición hacen que ciertas escenas o píxeles sean inutilizables.
+La mayoría de los productos satelitales se dividen en bloques para su distribución. Los datos globales de Landsat se dividen en escenas de ~180 km<sup>2</sup>, con identificadores únicos de path/row. *<a href="https://www.sciencedirect.com/science/article/abs/pii/S0034425715302194" target="_blank">Wulder et al. (2016)</a>* sugieren  que cada escena es fotografiada cada 16 días por Landsat 8 y cada 16 días por Landsat 7 (aproximadamente 45 veces al año). Los bordes de cada trayectoria se superponen, proporcionando una mayor frecuencia temporal en estas áreas. Sin embargo, los cielos nublados durante el paso de los satélites y otras anomalías de adquisición hacen que ciertas escenas o píxeles sean inutilizables.
+
+
+<img src="../fig/03_worldLandsat.png" width="100%" height="100%" />
+<sub>*USGS Landsat archive holdings as of January 1, 2015 (Wulder et al. (2016)).*</sub>
+<!--
+<img src="https://3c1703fe8d.site.internapcdn.net/newman/gfx/news/hires/2013/76fuygfd.gif" width="100%" height="100%" />
+<sub>*Forest loss in Sumatra's Riau province, Indonesia, 2000-2012. Credit: Hansen, Potapov, Moore, Hancher et al., 2013*</sub>
+-->
+<br>
+<!--**455 escenas de Landsat cubren los Estados Unidos:**-->
+<br>
+<img src="../fig/03_MeanderCutTumbesRiver.gif" border = "10">
+<br><br>
 
 <br>
-**455 escenas de Landsat cubren los Estados Unidos:**
+<!--**455 escenas de Landsat cubren los Estados Unidos:**-->
 <br>
-<img src="../fig/03_conusLandsat.png" border = "10">
+<img src="../fig/03_IlegalMiningAndMeanderMigration.gif" border = "10">
 <br><br>
 
 Para la mayoría de las aplicaciones a escala regional, se tendrá que combinar múltiples imágenes de satélite para cubrir completamente su extensión espacial y completar los datos faltantes causados por las nubes, etc. Google Earth Engine (GEE) es particularmente adecuado para estas tareas.
@@ -55,14 +68,14 @@ Para cargar un archivo vectorial de sus Assets en su espacio de trabajo, necesit
 {% highlight javascript %}
 // cargar un polígono de límite de cuenca (una base de datos vectorial pública ya en GEE)
 // nota: véase el tutorial mencionado arriba para obtener orientación sobre la importación de bases de datos de vectores
-var WBD = ee.FeatureCollection("USGS/WBD/2017/HUC06");
-print(WBD.limit(5));
-Map.addLayer(WBD, {}, 'watersheds')
+var watersheds = ee.FeatureCollection('users/hasencios/Cuencas_2012_gcs');
+print(watersheds.limit(5));
+Map.addLayer(watersheds, {}, 'watersheds')
 
 {% endhighlight %}
 
 <br>
-<img src="../fig/03_wbd.png" border = "10">
+<img src="../fig/03_wPeru.png" border = "10">
 <br><br>
 
 ### La herramienta Inspector
@@ -71,24 +84,26 @@ La herramienta "Inspector" permite consultar las capas del mapa en un punto. Lo 
 Podemos usar esto para encontrar el atributo "name" de nuestra cuenca de interés (¡elige la que quieras!).
 
 <br>
-<img src="../fig/03_inspector.png" border = "10">
+<img src="../fig/03_inspectorN.png" border = "10">
 <br><br>
 
 Una vez que hayas determinado la propiedad "name" de tu cuenca, usa la función featureCollection.filterMetadata() para extraer esta cuenca de la base de datos completa.
 
 {% highlight javascript %}
 // use la herramienta del inspector para encontrar el nombre de una cuenca que le interese
-var watershed = WBD.filterMetadata('name', 'equals', 'Republican');
-print(watershed);
+var watershed = watersheds.filterMetadata('NOMBRE', 'equals', 'Cuenca Mantaro');
 
-// establecer la vista del mapa y el nivel de zoom, y añadir la cuenca al mapa
-Map.centerObject(watershed,7);
-Map.addLayer(watershed, {}, 'watershed');
+// imprima la metadata de la cuenca
+print('Cuenca Mantaro',watershed);
+
+// establecer la vista del mapa y el zoom, y añadir la línea divisoria de aguas al mapa
+Map.centerObject(watershed,8);
+Map.addLayer(watershed,{},'Cuencas Mantaro');
 {% endhighlight %}
 
-Cuenca de interés: The Republican River Basin
+Cuenca de interés: Mantaro
 <br>
-<img src="../fig/03_republican.png" border = "10">
+<img src="../fig/03_mantaro.png" border = "10">
 <br><br>
 
 
@@ -105,9 +120,9 @@ var l8collection = ee.ImageCollection('LANDSAT/LC08/C01/T1_SR')
 print(l8collection);
 {% endhighlight %}
 
-Imprimir nuestra colección filtrada en la consola nos dice cuántas imágenes hay en nuestro filtro (173) así como los nombres de las bandas y las propiedades de las imágenes de nuestra colección:
+Imprimir nuestra colección filtrada en la consola nos dice cuántas imágenes hay en nuestro filtro (148) así como los nombres de las bandas y las propiedades de las imágenes de nuestra colección:
 <br>
-<img src="../fig/03_collection.png" border = "10" width="50%" height="50%">
+<img src="../fig/03_collectionN.png" border = "10" width="50%" height="50%">
 <br><br>
 
 ### Aplicar funciones
@@ -154,7 +169,7 @@ Map.addLayer(ee.Image(l8collection.first()), visParams, 'original', false)
 {% endhighlight %}
 
 <br>
-<img src="../fig/03_masked.png" border = "10">
+<img src="../fig/03_maskedN.png" border = "10">
 <br><br>
 
 ### Calcular el índice NDVI como una nueva banda
@@ -200,10 +215,10 @@ Map.addLayer(composite.select('NDVI'),
             {min:0, max: 1, palette: ndviPalette}, 'ndvi');
 {% endhighlight %}
 
-El máximo anual de NDVI a través de esta cuenca hidrográfica destaca las zonas agrícolas de regadío:
+El máximo anual de NDVI a través de esta cuenca hidrográfica destaca las zonas altoandinas con presencia de suelo desnudo y en las cercanías la selva, los más verdes :
 
 <br>
-<img src="../fig/03_ndvi.png" border = "10">
+<img src="../fig/03_ndviN.png" border = "10">
 <br><br>
 
 También podemos usar esta imagen compuesta para visualizar una composición de color verdadero usando las bandas RGB:
@@ -214,7 +229,7 @@ Map.addLayer(composite, {bands: ['B4', 'B3', 'B2'], min: 0, max: 2000}, 'true co
 {% endhighlight %}
 
 <br>
-<img src="../fig/03_tcc.png" border = "10">
+<img src="../fig/03_tccN.png" border = "10">
 <br><br>
 
 ### Visualizar los resultados en un gráfico
@@ -255,7 +270,7 @@ print(chart)
 
 Tenga en cuenta que puede exportar los datos subyacentes del gráfico mediante el icono de la flecha que aparece...
 <br>
-<img src="../fig/03_chart.png" border = "10" width="50%" height="50%">
+<img src="../fig/03_chartN.png" border = "10" width="90%" height="90%">
 <br><br>
 
 ### Exportar los resultados como una Table

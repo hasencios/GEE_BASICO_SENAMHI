@@ -1,0 +1,305 @@
+I"Y�<h1 id="descripción-general-catálogo-de-imágenes-satelitales-a-escala-regional">Descripción general: Catálogo de imágenes satelitales a escala regional</h1>
+<p>La mayoría de los productos satelitales se dividen en bloques para su distribución. Los datos globales de Landsat se dividen en escenas de ~180 km<sup>2</sup>, con identificadores únicos de path/row. <em><a href="https://www.sciencedirect.com/science/article/abs/pii/S0034425715302194" target="_blank">Wulder et al. (2016)</a></em> sugieren  que cada escena es fotografiada cada 16 días por Landsat 8 y cada 16 días por Landsat 7 (aproximadamente 45 veces al año). Los bordes de cada trayectoria se superponen, proporcionando una mayor frecuencia temporal en estas áreas. Sin embargo, los cielos nublados durante el paso de los satélites y otras anomalías de adquisición hacen que ciertas escenas o píxeles sean inutilizables.</p>
+
+<p><img src="../fig/03_worldLandsat.png" width="100%" height="100%" />
+<sub><em>USGS Landsat archive holdings as of January 1, 2015 (Wulder et al. (2016)).</em></sub>
+<!--
+<img src="https://3c1703fe8d.site.internapcdn.net/newman/gfx/news/hires/2013/76fuygfd.gif" width="100%" height="100%" />
+<sub>*Forest loss in Sumatra's Riau province, Indonesia, 2000-2012. Credit: Hansen, Potapov, Moore, Hancher et al., 2013*</sub>
+-->
+<br />
+<!--**455 escenas de Landsat cubren los Estados Unidos:**-->
+<br />
+<img src="../fig/03_MeanderCutTumbesRiver.gif" border="10" />
+<br /><br /></p>
+
+<p><br />
+<!--**455 escenas de Landsat cubren los Estados Unidos:**-->
+<br />
+<img src="../fig/03_IlegalMiningAndMeanderMigration.gif" border="10" />
+<br /><br /></p>
+
+<p>Para la mayoría de las aplicaciones a escala regional, se tendrá que combinar múltiples imágenes de satélite para cubrir completamente su extensión espacial y completar los datos faltantes causados por las nubes, etc. Google Earth Engine (GEE) es particularmente adecuado para estas tareas.</p>
+
+<h1 id="ejericio-flujo-básico-de-trabajo-gee">Ejericio: Flujo básico de trabajo GEE</h1>
+<p>Aquí, aprovecharemos GEE para crear un composite que represente el pico de la temporada de crecimiento de cultivos para una cuenca de interés.</p>
+
+<h3 id="image-collections">Image Collections</h3>
+<p>Una pila o serie temporal de imágenes se llaman <code class="language-plaintext highlighter-rouge">Image Collections</code>. Cada fuente de datos disponible en GEE tiene su propia Image Collection y su propio ID (por ejemplo, el <a href="https://developers.google.com/earth-engine/datasets/catalog/LANDSAT_LT05_C01_T1_SR">Landsat 5 SR collection</a>, o la <a href="https://code.earthengine.google.com/dataset/IDAHO_EPSCOR/GRIDMET">GRIDMET meteorological data collection</a>). También se puede crear Image Collection a partir de imágenes individuales o fusionar colecciones existentes. Puede encontrar más información sobre las Image Collection <a href="https://developers.google.com/earth-engine/ic_creating">here in the GEE Developer’s Guide</a>.</p>
+
+<p>Para generar imágenes que cubran grandes áreas espaciales y para llenar los huecos de imagen debidos a las nubes, etc., podemos cargar una <code class="language-plaintext highlighter-rouge">ImageCollection</code> completa, pero filtrar la colección para devolver sólo los períodos de tiempo o las ubicaciones espaciales que sean de interés. Hay filtros de acceso directo para los que se utilizan comúnmente (imageCollection.filterDate(), imageCollection.filterBounds()…), pero pueden utilizarse la mayoría de los filtros de la sección <code class="language-plaintext highlighter-rouge">ee.Filter()</code> de la pestaña Docs. Más información sobre <a href="https://developers.google.com/earth-engine/ic_filtering">filters on the Developer’s Guide</a>.</p>
+
+<h3 id="cargar-archivos-vectoriales">Cargar archivos vectoriales</h3>
+<p>Trabajaremos en la creación de un composite para una cuenca de los EE.UU. La forma más fácil de filtrar una ubicación irregular sin tener que identificar las rutas y filas de los mosaicos de la imagen satelital es usar un polígono vectorial.</p>
+
+<p>Hay tres maneras de obtener datos de vectores en GEE:</p>
+
+<ul>
+  <li><a href="https://developers.google.com/earth-engine/importing">Cargar un shapefile</a> directamente a su carpeta personal <em>Asset</em> en el panel superior izquierdo. Puedes crear subcarpetas y establecer permisos para compartir según sea necesario. Utilizamos un archivo vectorial Asset en el <a href="https://hasencios.github.io/GEE_BASICO_SENAMHI/03-load-imagery/">modulo Accediendo al catálogo de imágenes de satélite</a>.</li>
+  <li>Utilizar un conjunto de datos de vectores existente en GEE. <a href="https://developers.google.com/earth-engine/vector_datasets">Navegue por el catálogo de datos vectoriales aquí</a>.</li>
+  <li>Dibuje manualmente puntos, líneas y polígonos usando las herramientas de geometría del Code Editor. Haremos esto en el <a href="https://hasencios.github.io/GEE_BASICO_SENAMHI/05-classify-imagery/">Modulo de Clasificación Supervisada de Imágenes de Satélite</a>.</li>
+</ul>
+
+<p>Aquí, usaremos un activo vectorial existente, el <a href="https://code.earthengine.google.com/dataset/USGS/WBD/2017/HUC12">USGS Watershed Boundaries - HUC12</a></p>
+
+<p>Para cargar un archivo vectorial de sus Assets en su espacio de trabajo, necesitamos usar el “filepath” y lanzarlo a un tipo de datos <code class="language-plaintext highlighter-rouge">ee.FeatureCollection</code>. Lee más aquí: <a href="https://developers.google.com/earth-engine/asset_manager#importing-assets-to-your-script">“Managing Assets” in the Developer’s Guide</a>.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// cargar un polígono de límite de cuenca (una base de datos vectorial pública ya en GEE)</span>
+<span class="c1">// nota: véase el tutorial mencionado arriba para obtener orientación sobre la importación de bases de datos de vectores</span>
+<span class="kd">var</span> <span class="nx">watersheds</span> <span class="o">=</span> <span class="nx">ee</span><span class="p">.</span><span class="nx">FeatureCollection</span><span class="p">(</span><span class="dl">'</span><span class="s1">users/hasencios/Cuencas_2012_gcs</span><span class="dl">'</span><span class="p">);</span>
+<span class="nx">print</span><span class="p">(</span><span class="nx">watersheds</span><span class="p">.</span><span class="nx">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">));</span>
+<span class="nb">Map</span><span class="p">.</span><span class="nx">addLayer</span><span class="p">(</span><span class="nx">WBD</span><span class="p">,</span> <span class="p">{},</span> <span class="dl">'</span><span class="s1">watersheds</span><span class="dl">'</span><span class="p">)</span></code></pre></figure>
+
+<p><br />
+<img src="../fig/03_wbd.png" border="10" />
+<br /><br /></p>
+
+<h3 id="la-herramienta-inspector">La herramienta Inspector</h3>
+<p>La herramienta “Inspector” permite consultar las capas del mapa en un punto. Lo usaremos para ayudarnos a seleccionar una cuenca específica. Para usar la herramienta “Inspector”, haga clic en la pestaña “Inspector” en el panel superior derecho para activarla. Luego haga clic en cualquier lugar dentro del Visor de Mapas. Se mostrarán las coordenadas de su clic, junto con el valor de las capas del mapa en ese punto.</p>
+
+<p>Podemos usar esto para encontrar el atributo “name” de nuestra cuenca de interés (¡elige la que quieras!).</p>
+
+<p><br />
+<img src="../fig/03_inspector.png" border="10" />
+<br /><br /></p>
+
+<p>Una vez que hayas determinado la propiedad “name” de tu cuenca, usa la función featureCollection.filterMetadata() para extraer esta cuenca de la base de datos completa.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// use la herramienta del inspector para encontrar el nombre de una cuenca que le interese</span>
+<span class="kd">var</span> <span class="nx">watershed</span> <span class="o">=</span> <span class="nx">WBD</span><span class="p">.</span><span class="nx">filterMetadata</span><span class="p">(</span><span class="dl">'</span><span class="s1">name</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">equals</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">Republican</span><span class="dl">'</span><span class="p">);</span>
+<span class="nx">print</span><span class="p">(</span><span class="nx">watershed</span><span class="p">);</span>
+
+<span class="c1">// establecer la vista del mapa y el nivel de zoom, y añadir la cuenca al mapa</span>
+<span class="nb">Map</span><span class="p">.</span><span class="nx">centerObject</span><span class="p">(</span><span class="nx">watershed</span><span class="p">,</span><span class="mi">7</span><span class="p">);</span>
+<span class="nb">Map</span><span class="p">.</span><span class="nx">addLayer</span><span class="p">(</span><span class="nx">watershed</span><span class="p">,</span> <span class="p">{},</span> <span class="dl">'</span><span class="s1">watershed</span><span class="dl">'</span><span class="p">);</span></code></pre></figure>
+
+<p>Cuenca de interés: The Republican River Basin
+<br />
+<img src="../fig/03_republican.png" border="10" />
+<br /><br /></p>
+
+<h3 id="filtrar-una-image-collection">Filtrar una Image Collection</h3>
+<p>Aquí, estamos seleccionando todas las imágenes en el <a href="https://code.earthengine.google.com/dataset/LANDSAT/LC08/C01/T1_SR">Landsat 8 Surface Reflectance collection</a> adquirido sobre nuestra cuenca de interés.</p>
+
+<p><em>Consejo: Los ID de las Image collection se encuentran en la barra de herramientas de “Search” en la parte superior del editor de códigos o a través de la búsqueda en el <a href="https://code.earthengine.google.com/datasets/">data archive</a>.</em></p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// cargue todas las imágenes Landsat 8 SR dentro de los límites del polígono para el año 2017</span>
+<span class="kd">var</span> <span class="nx">l8collection</span> <span class="o">=</span> <span class="nx">ee</span><span class="p">.</span><span class="nx">ImageCollection</span><span class="p">(</span><span class="dl">'</span><span class="s1">LANDSAT/LC08/C01/T1_SR</span><span class="dl">'</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">filterBounds</span><span class="p">(</span><span class="nx">watershed</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">filterDate</span><span class="p">(</span><span class="dl">'</span><span class="s1">2017-01-01</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">2017-12-31</span><span class="dl">'</span><span class="p">);</span>
+<span class="nx">print</span><span class="p">(</span><span class="nx">l8collection</span><span class="p">);</span></code></pre></figure>
+
+<p>Imprimir nuestra colección filtrada en la consola nos dice cuántas imágenes hay en nuestro filtro (173) así como los nombres de las bandas y las propiedades de las imágenes de nuestra colección:
+<br />
+<img src="../fig/03_collection.png" border="10" width="50%" height="50%" />
+<br /><br /></p>
+
+<h3 id="aplicar-funciones">Aplicar funciones</h3>
+<p>Como puedes ver al navegar por la pestaña <code class="language-plaintext highlighter-rouge">Docs</code> en el panel superior izquierdo del Code Editor, hay funciones GEE específicas para los tipos de datos <code class="language-plaintext highlighter-rouge">Image</code> y <code class="language-plaintext highlighter-rouge">ImageCollection</code>. Hay muchas, incluyendo operadores matemáticos y booleanos, convoluciones y estadísticas focales, y transformaciones espectrales y análisis de textura espacial. Navegue por la lista, o lea sobre las operaciones generales disponibles en el <a href="https://developers.google.com/earth-engine/image_overview">GEE Developer’s Guide “Image Overview”” section</a>.</p>
+
+<p>A menudo, queremos usar una función sobre cada imagen de una Image Collection. Para ello, necesitamos esencialmente “hacer un bucle” a través de cada imagen de la colección de imágenes. En GEE, los “bucles” se realizan con la función .map().</p>
+
+<p><strong>Evitar los bucles reales a toda costa.</strong> Usar un bucle for lleva la operación al navegador (mala práctica). Usando imageCollection.map() envía la operación a los servidores de Google para las ejecuciones distribuidas (buena práctica). Los bucles implementados de forma típica para la sentencia for, llevan la operación al navegador, y no funcionan bien, si es que funciona.</p>
+
+<p>Se puede encontrar más información sobre la aplicación de funciones a las Image collection <a href="https://developers.google.com/earth-engine/ic_mapping">here in the Developer’s Guide</a>.</p>
+
+<p>El concepto .map() se aplica también a las <code class="language-plaintext highlighter-rouge">featureCollections</code> - para aplicar una función a cada característica de una colección, aplicamos esa función a través de la featureCollection con la featureCollection.map(). Ver <a href="https://developers.google.com/earth-engine/feature_collection_mapping">“Mapping over a Feature Collection”</a> en la Guía del Desarrollador.</p>
+
+<h3 id="enmascarar-nubes">Enmascarar nubes</h3>
+<p>Aquí, haremos uso de la banda <code class="language-plaintext highlighter-rouge">pixel_qa</code> que se proporciona con los productos SR para enmascarar los píxeles con nubes, sombras de nubes y nieve. Enmascararemos los píxeles de la imagen basándonos en el valor de pixel_qa.</p>
+
+<p>Definimos explícitamente una nueva función llamada “maskClouds” y la aplicamos a cada imagen de la imageCollection utilizando <code class="language-plaintext highlighter-rouge">imageCollection.map()</code>. Las funciones necesitan explícitamente <strong>return</strong> la salida final.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// Enmascarar píxeles con nubes y sombras de nubes -------------------------------------</span>
+
+<span class="c1">// Los productos de reflectancia superficial vienen con una banda 'pixel_qa'.</span>
+<span class="c1">// que se basa en la cfmask. Lea más aquí:</span>
+<span class="c1">// https://landsat.usgs.gov/landsat-surface-reflectance-quality-assessment</span>
+
+<span class="c1">// crear la función de enmascarar nubes, sombras de nubes, nieve</span>
+<span class="kd">var</span> <span class="nx">maskClouds</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">image</span><span class="p">){</span>
+  <span class="c1">// make a new single band image from the pixel qa band</span>
+  <span class="kd">var</span> <span class="nx">pixel_qa</span> <span class="o">=</span> <span class="nx">image</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="dl">'</span><span class="s1">pixel_qa</span><span class="dl">'</span><span class="p">);</span>
+  <span class="c1">// keep clear (0) and water (1) pixels</span>
+  <span class="k">return</span> <span class="nx">image</span><span class="p">.</span><span class="nx">updateMask</span><span class="p">(</span><span class="nx">pixel_qa</span><span class="p">.</span><span class="nx">eq</span><span class="p">(</span><span class="mi">322</span><span class="p">));</span>   
+<span class="p">};</span>
+
+<span class="c1">// usar "map" para aplicar la función a cada imagen de la colección</span>
+<span class="kd">var</span> <span class="nx">l8masked</span> <span class="o">=</span> <span class="nx">l8collection</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">maskClouds</span><span class="p">);</span>
+
+<span class="c1">// visualizar la primera imagen de la colección, antes y después de la máscara</span>
+<span class="kd">var</span> <span class="nx">visParams</span> <span class="o">=</span> <span class="p">{</span><span class="na">bands</span><span class="p">:</span> <span class="p">[</span><span class="dl">'</span><span class="s1">B4</span><span class="dl">'</span><span class="p">,</span><span class="dl">'</span><span class="s1">B3</span><span class="dl">'</span><span class="p">,</span><span class="dl">'</span><span class="s1">B2</span><span class="dl">'</span><span class="p">],</span> <span class="na">min</span><span class="p">:</span> <span class="mi">150</span><span class="p">,</span> <span class="na">max</span><span class="p">:</span> <span class="mi">2000</span><span class="p">}</span>
+
+<span class="nb">Map</span><span class="p">.</span><span class="nx">addLayer</span><span class="p">(</span><span class="nx">ee</span><span class="p">.</span><span class="nx">Image</span><span class="p">(</span><span class="nx">l8masked</span><span class="p">.</span><span class="nx">first</span><span class="p">()),</span> <span class="nx">visParams</span><span class="p">,</span> <span class="dl">'</span><span class="s1">clouds masked</span><span class="dl">'</span><span class="p">,</span> <span class="kc">false</span><span class="p">)</span>
+<span class="nb">Map</span><span class="p">.</span><span class="nx">addLayer</span><span class="p">(</span><span class="nx">ee</span><span class="p">.</span><span class="nx">Image</span><span class="p">(</span><span class="nx">l8collection</span><span class="p">.</span><span class="nx">first</span><span class="p">()),</span> <span class="nx">visParams</span><span class="p">,</span> <span class="dl">'</span><span class="s1">original</span><span class="dl">'</span><span class="p">,</span> <span class="kc">false</span><span class="p">)</span></code></pre></figure>
+
+<p><br />
+<img src="../fig/03_masked.png" border="10" />
+<br /><br /></p>
+
+<h3 id="calcular-el-índice-ndvi-como-una-nueva-banda">Calcular el índice NDVI como una nueva banda</h3>
+<p>Del mismo modo, si queremos calcular el NDVI en cada imagen y añadirlo como una nueva banda, tenemos que crear una función y mapearla sobre la colección. Aquí, usamos la función <code class="language-plaintext highlighter-rouge">normalizedDifference()</code>. <a href="https://developers.google.com/earth-engine/image_math">Mathematical Operations page in the GEE Developer’s Guide</a> proporciona más información sobre cálculos raster simples y complejos.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// crear una función para añadir el NDVI usando la banda NIR (B5) y roja (B4)</span>
+<span class="kd">var</span> <span class="nx">getNDVI</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">img</span><span class="p">){</span>
+  <span class="k">return</span> <span class="nx">img</span><span class="p">.</span><span class="nx">addBands</span><span class="p">(</span><span class="nx">img</span><span class="p">.</span><span class="nx">normalizedDifference</span><span class="p">([</span><span class="dl">'</span><span class="s1">B5</span><span class="dl">'</span><span class="p">,</span><span class="dl">'</span><span class="s1">B4</span><span class="dl">'</span><span class="p">]).</span><span class="nx">rename</span><span class="p">(</span><span class="dl">'</span><span class="s1">NDVI</span><span class="dl">'</span><span class="p">));</span>
+<span class="p">};</span>
+
+<span class="c1">// ejemplo extra: una función equivalente usando álgebra de mapas</span>
+<span class="kd">var</span> <span class="nx">getNDVI2</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">img</span><span class="p">){</span>
+  <span class="k">return</span> <span class="nx">img</span><span class="p">.</span><span class="nx">addBands</span><span class="p">(</span><span class="nx">img</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="dl">'</span><span class="s1">B5</span><span class="dl">'</span><span class="p">).</span><span class="nx">subtract</span><span class="p">(</span><span class="nx">img</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="dl">'</span><span class="s1">B4</span><span class="dl">'</span><span class="p">))</span>
+            <span class="p">.</span><span class="nx">divide</span><span class="p">(</span><span class="nx">img</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="dl">'</span><span class="s1">B5</span><span class="dl">'</span><span class="p">).</span><span class="nx">add</span><span class="p">(</span><span class="nx">img</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="dl">'</span><span class="s1">B3</span><span class="dl">'</span><span class="p">))));</span>
+<span class="p">};</span>
+
+<span class="c1">// aplicar la función sobre la image collection</span>
+<span class="kd">var</span> <span class="nx">l8ndvi</span> <span class="o">=</span> <span class="nx">l8masked</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">getNDVI</span><span class="p">);</span>
+
+<span class="c1">// imprime una imagen para ver que la banda está ahora allí</span>
+<span class="nx">print</span><span class="p">(</span><span class="nx">ee</span><span class="p">.</span><span class="nx">Image</span><span class="p">(</span><span class="nx">l8ndvi</span><span class="p">.</span><span class="nx">first</span><span class="p">()));</span></code></pre></figure>
+
+<h3 id="crear-un-composite-greenest-pixel">Crear un Composite “Greenest Pixel”</h3>
+<p>Ahora necesitamos reunir la Image Collection para crear una imagen continua a través de la cuenca. Hay varias opciones de mosaico/composición disponibles, desde simples composiciones de valor máximo (<code class="language-plaintext highlighter-rouge">imageCollection.max()</code>) y mosaicos sencillos con la imagen más reciente (<code class="language-plaintext highlighter-rouge">imageCollection.mosaic()</code>).   <a href="https://developers.google.com/earth-engine/ic_composite_mosaic">Compositing and Mosaicking page on the Developer’s Guide</a> proporciona ejemplos de estos.</p>
+
+<p>Aquí, usaremos la función <code class="language-plaintext highlighter-rouge">imageCollection.qualityMosaic()</code>. Al priorizar la imagen a utilizar en base a una banda específica, este método asegura que los valores de todas las bandas se tomen de la misma imagen. A cada píxel se le asignan los valores de la imagen con el valor más alto de la banda deseada.</p>
+
+<p>Usaremos esto para hacer un “greenest pixel composite” para nuestra cuenca basado en la banda del NDVI que acabamos de calcular. La imagen compuesta final retendrá todas las bandas en la entrada (a menos que especifiquemos lo contrario). Cada píxel en la imagen compuesta podría potencialmente provenir de imágenes adquiridas en fechas diferentes, pero todas las bandas dentro de cada píxel son de la misma imagen. En general, esto proporciona la mejor instantánea disponible del paisaje en el pico de la temporada de crecimiento, independientemente del momento fenológico dentro del año.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// para cada pixel, seleccione el "mejor" conjunto de bandas de las imágenes disponibles</span>
+<span class="c1">// basado en el máximo NDVI/greenness</span>
+<span class="kd">var</span> <span class="nx">composite</span> <span class="o">=</span> <span class="nx">l8ndvi</span><span class="p">.</span><span class="nx">qualityMosaic</span><span class="p">(</span><span class="dl">'</span><span class="s1">NDVI</span><span class="dl">'</span><span class="p">).</span><span class="nx">clip</span><span class="p">(</span><span class="nx">watershed</span><span class="p">);</span>
+<span class="nx">print</span><span class="p">(</span><span class="nx">composite</span><span class="p">);</span>
+
+<span class="c1">// Visualizar el NDVI</span>
+<span class="kd">var</span> <span class="nx">ndviPalette</span> <span class="o">=</span> <span class="p">[</span><span class="dl">'</span><span class="s1">FFFFFF</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">CE7E45</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">DF923D</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">F1B555</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">FCD163</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">99B718</span><span class="dl">'</span><span class="p">,</span>
+               <span class="dl">'</span><span class="s1">74A901</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">66A000</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">529400</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">3E8601</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">207401</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">056201</span><span class="dl">'</span><span class="p">,</span>
+               <span class="dl">'</span><span class="s1">004C00</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">023B01</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">012E01</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">011D01</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">011301</span><span class="dl">'</span><span class="p">];</span>
+<span class="nb">Map</span><span class="p">.</span><span class="nx">addLayer</span><span class="p">(</span><span class="nx">composite</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="dl">'</span><span class="s1">NDVI</span><span class="dl">'</span><span class="p">),</span>
+            <span class="p">{</span><span class="na">min</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span> <span class="na">max</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="na">palette</span><span class="p">:</span> <span class="nx">ndviPalette</span><span class="p">},</span> <span class="dl">'</span><span class="s1">ndvi</span><span class="dl">'</span><span class="p">);</span></code></pre></figure>
+
+<p>El máximo anual de NDVI a través de esta cuenca hidrográfica destaca las zonas agrícolas de regadío:</p>
+
+<p><br />
+<img src="../fig/03_ndvi.png" border="10" />
+<br /><br /></p>
+
+<p>También podemos usar esta imagen compuesta para visualizar una composición de color verdadero usando las bandas RGB:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// Visualizar el compuesto en color verdadero </span>
+<span class="nb">Map</span><span class="p">.</span><span class="nx">addLayer</span><span class="p">(</span><span class="nx">composite</span><span class="p">,</span> <span class="p">{</span><span class="na">bands</span><span class="p">:</span> <span class="p">[</span><span class="dl">'</span><span class="s1">B4</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">B3</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">B2</span><span class="dl">'</span><span class="p">],</span> <span class="na">min</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="na">max</span><span class="p">:</span> <span class="mi">2000</span><span class="p">},</span> <span class="dl">'</span><span class="s1">true color composite</span><span class="dl">'</span><span class="p">,</span> <span class="kc">false</span><span class="p">);</span></code></pre></figure>
+
+<p><br />
+<img src="../fig/03_tcc.png" border="10" />
+<br /><br /></p>
+
+<h3 id="visualizar-los-resultados-en-un-gráfico">Visualizar los resultados en un gráfico</h3>
+<p>Para ilustrar brevemente la capacidad de GEE de generar gráficos de datos, cargamos el producto de datos MODIS NDVI para trazar la serie temporal anual de NDVI medio de nuestra cuenca. La generación de gráficos también está cubierto en el <a href="https://hasencios.github.io/GEE_BASICO_SENAMHI/04-reducers/">módulo 04 Reductores espaciales y temporales</a>.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// Gráfico de series temporales anuales del NDVI medio en la cuenca</span>
+<span class="c1">// de nuestro compuesto calculado de Landsat 8</span>
+<span class="kd">var</span> <span class="nx">chart</span> <span class="o">=</span> <span class="nx">ui</span><span class="p">.</span><span class="nx">Chart</span><span class="p">.</span><span class="nx">image</span><span class="p">.</span><span class="nx">series</span><span class="p">({</span>
+    <span class="na">imageCollection</span><span class="p">:</span> <span class="nx">l8ndvi</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="dl">'</span><span class="s1">NDVI</span><span class="dl">'</span><span class="p">),</span>
+    <span class="na">region</span><span class="p">:</span> <span class="nx">watershed</span><span class="p">,</span>
+    <span class="na">reducer</span><span class="p">:</span> <span class="nx">ee</span><span class="p">.</span><span class="nx">Reducer</span><span class="p">.</span><span class="nx">mean</span><span class="p">(),</span>
+    <span class="na">scale</span><span class="p">:</span> <span class="mi">250</span><span class="p">,</span>
+<span class="p">})</span>
+<span class="nx">print</span><span class="p">(</span><span class="nx">chart</span><span class="p">)</span>  <span class="c1">//** Puede exportar la figura o los datos en la ventana</span>
+
+
+<span class="c1">// También se puede comparar con el producto MODIS de 16 días</span>
+
+<span class="c1">// añadir series temporales de satélites: producto MODIS NDVI 250m de 16 días</span>
+<span class="kd">var</span> <span class="nx">modis</span> <span class="o">=</span> <span class="nx">ee</span><span class="p">.</span><span class="nx">ImageCollection</span><span class="p">(</span><span class="dl">'</span><span class="s1">MODIS/006/MOD13Q1</span><span class="dl">'</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">filterBounds</span><span class="p">(</span><span class="nx">watershed</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">filterDate</span><span class="p">(</span><span class="dl">'</span><span class="s1">2017-01-01</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">2017-12-31</span><span class="dl">'</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="dl">'</span><span class="s1">NDVI</span><span class="dl">'</span><span class="p">);</span>
+
+<span class="c1">// Gráfico de series temporales anuales del NDVI medio en la cuenca</span>
+<span class="c1">// del producto suavizado MODIS 16 días</span>
+<span class="kd">var</span> <span class="nx">chart</span> <span class="o">=</span> <span class="nx">ui</span><span class="p">.</span><span class="nx">Chart</span><span class="p">.</span><span class="nx">image</span><span class="p">.</span><span class="nx">series</span><span class="p">({</span>
+    <span class="na">imageCollection</span><span class="p">:</span> <span class="nx">modis</span><span class="p">,</span>
+    <span class="na">region</span><span class="p">:</span> <span class="nx">watershed</span><span class="p">,</span>
+    <span class="na">reducer</span><span class="p">:</span> <span class="nx">ee</span><span class="p">.</span><span class="nx">Reducer</span><span class="p">.</span><span class="nx">mean</span><span class="p">(),</span>
+    <span class="na">scale</span><span class="p">:</span> <span class="mi">250</span>
+<span class="p">})</span>
+<span class="nx">print</span><span class="p">(</span><span class="nx">chart</span><span class="p">)</span></code></pre></figure>
+
+<p>Tenga en cuenta que puede exportar los datos subyacentes del gráfico mediante el icono de la flecha que aparece…
+<br />
+<img src="../fig/03_chart.png" border="10" width="50%" height="50%" />
+<br /><br /></p>
+
+<h3 id="exportar-los-resultados-como-una-table">Exportar los resultados como una Table</h3>
+<p>La manera más eficiente de obtener datos de GEE es en una tabla. Esta forma tiene el beneficio de estar codificada y por lo tanto ser totalmente reproducible. Exportar tablas también requiere mucha menos potencia de cálculo que exportar una imagen completa. Cuando realices un análisis, piensa bien en cómo puedes dejar el raster en la nube y extraer los datos que necesitas como una matriz.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// Use los botones de la tabla emergente para exportar el .csv, o puede hacer un guión</span>
+<span class="c1">// la exportación como sigue utilizando un reductor:</span>
+
+<span class="c1">// obtener el valor medio de la región de cada imagen</span>
+<span class="kd">var</span> <span class="nx">ts</span> <span class="o">=</span> <span class="nx">modis</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">image</span><span class="p">){</span>
+  <span class="kd">var</span> <span class="nx">date</span> <span class="o">=</span> <span class="nx">image</span><span class="p">.</span><span class="kd">get</span><span class="p">(</span><span class="dl">'</span><span class="s1">system:time_start</span><span class="dl">'</span><span class="p">);</span>
+  <span class="kd">var</span> <span class="nx">mean</span> <span class="o">=</span> <span class="nx">image</span><span class="p">.</span><span class="nx">reduceRegion</span><span class="p">({</span>
+    <span class="na">reducer</span><span class="p">:</span> <span class="nx">ee</span><span class="p">.</span><span class="nx">Reducer</span><span class="p">.</span><span class="nx">mean</span><span class="p">(),</span>
+    <span class="na">geometry</span><span class="p">:</span> <span class="nx">watershed</span><span class="p">,</span>
+    <span class="na">scale</span><span class="p">:</span> <span class="mi">250</span>
+  <span class="p">});</span>
+  <span class="c1">// y devuelve una característica con geometría 'null' con propiedades (dictionary)  </span>
+  <span class="k">return</span> <span class="nx">ee</span><span class="p">.</span><span class="nx">Feature</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="p">{</span><span class="dl">'</span><span class="s1">mean</span><span class="dl">'</span><span class="p">:</span> <span class="nx">mean</span><span class="p">.</span><span class="kd">get</span><span class="p">(</span><span class="dl">'</span><span class="s1">NDVI</span><span class="dl">'</span><span class="p">),</span>
+                            <span class="dl">'</span><span class="s1">date</span><span class="dl">'</span><span class="p">:</span> <span class="nx">date</span><span class="p">})</span>
+<span class="p">});</span>
+
+<span class="c1">// Exportar una tabla de fecha .csv, media NDVI para la cuenca</span>
+<span class="nx">Export</span><span class="p">.</span><span class="nx">table</span><span class="p">.</span><span class="nx">toDrive</span><span class="p">({</span>
+  <span class="na">collection</span><span class="p">:</span> <span class="nx">ts</span><span class="p">,</span>
+  <span class="na">description</span><span class="p">:</span> <span class="dl">'</span><span class="s1">SENAMHI_2017_MODIS_NDVI_stats</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">folder</span><span class="p">:</span> <span class="dl">'</span><span class="s1">GEE_SENAMHI</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">fileFormat</span><span class="p">:</span> <span class="dl">'</span><span class="s1">CSV</span><span class="dl">'</span>
+<span class="p">});</span>
+
+<span class="c1">// Y PULSE "RUN" EN LA PESTAÑA DE TAREAS EN EL PANEL SUPERIOR DERECHO</span></code></pre></figure>
+
+<p>Para ejecutar las tareas de exportar, debes ir a la pestaña ‘Tasks’ en el panel superior derecho y presionar ‘Run’.</p>
+
+<p><br />
+<img src="../fig/03_runTask.png" border="10" width="50%" height="50%" />
+<br /><br /></p>
+
+<h3 id="exportar-images">Exportar Images</h3>
+<p>Los usuarios pueden exportar los resultados de sus manipulaciones de imágenes a su carpeta de activos de GEE para su uso posterior dentro de la plataforma o a sus cuentas personales de Google Drive o de Google Cloud Storage. Aquí, exportaremos una imagen de una sola banda de NDVI máximo anual para nuestra cuenca. Se proporcionaran ejemplos para exportar a Google Drive. Se puede encontrar más información sobre exportar
+ <a href="https://developers.google.com/earth-engine/exporting">here in the Developers Guide</a>.</p>
+
+<p>En la API de JavaScript, lo que se quiera exportar se envía a la pestaña ‘Tasks’ en el panel superior derecho. Para evitar que los usuarios inunden el sistema inadvertidamente con tareas gratuitas y accidentales, es necesario ejecutar explícitamente la tarea individualmente desde la pestaña ‘Task’. Puede cambiar los nombres de los archivos y otros parámetros aquí, si es necesario, o codificarlos en su script.</p>
+
+<p>Al exportar a Google Drive, GEE encontrará la carpeta con el nombre especificado y no necesita la ruta de archivo completa. Si esta carpeta aún no existe, la creará en tu unidad.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// La exportación es innecesaria, pero aquí están los ejemplos de código para salvar un</span>
+<span class="c1">// imagen compuesta si se desea.  </span>
+
+<span class="c1">// seleccione sólo la banda de ndvi</span>
+<span class="kd">var</span> <span class="nx">ndvi</span> <span class="o">=</span> <span class="nx">composite</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="dl">'</span><span class="s1">NDVI</span><span class="dl">'</span><span class="p">);</span>
+
+<span class="c1">// Ejemplo de exportación a Google Drive</span>
+<span class="c1">// (nota: hay que pulsar 'Run' en la pestaña de tareas en el panel superior derecho)</span>
+<span class="nx">Export</span><span class="p">.</span><span class="nx">image</span><span class="p">.</span><span class="nx">toDrive</span><span class="p">({</span>
+  <span class="na">image</span><span class="p">:</span> <span class="nx">ndvi</span><span class="p">,</span>
+  <span class="na">description</span><span class="p">:</span> <span class="dl">'</span><span class="s1">SENAMHI_2017_L8_NDVI_image</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">scale</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span>
+  <span class="na">region</span><span class="p">:</span> <span class="nx">watershed</span><span class="p">.</span><span class="nx">geometry</span><span class="p">().</span><span class="nx">bounds</span><span class="p">(),</span> <span class="c1">// .geometry().bounds() needed for multipolygon</span>
+  <span class="na">crs</span><span class="p">:</span> <span class="dl">'</span><span class="s1">EPSG:5070</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">folder</span><span class="p">:</span> <span class="dl">'</span><span class="s1">GEE_SENAMHI</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">maxPixels</span><span class="p">:</span> <span class="mi">2000000000</span>
+<span class="p">});</span>
+
+<span class="c1">// Ejemplo de exportación de una carpeta de assets</span>
+<span class="c1">// (nota: hay que pulsar 'Run' en la pestaña de tareas en el panel superior derecho)</span>
+<span class="nx">Export</span><span class="p">.</span><span class="nx">image</span><span class="p">.</span><span class="nx">toAsset</span><span class="p">({</span>
+  <span class="na">image</span><span class="p">:</span> <span class="nx">ndvi</span><span class="p">,</span>
+  <span class="na">description</span><span class="p">:</span> <span class="dl">'</span><span class="s1">SENAMHI_2017_L8_NDVI_image</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">assetId</span><span class="p">:</span> <span class="dl">'</span><span class="s1">users/yourname/SENAMHI_2017_L8_NDVI_image</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">scale</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span>
+  <span class="na">region</span><span class="p">:</span> <span class="nx">watershed</span><span class="p">.</span><span class="nx">geometry</span><span class="p">().</span><span class="nx">bounds</span><span class="p">(),</span>
+  <span class="na">pyramidingPolicy</span><span class="p">:</span> <span class="p">{</span><span class="dl">'</span><span class="s1">.default</span><span class="dl">'</span><span class="p">:</span><span class="dl">'</span><span class="s1">mean</span><span class="dl">'</span><span class="p">},</span> <span class="c1">// use {'.default':'sample'} for discrete data</span>
+  <span class="na">maxPixels</span><span class="p">:</span> <span class="mi">2000000000</span>
+<span class="p">});</span></code></pre></figure>
+
+<p>Se puede acceder a una versión estática del script aquí: <a href="https://code.earthengine.google.com/8418ba2b48095a765720d79982bcfab7">https://code.earthengine.google.com/8418ba2b48095a765720d79982bcfab7</a></p>
+:ET

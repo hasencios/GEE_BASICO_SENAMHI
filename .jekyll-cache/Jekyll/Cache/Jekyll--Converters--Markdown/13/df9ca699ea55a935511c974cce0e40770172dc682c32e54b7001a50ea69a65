@@ -1,0 +1,260 @@
+I"�d<h1 id="vista-general-del-code-editor">Vista general del Code Editor</h1>
+
+<p>GEE tiene un entorno de desarrollo integrado (IDE) llamado Editor de código. El Editor de código tiene varias características para ayudar a hacer más fácil la programación en este entorno que exploraremos en este tutorial. Para una descripción exhaustiva, véase el <a href="https://developers.google.com/earth-engine/playground#api-reference-docs-tab" target="_blank">Earth Engine Code Editor help page</a> en las guías de usuario de GEE.</p>
+
+<h1 id="ejercicios-explorando-el-code-editor">Ejercicios: Explorando el Code Editor</h1>
+
+<h2 id="1-para-empezar">1. Para empezar</h2>
+
+<p><strong>Para acceder al Code Editor, escribe la siguiente url en tu navegador: <a href="https://code.earthengine.google.com" target="_blank">https://code.earthengine.google.com</a></strong>. Debería aparecer una interfaz de programación web como la siguiente. El siguiente diagrama tiene anotaciones que apuntan a muchas de las funcionalidades que cubriremos hoy.</p>
+
+<p><br />
+<img src="../fig/02_codeeditor.png" border="10" />
+<br /><br /></p>
+
+<h4 id="la-ventana-del-javascript-code-editor">La ventana del JavaScript Code Editor</h4>
+
+<p>El código Javascript está escrito en esta ventana. El editor también tiene algunas funciones de ayuda, incluyendo autocompletar para las funciones GEE, autocompletar para los paréntesis, etc. y algunas sugerencias básicas de subrayado y sintaxis.</p>
+
+<p>Por ejemplo, puedes escribir comentarios usando una doble barra. Escriba lo siguiente en su editor y haga clic en el botón “Run”.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// Esto es sólo un comentario.</span></code></pre></figure>
+
+<h4 id="la-pestaña-de-la-consola">La pestaña de la consola</h4>
+
+<p>También se puede usar <code class="language-plaintext highlighter-rouge">print()</code> para mostrar los objetos en la consola. Escriba esto y haga clic en “Run”:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// Imprime algo en la consola</span>
+<span class="nx">print</span><span class="p">(</span><span class="dl">"</span><span class="s2">Hola Mundo!</span><span class="dl">"</span><span class="p">);</span></code></pre></figure>
+
+<h4 id="sugerencia-automática">Sugerencia automática</h4>
+
+<p>El editor marcará las declaraciones como incompletas <strong><code class="language-plaintext highlighter-rouge">i</code></strong> si escribes sin un punto y coma al final. Puedes controlar estas sugerencias yendo a la pequeña rueda gris en la parte superior derecha de la página y activándola o desactivándola.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">print</span><span class="p">(</span><span class="dl">"</span><span class="s2">Hola Mundo!</span><span class="dl">"</span><span class="p">);</span></code></pre></figure>
+
+<p><br /></p>
+
+<h2 id="2-guardar-y-compartir-scripts">2. Guardar y compartir Scripts</h2>
+
+<h4 id="guardando-scripts">Guardando Scripts</h4>
+
+<p>Guarde los scripts haciendo clic en el botón <strong>Save</strong>. Para incluir un mensaje de confirmación, usar la flecha desplegable y selecciona “Save with a description”.  Los mensajes se almacenan en el historial de revisiones de cada script guardado.</p>
+
+<p><br />
+<img src="../fig/02_getlink.png" border="10" width="75%" height="75%" />
+<br /><br /></p>
+
+<p><em>Note: Si no hiciste ningún cambio en el script, el botón</em> <strong>Save</strong> <em>se oscurecerá.</em></p>
+
+<p>Si se observa en el panel superior izquierdo, se podrá ver que el script está ahora guardado en tu gestor de <strong>Scripts</strong>. Tienes tres categorías de scripts: privado, compartido y ejemplos. Cada script está respaldado en Git. Si pasas el ratón por encima del nombre del script, aparecerán tres iconos que te permitirán volver a versiones anteriores, renombrar o eliminar el script. También puedes crear carpetas y hacer clic y arrastrar los scripts a esos directorios.</p>
+
+<p><em>Nota/advertencia: Si cambias el nombre de un script, su historial de revisiones desaparece.</em></p>
+
+<h4 id="compartiendo-scripts">Compartiendo Scripts</h4>
+<p>Puedes compartir una versión estática de los scripts haciendo clic en <strong>Get Link</strong>. Aparecerá una url en el campo de dirección de tu navegador. Comparte este enlace para dar a otras personas acceso a tu script como <em>it is</em>. Si continúas haciendo ediciones en este script, no se actualizarán en la versión enlazada. Esta opción es útil para compartir ejemplos e instantáneas de scripts con otras personas.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>**Consejo importante: Cuando se publique en el foro de ayuda, incluye SIEMPRE el enlace de tu script para que la gente pueda ayudarte a solucionar el
+problema. Asegúrate de que todos los assets personales que utilices sean compartidos públicamente para que el script se ejecute para otros.**
+</code></pre></div></div>
+
+<h4 id="únete-al-repositorio-compartido">Únete al repositorio compartido</h4>
+
+<p>Para colaborar de forma interactiva en el desarrollo de los scripts con otros usuarios, puede crear una carpeta compartida, invitar a sus colaboradores y colocar los scripts en esa carpeta. Hemos creado una carpeta compartida para el desarrollo de este curso.</p>
+
+<p>Usted debería de haber accedido al repositorio de scripts compartidos en el Code Editor con los siguientes pasos:</p>
+
+<!-- 
+  - Únase al grupo de Google Earth Engine SENAMHI haciendo clic en este enlace. <a href="https://goo.gl/JsnWZH" target="_blank">https://goo.gl/JsnWZH</a> . No se preocupe por los permisos de publicación. -->
+<ul>
+  <li>Acceder al repositorio compartido haciendo clic en este enlace: <a href="https://code.earthengine.google.com/?accept_repo=users/hasencios/GEE_BASICO_SENAMHI" target="_blank">https://code.earthengine.google.com/?accept_repo=users/hasencios/GEE_BASICO_SENAMHI</a></li>
+  <li>En el Code Editor, vaya a la pestaña <strong>Scripts</strong> en el panel superior izquierdo, desplázate hacia abajo y expande la sección “Shared”. Un directorio llamado <em>GEE_BASIC_SENAMHI</em> debería aparecer con versiones de sólo lectura de los scripts completos de cada episodio.</li>
+</ul>
+
+<p>Cualquier actualización se reflejará en estas versiones del script. Como todos los scripts GEE, estas son versiones controladas. Los permisos de lectura o escritura para individuos o grupos se pueden establecer en el Code Editor usando el pequeño icono gris de compartir que aparece a la derecha si pasas el ratón por encima del nombre del directorio en la pestaña <em>Scripts</em>. Deberías tener acceso de sólo lectura a este repositorio.</p>
+
+<p><br /></p>
+
+<h2 id="3-accediendo-a-la-base-de-datos-de-la-nube-de-google">3. Accediendo a la base de datos de la nube de Google</h2>
+
+<h4 id="barra-de-herramientas-de-búsqueda-encontrar-una-base-de-datos-y-cargarla-como-imagecollections">Barra de herramientas de búsqueda: Encontrar una base de datos y cargarla como <code class="language-plaintext highlighter-rouge">ImageCollections</code></h4>
+
+<p>Para consultar el <a href="https://code.earthengine.google.com/datasets/" target="_blank">GEE data catalog</a>, puedes introducir palabras clave en la barra de búsqueda en la parte superior del Code Editor.</p>
+
+<p>Para practicar, carguemos algunas imágenes en el Code Editor. Vamos a buscar e importar el producto <strong>Landsat Top of the Atmosphere (TOA) Reflectance Collection 1 Tier 1</strong>.</p>
+<ul>
+  <li>Para hacer esto, ve a la barra de herramientas <em>Search</em> y escribe <strong>Landsat 8 tier 1 TOA</strong>.</li>
+  <li>Seleccione la base de datos - USGS Landsat 8 Collection 1 Tier 1 TOA Reflectance - haciendo clic en el nombre. Esto cargará los metadatos para esta colección de datos. Puedes confirmar que tienes el correcto porque el “ImageCollection ID” debe decir <strong>LANDSAT/LC08/C01/T1_TOA</strong></li>
+  <li>Ahora, haz clic en <strong>Import</strong> en la ventana emergente. Una nueva variable (<code class="language-plaintext highlighter-rouge">ImageCollection</code>) se cargará en el panel “Imports” en la parte superior del Code Editor.</li>
+  <li>Renombre este objeto como “L8_TOA”. Este objeto es una <code class="language-plaintext highlighter-rouge">ImageCollection</code>, lo que significa que es una pila de imágenes. Fíjese que tenemos que declarar este objeto usando <em>var</em>. Si haces clic en el pequeño icono cuadrado azul encima de la colección, aparecerá un ventana emergente mostrando el código que acabas de crear.</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">landsat8Collection</span> <span class="o">=</span> <span class="nx">ee</span><span class="p">.</span><span class="nx">ImageCollection</span><span class="p">(</span><span class="dl">"</span><span class="s2">LANDSAT/LC08/C01/T1_TOA</span><span class="dl">"</span><span class="p">)</span></code></pre></figure>
+
+<p>Para ver la colección, intenta imprimirla como hiciste con el string.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">print</span><span class="p">(</span><span class="nx">landsat8Collection</span><span class="p">);</span></code></pre></figure>
+
+<p><strong>¿Qué ocurre?</strong></p>
+
+<p>Earth Engine se demora - esto significa que su petición es demasiado grande, lo que tiene sentido ya que hay miles de imágenes en la colección de Landsat 8. Para evitar esto, intenta lo siguiente:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">print</span><span class="p">(</span><span class="nx">landsat8Collection</span><span class="p">.</span><span class="nx">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span></code></pre></figure>
+
+<p>Esto te mostrará sólo las primeras cinco imágenes para que puedas ver la colección. Puedes ver el ID de la colección, las bandas, las características, cuáles son las imágenes de la colección y sus propiedades o metadatos.</p>
+
+<p><em>Nota: Los desarrolladores siempre están agregando nuevas funcionalidades a la interfaz gráfica de usuario para que no tengamos que codificar. Como resultado, a veces habrá un método de apuntar y hacer clic para hacer algo que también se puede lograr escribiendo una o dos líneas de código. La función de “import” es un gran ejemplo de esto porque puedes importar una colección usando el botón “Import” en los metadatos o el comando “ImageCollection” escrito en JavaScript. Lo mismo, de dos maneras.</em></p>
+
+<h4 id="seleccionar-un-área-de-estudio-usando-la-herramienta-geometry">Seleccionar un área de estudio usando la herramienta Geometry</h4>
+
+<p>Las herramientas de dibujo geométrico situadas en la parte superior izquierda del visor de mapas pueden utilizarse para crear manualmente puntos, líneas o polígonos. Ahora vamos a definir un área de estudio usando un punto que seleccionamos en el mapa. Utilizaremos las <strong>Geometry Tools</strong> para crear ese objeto.</p>
+
+<ol>
+  <li>Escriba “Lake Powell, AZ” en la barra de herramientas de búsqueda y pulse intro. Esto te llevará a Lake Powell en Arizona, EE.UU.</li>
+  <li>En el lado izquierdo del mapa, haz clic en el pequeño icono del marcador. El cursor se convertirá en una cruz.</li>
+  <li>Cambia el mapa y deja caer el cursor en el centro del lago, que está justo al lado de Lee Vining.</li>
+  <li>Ahora, ve a la ventana Geometry Imports que ha aparecido. En esa ventana, nombre el punto “roi” y cambie el desplegable de <strong>Geometry</strong> a <strong>FeatureCollection</strong>.</li>
+</ol>
+
+<p>Ahora ha creado un nuevo objeto punto y lo ha cargado como una <code class="language-plaintext highlighter-rouge">FeatureCollection</code>. Ahora puede usar esta <code class="language-plaintext highlighter-rouge">FeatureCollection</code> como una forma de filtrar geográficamente conjuntos de datos sólo para tu región.</p>
+
+<p><br />
+<img src="../fig/02_lakeJunin.png" border="10" />
+<br /><br /></p>
+
+<p>¿Divertido? Puedes explorar más a fondo cómo configurar las geometrías en la sección <a href="https://hasencios.github.io/GEE_BASICO_SENAMHI/05-classify-imagery/" target="_blank">Clasificación Supervisada de Imágenes de Satélite</a> de este tutorial.</p>
+
+<h4 id="filtrar-la-image-collection">Filtrar la Image Collection</h4>
+
+<p>Uno de los mayores beneficios de la API de JavaScript frente a la de Python es la capacidad de renderizar rápidamente sobre la marcha geovisualizaciones de sus imágenes y resultados. Ahora vamos a visualizar una imagen de la colección de Landsat 8.</p>
+
+<p>Vamos a filtrar la colección a una imagen por:</p>
+
+<ul>
+  <li>filtrándolo a nuestra área de estudio que definimos con un punto</li>
+  <li>filtrándolo hasta sólo un año de imágenes (2018)</li>
+  <li>clasificando las imágenes por la cobertura total de nubes (de menos nubes a más nubes)</li>
+  <li>eligiendo la imagen superior (menos nublada)</li>
+</ul>
+
+<p>En esencia, esto nos permite ordenar la colección completa de Landsat 8 y cargar la mejor imagen disponible para nuestra región de interés para el 2018.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// Cargar imágenes de Landsat 8</span>
+<span class="kd">var</span> <span class="nx">image</span> <span class="o">=</span> <span class="nx">ee</span><span class="p">.</span><span class="nx">Image</span><span class="p">((</span><span class="nx">landsat8Collection</span><span class="p">)</span>
+    <span class="c1">// Filter to get only images under the region of interest.</span>
+    <span class="p">.</span><span class="nx">filterBounds</span><span class="p">(</span><span class="nx">lakeJunin</span><span class="p">)</span>
+    <span class="c1">// Filter to get only one year of images.</span>
+    <span class="p">.</span><span class="nx">filterDate</span><span class="p">(</span><span class="dl">'</span><span class="s1">2018-01-01</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">2018-12-31</span><span class="dl">'</span><span class="p">)</span>
+    <span class="c1">// Select just the optical bands</span>
+    <span class="p">.</span><span class="nx">select</span><span class="p">([</span><span class="dl">'</span><span class="s1">B[1-7]</span><span class="dl">'</span><span class="p">])</span>
+    <span class="c1">// Sort by scene cloudiness, ascending.</span>
+    <span class="p">.</span><span class="nx">sort</span><span class="p">(</span><span class="dl">'</span><span class="s1">CLOUD_COVER</span><span class="dl">'</span><span class="p">)</span>
+    <span class="c1">// Get the first (least cloudy) scene.</span>
+    <span class="p">.</span><span class="nx">first</span><span class="p">());</span></code></pre></figure>
+
+<p>Usa una declaración impresa para comprobar lo que acabamos de hacer:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">print</span><span class="p">(</span><span class="nx">image</span><span class="p">,</span> <span class="dl">'</span><span class="s1">Lake Powell L8 image</span><span class="dl">'</span><span class="p">)</span></code></pre></figure>
+
+<p>Ahora hemos filtrado TODO el archivo de Landsat 8 hasta la imagen menos nublada para nuestra área de estudio en 2018. Sin embargo, todavía tenemos que visualizarla, lo que haremos usando la función <code class="language-plaintext highlighter-rouge">Map.addLayer</code>.</p>
+
+<p><em>Nota: ¿No está seguro de lo que hace esta función? Búscala en la pestaña</em> <strong>Docs</strong> <em>para aprender los argumentos.</em></p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">Map</span><span class="p">.</span><span class="nx">addLayer</span><span class="p">(</span><span class="nx">image</span><span class="p">,{},</span>  <span class="dl">'</span><span class="s1">L8 Image</span><span class="dl">'</span><span class="p">);</span></code></pre></figure>
+
+<h4 id="gestionar-las-capas">Gestionar las capas</h4>
+
+<p>El mapa no luce tan bien. Definamos qué bandas usar y completemos algunos otros parámetros de visualización usando el administrador de capas. Usaremos la reflectancia en el rango visible desde el rojo (Banda 4), el verde (Banda 3) y el azul (Banda 2) para hacer una imagen de color verdadero.  Podemos usar los conocimientos previos para hacer una imagen que luzca mejor:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">Map</span><span class="p">.</span><span class="nx">addLayer</span><span class="p">(</span><span class="nx">image</span><span class="p">,</span> <span class="p">{</span><span class="na">bands</span><span class="p">:</span> <span class="p">[</span><span class="dl">'</span><span class="s1">B4</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">B3</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">B2</span><span class="dl">'</span><span class="p">],</span> <span class="na">max</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span> <span class="na">gamma</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span> <span class="dl">'</span><span class="s1">Better L8 Image</span><span class="dl">'</span><span class="p">);</span></code></pre></figure>
+
+<p>Aunque a menudo no es posible conocer el mínimo, máximo y el estiramiento óptimos. Se ha añadido la herramienta <strong>Layer Manager</strong> que se encuentra en la esquina superior derecha del mapa. Esta barra de herramientas le permitirá hacer clic en las capas, así como ajustar su transparencia y configurar interactivamente los parámetros de visualización de cada capa. Puede usar esta herramienta para averiguar qué parámetros pasar al <code class="language-plaintext highlighter-rouge">Map.addLayer</code>.</p>
+
+<p><br />
+<img src="../fig/02_layermanager.png" border="10" />
+<br /><br /></p>
+
+<p>También puedes cambiar entre los botones <strong>Map</strong> o <strong>Satellite</strong> en la parte superior derecha del panel del mapa para cambiar la capa base.</p>
+
+<p>Para más información sobre la visualización de imágenes, vea el <a href="https://developers.google.com/earth-engine/image_visualization" target="_blank">GEE Visualization Guide</a> o la <a href="https://developers.google.com/earth-engine/tutorial_api_02" target="_blank">GEE Visualization tutorial</a>.</p>
+
+<h4 id="la-pestaña-inspector">La pestaña Inspector</h4>
+
+<p>Otra forma de inspeccionar y explorar su imagen es a través de la herramienta de inspección. La consola del Inspector le permite consultar el mapa de forma interactiva. Si tienes la imagen cargada, te dará información sobre esa imagen en el punto en el que también hiciste clic.</p>
+
+<p>En la parte superior derecha, cambie a la pestaña <strong>Inspector</strong> y haga clic en el mapa donde hay tierra. Ahora haga clic donde hay agua. Cambie entre el gráfico y la lista de valores.</p>
+
+<h2 id="comencemos-a-jugar">COMENCEMOS A JUGAR</h2>
+
+<p>Juega por tu cuenta con los parámetros de estiramiento y utiliza el Inspector para explorar el mapa, haciendo clic sobre el continente, el suelo desnudo, el bosque y el agua.</p>
+
+<p>Si ya lo has hecho, puedes jugar a dejar caer el punto en otro lugar y mirar una imagen diferente de tu lugar favorito.</p>
+
+<p>También podrías cambiar las fechas para observar una imagen de la época de verano y ver cómo cambia la reflectancia cuando hay nieve en el suelo.</p>
+
+<h2 id="4-conseguir-ayuda">4. Conseguir ayuda</h2>
+
+<p>There are many entry points for getting help tucked into the Code Editor. Familiarizing yourself with these tools can help soften the learning curve.
+Hay muchas formas de conseguir ayuda en el Code Editor. Familiarizarse con estas herramientas puede ayudar en el aprendizaje.</p>
+
+<h4 id="referencia-api-pestaña-docs">Referencia API (pestaña Docs)</h4>
+
+<p>Al lado de la pestaña <strong>Scripts</strong> está la pestaña <strong>Docs</strong>, que tiene la documentación completa y buscable de la API de JavaScript para cada función. La documentación está organizada por tipo de datos GEE. Cada tipo de datos tiene un conjunto específico de funciones que se pueden aplicar a él.</p>
+
+<h4 id="el-botón-help">El botón Help</h4>
+
+<p>El botón <strong>Help</strong> es una puerta de entrada a muchos recursos, incluyendo enlaces a:</p>
+
+<ul>
+  <li>
+    <p>el <a href="https://developers.google.com/earth-engine/" target="_blank"><strong>Developers Guide</strong></a>
+para los tutoriales, referencias y guías oficiales de GEE. Este es el primer lugar al que voy cuando necesito buscar cómo escribir un código.</p>
+  </li>
+  <li>
+    <p>el <strong>Help Forum</strong> donde puedes publicar preguntas y obtener respuestas. Si no puedo encontrar una guía para mi pregunta específica en las Guías GEE, entonces busco palabras clave de mi problema/pregunta en el foro. Como la gente comparte enlaces a sus códigos, a menudo puedes encontrar grandes ejemplos de soluciones aquí.</p>
+  </li>
+  <li>
+    <p><a href="https://developers.google.com/earth-engine/tutorials" target="_blank">Existing tutorials</a> y la <a href="https://developers.google.com/earth-engine/edu" target="_blank">Earth Engine for Higher Education resources</a> escrito por el equipo de GEE y otros (¡incluso algunos en japonés!)</p>
+  </li>
+  <li>
+    <p>Una lista de atajos de teclado</p>
+  </li>
+  <li>
+    <p>enlaces a la página de <strong>Suggest a Dataset</strong></p>
+  </li>
+</ul>
+
+<h4 id="ejemplos-en-el-shared-scripts">Ejemplos en el <strong>Shared Scripts</strong></h4>
+
+<p>Un último lugar donde puede obtener ayuda es desplazándose hacia abajo y mirando los ejemplos que se encuentran en el <strong>Shared Scripts</strong> en la pestaña <strong>Scripts</strong>.</p>
+
+<p><br /></p>
+
+<h2 id="5-importar-y-exportar-sus-propios-assets">5. Importar y exportar sus propios Assets</h2>
+
+<h4 id="importar-imágenes-y-archivos-vectoriales">Importar imágenes y archivos vectoriales</h4>
+<p>Además de usar todos los increíbles archivos de Google, los usuarios también pueden importar sus propios datos como imágenes (rasters) o tablas (vectores). La pestaña <strong>Assets</strong> de la izquierda es donde se pueden importar, compartir y administrar estos propios activos. Puedes subir imágenes o tablas (datos vectoriales) aquí.</p>
+
+<p>Cuando publiques en el foro, asegúrate de marcar la casilla “Anyone Can Read” en la ventana emergente de los recursos de intercambio para que todos los usuarios del foro puedan ejecutar tu código. Si tienes un Asset privado y no lo haces público, otras personas no podrán ejecutar tu código. Si no quieres compartir tus datos privados, puedes crear un ejemplo ficticio para compartir en los foros utilizando puntos o polígonos dibujados a mano.</p>
+
+<p><br />
+<img src="../fig/02_sharingassets.png" border="10" />
+<br /><br /></p>
+
+<p>Para un ejemplo de script que utiliza datos importados, véase <a href="https://hasencios.github.io/GEE_BASICO_SENAMHI/06-time-series/" target="_blank">Leccion 06 Series de Tiempo</a>. Para obtener instrucciones detalladas de Google sobre cómo subir, compartir y administrar activos, consulte el <a href="https://developers.google.com/earth-engine/asset_manager" target="_blank">Assets Manager page</a> en el sitio web de GEE.</p>
+
+<h4 id="exportando-y-la-pestaña-tasks">Exportando y la pestaña Tasks</h4>
+<p>En lugar de imprimir en la consola, para tareas más grandes puede que quieras exportar las salidas a tu Google Drive o Cloud Storage usando las funciones <code class="language-plaintext highlighter-rouge">Export</code> en tu código. Cuando se ejecutan, estas generan una nueva tarea en la pestaña <code class="language-plaintext highlighter-rouge">Task</code> en el panel superior derecho. Necesitarás entonces “Run” esta tarea para iniciar realmente la transferencia de información. Una vez que inicie una tarea, se le pedirá que introduzca los detalles sobre la resolución, tamaño, formato y destino si no lo incluyó en su código. Puedes pasar el ratón por encima de la tarea y hacer clic en el icono “?” para ver el estado y también para obtener el número de la tarea. Si tu tarea no se está ejecutando, puedes compartir este número como referencia en el foro de desarrolladores.</p>
+
+<p>Exportaremos información vectorial en <a href="https://hasencios.github.io/GEE_BASICO_SENAMHI/03-load-imagery/" target="_blank">Leccion 03 Cargar Imágenes</a> de este tutorial.</p>
+
+<p>Para instrucciones detalladas sobre Export, véase la <a href="https://developers.google.com/earth-engine/exporting" target="_blank">Exporting Data page</a> en el sitio web de GEE. También presentaremos algunos ejemplos para exportar en módulos posteriores de este tutorial.</p>
+
+<p><br />
+<br /></p>
+
+<p>Enlace del código completo que usamos en esta lección:
+<a href="https://code.earthengine.google.com/1cbba818c21b948f0ae43ae3716e75ee" target="_blank">https://code.earthengine.google.com/1cbba818c21b948f0ae43ae3716e75ee</a></p>
+
+<h3 id="diviértete-con-el-code-editor">Diviértete con el Code Editor!!!</h3>
+:ET
