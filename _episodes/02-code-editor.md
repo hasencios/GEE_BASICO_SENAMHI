@@ -72,7 +72,7 @@ print("Hola Mundo!");
 Guarde los scripts haciendo clic en el botón **Save**. Para incluir un mensaje de confirmación, usar la flecha desplegable y selecciona "Save with a description".  Los mensajes se almacenan en el historial de revisiones de cada script guardado.
 
 <br>
-<img src="../fig/02_getlink.png" border = "10" width="75%" height="75%" >
+<img src="../fig/02_getlinkN.png" border = "10" width="100%" height="100%" >
 <br><br>
 
 *Note: Si no hiciste ningún cambio en el script, el botón* **Save** *se oscurecerá.*

@@ -1,0 +1,202 @@
+I"P�<h2 id="descripción-general">Descripción general</h2>
+
+<p>Este código permite a los usuarios generar gráficos de series de tiempo a partir de puntos que son elegidos dinámicamente en un mapa. Las series temporales muestran los compuestos de 16 días del Normalized Difference Vegetation Index (NDVI) y Enhanced Vegetation Index (EVI) con una resolución de 250 m. Estos índices se derivan de MODIS.</p>
+
+<h2 id="definir-especificaciones">Definir especificaciones</h2>
+
+<p>Este script está estructurado para facilitar al usuario la selección de diferentes imágenes, fechas y regiones. Para este ejercicio, vamos a dejar los parámetros tal como están para establecer la extensión como área de estudio en el Medio Oeste, la Cuenca Republican River Basin</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// cargue las cuencas del Perú y seleccione la de su interés</span>
+<span class="kd">var</span> <span class="nx">watershedBoundaries</span> <span class="o">=</span> <span class="nx">ee</span><span class="p">.</span><span class="nx">FeatureCollection</span><span class="p">(</span><span class="dl">'</span><span class="s1">users/hasencios/Cuencas_Peru</span><span class="dl">'</span><span class="p">);</span>
+<span class="nb">Map</span><span class="p">.</span><span class="nx">addLayer</span><span class="p">(</span><span class="nx">watershedBoundaries</span><span class="p">,</span> <span class="p">{},</span> <span class="dl">'</span><span class="s1">watersheds</span><span class="dl">'</span><span class="p">,</span><span class="kc">false</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">setExtent</span> <span class="o">=</span> <span class="nx">watershedBoundaries</span><span class="p">.</span><span class="nx">filterMetadata</span><span class="p">(</span><span class="dl">'</span><span class="s1">NOMBRE</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">equals</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">Cuenca Mantaro</span><span class="dl">'</span><span class="p">);</span>
+
+<span class="c1">// fechas de consulta</span>
+<span class="kd">var</span> <span class="nx">startyear</span> <span class="o">=</span> <span class="mi">2017</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">endyear</span> <span class="o">=</span> <span class="mi">2017</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">startdate</span> <span class="o">=</span> <span class="nx">ee</span><span class="p">.</span><span class="nb">Date</span><span class="p">.</span><span class="nx">fromYMD</span><span class="p">(</span><span class="nx">startyear</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">enddate</span> <span class="o">=</span> <span class="nx">ee</span><span class="p">.</span><span class="nb">Date</span><span class="p">.</span><span class="nx">fromYMD</span><span class="p">(</span><span class="nx">endyear</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">31</span><span class="p">)</span></code></pre></figure>
+
+<p><br /></p>
+
+<h2 id="cargar-una-imágenes-de-máximo-verdor-como-un-asset">Cargar una imágenes de máximo verdor como un asset</h2>
+
+<p>Aquí estamos cargando una imágen de Greenness Index (GI) calculado a partir de las imágenes Landsat. En lugar de calcular el GI en este script, hemos cargado lo que previamente se calculó y exportó. Este script constituye un ejemplo de cómo se cargan assets en la consola. Prácticas como esta pueden ayudar a acelerar su script.</p>
+
+<ol>
+  <li>Un Greenness Index derivado de las imágenes del Landsat (30 m) específicas de la zona de estudio. Este índice se calcula tomando un compuesto del píxel más verde, definido como el píxel con el NDVI más alto, durante un período de tiempo determinado, en nuestro caso el año 2017.</li>
+</ol>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// Compuestos derivados de Landsat --------------------</span>
+
+<span class="c1">// imagen de máximo verdor anual (asset previamente exportado)</span>
+<span class="kd">var</span> <span class="nx">annualGreenest</span> <span class="o">=</span> <span class="nx">ee</span><span class="p">.</span><span class="nx">Image</span><span class="p">(</span><span class="dl">'</span><span class="s1">users/hasencios/greenest_2017_L8_NDVI_image</span><span class="dl">'</span><span class="p">);</span></code></pre></figure>
+
+<h2 id="cargar-los-productos-derivados-de-modis-ndvi-y-evi-así-como-chirps-v20">Cargar los productos derivados de MODIS: NDVI y EVI, así como CHIRPS v2.0</h2>
+
+<p>El NDVI y el EVI son dos índices de vegetación diferentes que pueden ser calculados a partir de las bandas roja e infrarroja cercanas. Aquí estamos usando un producto compuesto derivado de MODIS de 16 días que tiene bandas precalculadas para el NDVI y el EVI. También podrías calcularlas tú mismo usando la función <code class="language-plaintext highlighter-rouge">normalizedDifference</code>. De nuevo filtraremos la colección a las fechas, bandas y región de interés.</p>
+
+<p>Además, estamos cargando la base de datos del producto de precipitación CHIRPS v2.0 y estamos agregándola a escala mensual para compararla con los productos antes mencionados.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// añadir series temporales de satélites: MODIS EVI 250m 16 días -------------</span>
+<span class="kd">var</span> <span class="nx">collectionModEvi</span> <span class="o">=</span> <span class="nx">ee</span><span class="p">.</span><span class="nx">ImageCollection</span><span class="p">(</span><span class="dl">'</span><span class="s1">MODIS/006/MOD13Q1</span><span class="dl">'</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">filterDate</span><span class="p">(</span><span class="nx">startdate</span><span class="p">,</span><span class="nx">enddate</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">filterBounds</span><span class="p">(</span><span class="nx">setExtent</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="dl">"</span><span class="s2">EVI</span><span class="dl">"</span><span class="p">);</span>
+    
+<span class="c1">// añadir series temporales de satélites: MODIS NDVI 250m 16 días -------------</span>
+<span class="kd">var</span> <span class="nx">collectionModNDVI</span> <span class="o">=</span> <span class="nx">ee</span><span class="p">.</span><span class="nx">ImageCollection</span><span class="p">(</span><span class="dl">'</span><span class="s1">MODIS/006/MOD13Q1</span><span class="dl">'</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">filterDate</span><span class="p">(</span><span class="nx">startdate</span><span class="p">,</span><span class="nx">enddate</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">filterBounds</span><span class="p">(</span><span class="nx">setExtent</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="dl">"</span><span class="s2">NDVI</span><span class="dl">"</span><span class="p">);</span>
+    
+<span class="c1">// añadir series temporales de precipitación: CHIRPS 2.0</span>
+<span class="kd">var</span> <span class="nx">collectionCHIRPS</span> <span class="o">=</span> <span class="nx">ee</span><span class="p">.</span><span class="nx">ImageCollection</span><span class="p">(</span><span class="dl">"</span><span class="s2">UCSB-CHG/CHIRPS/PENTAD</span><span class="dl">"</span><span class="p">);</span>
+<span class="c1">// crear una lista de años</span>
+<span class="kd">var</span> <span class="nx">years</span> <span class="o">=</span> <span class="nx">ee</span><span class="p">.</span><span class="nx">List</span><span class="p">.</span><span class="nx">sequence</span><span class="p">(</span><span class="nx">startyear</span><span class="p">,</span><span class="nx">endyear</span><span class="p">);</span>
+<span class="c1">// crear una lista de meses</span>
+<span class="kd">var</span> <span class="nx">months</span> <span class="o">=</span> <span class="nx">ee</span><span class="p">.</span><span class="nx">List</span><span class="p">.</span><span class="nx">sequence</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">12</span><span class="p">);</span>
+<span class="c1">// filtrar chirps</span>
+<span class="kd">var</span> <span class="nx">Pchirps</span> <span class="o">=</span> <span class="nx">collectionCHIRPS</span><span class="p">.</span><span class="nx">filterDate</span><span class="p">(</span><span class="nx">startdate</span><span class="p">,</span> <span class="nx">enddate</span><span class="p">)</span>
+  <span class="c1">// Sort chronologically in descending order.</span>
+  <span class="p">.</span><span class="nx">sort</span><span class="p">(</span><span class="dl">'</span><span class="s1">system:time_start</span><span class="dl">'</span><span class="p">,</span> <span class="kc">false</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="dl">"</span><span class="s2">precipitation</span><span class="dl">"</span><span class="p">);</span>
+<span class="c1">// calcular la P para cada mes</span>
+<span class="kd">var</span> <span class="nx">MonthlyChirps</span> <span class="o">=</span>  <span class="nx">ee</span><span class="p">.</span><span class="nx">ImageCollection</span><span class="p">.</span><span class="nx">fromImages</span><span class="p">(</span>
+  <span class="nx">years</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">y</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">months</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">m</span><span class="p">){</span>
+    <span class="kd">var</span> <span class="nx">w</span> <span class="o">=</span> <span class="nx">Pchirps</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="nx">ee</span><span class="p">.</span><span class="nx">Filter</span><span class="p">.</span><span class="nx">calendarRange</span><span class="p">(</span><span class="nx">y</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="dl">'</span><span class="s1">year</span><span class="dl">'</span><span class="p">))</span>
+             <span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="nx">ee</span><span class="p">.</span><span class="nx">Filter</span><span class="p">.</span><span class="nx">calendarRange</span><span class="p">(</span><span class="nx">m</span><span class="p">,</span> <span class="nx">m</span><span class="p">,</span> <span class="dl">'</span><span class="s1">month</span><span class="dl">'</span><span class="p">))</span>
+             <span class="p">.</span><span class="nx">sum</span><span class="p">();</span>
+    <span class="k">return</span> <span class="nx">w</span><span class="p">.</span><span class="kd">set</span><span class="p">(</span><span class="dl">'</span><span class="s1">year</span><span class="dl">'</span><span class="p">,</span> <span class="nx">y</span><span class="p">)</span>
+             <span class="p">.</span><span class="kd">set</span><span class="p">(</span><span class="dl">'</span><span class="s1">month</span><span class="dl">'</span><span class="p">,</span> <span class="nx">m</span><span class="p">)</span>
+             <span class="p">.</span><span class="kd">set</span><span class="p">(</span><span class="dl">'</span><span class="s1">system:time_start</span><span class="dl">'</span><span class="p">,</span><span class="nx">ee</span><span class="p">.</span><span class="nb">Date</span><span class="p">.</span><span class="nx">fromYMD</span><span class="p">(</span><span class="nx">y</span><span class="p">,</span><span class="nx">m</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span> 
+             <span class="p">.</span><span class="kd">set</span><span class="p">(</span><span class="dl">'</span><span class="s1">date</span><span class="dl">'</span><span class="p">,</span> <span class="nx">ee</span><span class="p">.</span><span class="nb">Date</span><span class="p">.</span><span class="nx">fromYMD</span><span class="p">(</span><span class="nx">y</span><span class="p">,</span><span class="nx">m</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+<span class="p">});</span>
+<span class="p">}).</span><span class="nx">flatten</span><span class="p">());</span>
+	</code></pre></figure>
+
+<h2 id="visualizar-la-base-de-datos-de-imágenes-de-alta-resolución">Visualizar la base de datos de imágenes de alta resolución</h2>
+
+<p>Aquí realizaremos un mapa del producto Annual Greenest Pixel que hemos cargado.</p>
+<ul>
+  <li><em>Consejo para ahorrar tiempo:</em> Si estás usando un conjunto de datos públicos, a menudo puedes encontrar  paletas tamizando los mensajes del foro. Algunas como la CDL vienen con una paleta incrustada.</li>
+  <li><em>Consejo:</em> Los plugins de selección de colores de los navegadores hexadecimales son útiles para averiguar qué colores corresponden a qué códigos.</li>
+  <li><em>Consejo:</em> Usa el argumento <code class="language-plaintext highlighter-rouge">false</code> si quieres cargar una capa en el mapa pero NO la tienes activada cada vez que ejecutas el código.</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// ----------------------------------------------------------------------------------------</span>
+<span class="c1">// Visualiza</span>
+<span class="c1">// ----------------------------------------------------------------------------------------</span>
+
+<span class="nb">Map</span><span class="p">.</span><span class="nx">centerObject</span><span class="p">(</span><span class="nx">setExtent</span><span class="p">,</span> <span class="mi">8</span><span class="p">);</span>
+
+<span class="c1">// usa esta paleta para EVI</span>
+<span class="kd">var</span> <span class="nx">palette</span> <span class="o">=</span> <span class="p">[</span>
+  <span class="dl">'</span><span class="s1">FFFFFF</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">CE7E45</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">DF923D</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">F1B555</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">FCD163</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">99B718</span><span class="dl">'</span><span class="p">,</span>
+  <span class="dl">'</span><span class="s1">74A901</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">66A000</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">529400</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">3E8601</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">207401</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">056201</span><span class="dl">'</span><span class="p">,</span>
+  <span class="dl">'</span><span class="s1">004C00</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">023B01</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">012E01</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">011D01</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">011301</span><span class="dl">'</span><span class="p">];</span>
+
+<span class="c1">// imágenes de verdor</span>
+<span class="nx">print</span><span class="p">(</span><span class="nx">annualGreenest</span><span class="p">)</span>
+<span class="nb">Map</span><span class="p">.</span><span class="nx">addLayer</span><span class="p">(</span><span class="nx">annualGreenest</span><span class="p">,</span> 
+    <span class="p">{</span><span class="na">min</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span> <span class="na">max</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="na">palette</span><span class="p">:</span> <span class="nx">palette</span><span class="p">},</span> <span class="dl">'</span><span class="s1">GI - annual (2017)</span><span class="dl">'</span><span class="p">);</span></code></pre></figure>
+
+<p><br />
+<img src="../fig/06_annualGreennestN.png" border="10" />
+<br /><br /></p>
+
+<h2 id="crear-una-user-interface">Crear una User Interface</h2>
+
+<p>Puedes alterar la client-side user interface (UI) a través del paquete ui añadiendo widgets a la interfaz del Code Editor. Puedes leer sobre el paquete ui en el <a href="https://developers.google.com/earth-engine/ui">UI Overview section</a> de la Guía del Desarrollador.
+La idea general es que se hace un widget, que puede ser simple (un botón) o complejo (un gráfico). Luego defines el comportamiento del widget y luego lo agregas a la pantalla. Aquí crearemos un panel, definiremos el contenido del panel usando etiquetas y crearemos una función de respuesta al requerimiento para que el usuario pueda hacer clic en un punto y éste registre la lat/lon como un objeto llamado <code class="language-plaintext highlighter-rouge">points</code>. Puedes leer más acerca de cómo definir el panel y los diseños en el <a href="https://developers.google.com/earth-engine/ui_panels">Panels section</a> de la Guía del Desarrollador.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// ----------------------------------------------------------------------------------------</span>
+<span class="c1">// Crear la interfaz de usuario</span>
+<span class="c1">// ----------------------------------------------------------------------------------------</span>
+
+
+<span class="c1">// Crear un panel para guardar nuestros widgets.</span>
+<span class="kd">var</span> <span class="nx">panel</span> <span class="o">=</span> <span class="nx">ui</span><span class="p">.</span><span class="nx">Panel</span><span class="p">();</span>
+<span class="nx">panel</span><span class="p">.</span><span class="nx">style</span><span class="p">().</span><span class="kd">set</span><span class="p">(</span><span class="dl">'</span><span class="s1">width</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">500px</span><span class="dl">'</span><span class="p">);</span>
+
+<span class="c1">// Crea un panel de introducción con etiquetas.</span>
+<span class="kd">var</span> <span class="nx">intro</span> <span class="o">=</span> <span class="nx">ui</span><span class="p">.</span><span class="nx">Panel</span><span class="p">([</span>
+  <span class="nx">ui</span><span class="p">.</span><span class="nx">Label</span><span class="p">({</span>
+    <span class="na">value</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Gráfico de estacionalidad</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">style</span><span class="p">:</span> <span class="p">{</span><span class="na">fontSize</span><span class="p">:</span> <span class="dl">'</span><span class="s1">20px</span><span class="dl">'</span><span class="p">,</span> <span class="na">fontWeight</span><span class="p">:</span> <span class="dl">'</span><span class="s1">bold</span><span class="dl">'</span><span class="p">}</span>
+  <span class="p">}),</span>
+  <span class="nx">ui</span><span class="p">.</span><span class="nx">Label</span><span class="p">(</span><span class="dl">'</span><span class="s1">Haz click en un punto en el mapa.</span><span class="dl">'</span><span class="p">)</span>
+<span class="p">]);</span>
+<span class="nx">panel</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">intro</span><span class="p">);</span>
+
+<span class="c1">// paneles para mantener los valores lon/lat</span>
+<span class="kd">var</span> <span class="nx">lon</span> <span class="o">=</span> <span class="nx">ui</span><span class="p">.</span><span class="nx">Label</span><span class="p">();</span>
+<span class="kd">var</span> <span class="nx">lat</span> <span class="o">=</span> <span class="nx">ui</span><span class="p">.</span><span class="nx">Label</span><span class="p">();</span>
+<span class="nx">panel</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">ui</span><span class="p">.</span><span class="nx">Panel</span><span class="p">([</span><span class="nx">lon</span><span class="p">,</span> <span class="nx">lat</span><span class="p">],</span> <span class="nx">ui</span><span class="p">.</span><span class="nx">Panel</span><span class="p">.</span><span class="nx">Layout</span><span class="p">.</span><span class="nx">flow</span><span class="p">(</span><span class="dl">'</span><span class="s1">horizontal</span><span class="dl">'</span><span class="p">)));</span>
+
+<span class="c1">// Registrar una llamada en el mapa por defecto para ser invocada cuando se haga clic en el mapa</span>
+<span class="nb">Map</span><span class="p">.</span><span class="nx">onClick</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">coords</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// Actualiza el panel lon/lat con los valores del evento click.</span>
+  <span class="nx">lon</span><span class="p">.</span><span class="nx">setValue</span><span class="p">(</span><span class="dl">'</span><span class="s1">lon: </span><span class="dl">'</span> <span class="o">+</span> <span class="nx">coords</span><span class="p">.</span><span class="nx">lon</span><span class="p">.</span><span class="nx">toFixed</span><span class="p">(</span><span class="mi">2</span><span class="p">)),</span>
+  <span class="nx">lat</span><span class="p">.</span><span class="nx">setValue</span><span class="p">(</span><span class="dl">'</span><span class="s1">lat: </span><span class="dl">'</span> <span class="o">+</span> <span class="nx">coords</span><span class="p">.</span><span class="nx">lat</span><span class="p">.</span><span class="nx">toFixed</span><span class="p">(</span><span class="mi">2</span><span class="p">));</span>
+  <span class="kd">var</span> <span class="nx">point</span> <span class="o">=</span> <span class="nx">ee</span><span class="p">.</span><span class="nx">Geometry</span><span class="p">.</span><span class="nx">Point</span><span class="p">(</span><span class="nx">coords</span><span class="p">.</span><span class="nx">lon</span><span class="p">,</span> <span class="nx">coords</span><span class="p">.</span><span class="nx">lat</span><span class="p">);</span>
+
+  </code></pre></figure>
+
+<h2 id="agregar-los-gráficos-de-series-de-tiempo-a-los-paneles">Agregar los gráficos de series de tiempo a los paneles</h2>
+
+<p>Ahora que hemos configurado nuestra interfaz de usuario y construido el ‘call-back’, podemos definir un gráfico de series de tiempo. El gráfico utiliza la lat/lon seleccionada por el usuario y construye una serie temporal para el NDVI, el EVI y la precipitación en ese punto. Toma el promedio de estas variables en ese punto, las extrae y luego las agrega a serie de tiempo. Entonces esta series de tiempo son graficadas.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">  <span class="c1">// Crear un gráfico MODIS EVI.</span>
+  <span class="kd">var</span> <span class="nx">eviChart</span> <span class="o">=</span> <span class="nx">ui</span><span class="p">.</span><span class="nx">Chart</span><span class="p">.</span><span class="nx">image</span><span class="p">.</span><span class="nx">series</span><span class="p">(</span><span class="nx">collectionModEvi</span><span class="p">,</span> <span class="nx">point</span><span class="p">,</span> <span class="nx">ee</span><span class="p">.</span><span class="nx">Reducer</span><span class="p">.</span><span class="nx">mean</span><span class="p">(),</span> <span class="mi">250</span><span class="p">);</span>
+  <span class="nx">eviChart</span><span class="p">.</span><span class="nx">setOptions</span><span class="p">({</span>
+    <span class="na">title</span><span class="p">:</span> <span class="dl">'</span><span class="s1">MODIS EVI</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">vAxis</span><span class="p">:</span> <span class="p">{</span><span class="na">title</span><span class="p">:</span> <span class="dl">'</span><span class="s1">EVI</span><span class="dl">'</span><span class="p">,</span> <span class="na">maxValue</span><span class="p">:</span> <span class="mi">9000</span><span class="p">},</span>
+    <span class="na">hAxis</span><span class="p">:</span> <span class="p">{</span><span class="na">title</span><span class="p">:</span> <span class="dl">'</span><span class="s1">date</span><span class="dl">'</span><span class="p">,</span> <span class="na">format</span><span class="p">:</span> <span class="dl">'</span><span class="s1">MM-yy</span><span class="dl">'</span><span class="p">,</span> <span class="na">gridlines</span><span class="p">:</span> <span class="p">{</span><span class="na">count</span><span class="p">:</span> <span class="mi">7</span><span class="p">}},</span>
+  <span class="p">});</span>
+  <span class="nx">panel</span><span class="p">.</span><span class="nx">widgets</span><span class="p">().</span><span class="kd">set</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="nx">eviChart</span><span class="p">);</span>
+  
+  <span class="c1">// Crear un gráfico MODIS NDVI.</span>
+  <span class="kd">var</span> <span class="nx">ndviChart</span> <span class="o">=</span> <span class="nx">ui</span><span class="p">.</span><span class="nx">Chart</span><span class="p">.</span><span class="nx">image</span><span class="p">.</span><span class="nx">series</span><span class="p">(</span><span class="nx">collectionModNDVI</span><span class="p">,</span> <span class="nx">point</span><span class="p">,</span> <span class="nx">ee</span><span class="p">.</span><span class="nx">Reducer</span><span class="p">.</span><span class="nx">mean</span><span class="p">(),</span> <span class="mi">250</span><span class="p">);</span>
+  <span class="nx">ndviChart</span><span class="p">.</span><span class="nx">setOptions</span><span class="p">({</span>
+    <span class="na">title</span><span class="p">:</span> <span class="dl">'</span><span class="s1">MODIS NDVI</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">vAxis</span><span class="p">:</span> <span class="p">{</span><span class="na">title</span><span class="p">:</span> <span class="dl">'</span><span class="s1">NDVI</span><span class="dl">'</span><span class="p">,</span> <span class="na">maxValue</span><span class="p">:</span> <span class="mi">9000</span><span class="p">},</span>
+    <span class="na">hAxis</span><span class="p">:</span> <span class="p">{</span><span class="na">title</span><span class="p">:</span> <span class="dl">'</span><span class="s1">date</span><span class="dl">'</span><span class="p">,</span> <span class="na">format</span><span class="p">:</span> <span class="dl">'</span><span class="s1">MM-yy</span><span class="dl">'</span><span class="p">,</span> <span class="na">gridlines</span><span class="p">:</span> <span class="p">{</span><span class="na">count</span><span class="p">:</span> <span class="mi">7</span><span class="p">}},</span>
+  <span class="p">});</span>
+  <span class="nx">panel</span><span class="p">.</span><span class="nx">widgets</span><span class="p">().</span><span class="kd">set</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="nx">ndviChart</span><span class="p">);</span>
+  
+    <span class="c1">// Crear un gráfico MODIS EVI.</span>
+  <span class="kd">var</span> <span class="nx">ppChart</span> <span class="o">=</span> <span class="nx">ui</span><span class="p">.</span><span class="nx">Chart</span><span class="p">.</span><span class="nx">image</span><span class="p">.</span><span class="nx">series</span><span class="p">(</span><span class="nx">MonthlyChirps</span><span class="p">,</span> <span class="nx">point</span><span class="p">,</span> <span class="nx">ee</span><span class="p">.</span><span class="nx">Reducer</span><span class="p">.</span><span class="nx">mean</span><span class="p">(),</span> <span class="mi">5000</span><span class="p">);</span>
+  <span class="nx">ppChart</span><span class="p">.</span><span class="nx">setOptions</span><span class="p">({</span>
+    <span class="na">title</span><span class="p">:</span> <span class="dl">'</span><span class="s1">MONTHLY PRECIPITATION</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">vAxis</span><span class="p">:</span> <span class="p">{</span><span class="na">title</span><span class="p">:</span> <span class="dl">'</span><span class="s1">PP</span><span class="dl">'</span><span class="p">,</span> <span class="na">maxValue</span><span class="p">:</span> <span class="mi">500</span><span class="p">},</span>
+    <span class="na">hAxis</span><span class="p">:</span> <span class="p">{</span><span class="na">title</span><span class="p">:</span> <span class="dl">'</span><span class="s1">date</span><span class="dl">'</span><span class="p">,</span> <span class="na">format</span><span class="p">:</span> <span class="dl">'</span><span class="s1">MM-yy</span><span class="dl">'</span><span class="p">,</span> <span class="na">gridlines</span><span class="p">:</span> <span class="p">{</span><span class="na">count</span><span class="p">:</span> <span class="mi">7</span><span class="p">}},</span>
+  <span class="p">});</span>
+  <span class="nx">panel</span><span class="p">.</span><span class="nx">widgets</span><span class="p">().</span><span class="kd">set</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="nx">ppChart</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="nb">Map</span><span class="p">.</span><span class="nx">style</span><span class="p">().</span><span class="kd">set</span><span class="p">(</span><span class="dl">'</span><span class="s1">cursor</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">crosshair</span><span class="dl">'</span><span class="p">);</span>
+
+<span class="c1">// Añade el panel a la ui.root.</span>
+<span class="nx">ui</span><span class="p">.</span><span class="nx">root</span><span class="p">.</span><span class="nx">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">panel</span><span class="p">);</span></code></pre></figure>
+
+<p>Deberías ver algo como esto en la parte inferior izquierda:</p>
+
+<p><br />
+<img src="../fig/06_twoChart1N.png" border="10" width="75%" height="75%" />
+<img src="../fig/06_twoChart2N.png" border="10" width="75%" height="75%" />
+<br /><br /></p>
+
+<h2 id="explorar-los-gráficos-ndvi-evi-y-precipitation-para-diferentes-lugares">Explorar los gráficos NDVI, EVI y PRECIPITATION para diferentes lugares.</h2>
+
+<p>Utiliza el inspector para hacer clic en los píxeles con diferentes niveles de verdor y explora las diferencias en las series temporales del NDVI, EVI y PRECIPITATION entre los diferentes píxeles.</p>
+
+<h2 id="extraer-las-series-de-tiempo-para-grandes-regiones-o-puntos-de-interés">Extraer las series de tiempo para grandes regiones o puntos de interés</h2>
+
+<p>Si estás calculando índices en este script, o tienes muchos puntos o áreas de interés, puedes tener la desagradable experiencia de que tu código se demora mucho. Una forma de evitarlo es exportar las series temporales como un .csv a Google Drive o Cloud Storage. Un ejemplo de cómo hacer esto se puede encontrar en
+ <a href="https://hasencios.github.io/GEE_BASICO_SENAMHI/04-reducers/">Módulo 04: Reductores espaciales y temporales</a> de este tutorial.</p>
+
+<p>Enlace a una versión estática del script completo utilizado en este módulo:
+<a href="https://code.earthengine.google.com/c5d83beb8d7c31404517eb127f6a1e06">https://code.earthengine.google.com/c5d83beb8d7c31404517eb127f6a1e06</a></p>
+:ET

@@ -1,4 +1,4 @@
-I"�d<h1 id="vista-general-del-code-editor">Vista general del Code Editor</h1>
+I"�d<h1 id="vista-general-del-code-editor">Vista general del Code Editor</h1>
 
 <p>GEE tiene un entorno de desarrollo integrado (IDE) llamado Editor de código. El Editor de código tiene varias características para ayudar a hacer más fácil la programación en este entorno que exploraremos en este tutorial. Para una descripción exhaustiva, véase el <a href="https://developers.google.com/earth-engine/playground#api-reference-docs-tab" target="_blank">Earth Engine Code Editor help page</a> en las guías de usuario de GEE.</p>
 
@@ -42,7 +42,7 @@
 <p>Guarde los scripts haciendo clic en el botón <strong>Save</strong>. Para incluir un mensaje de confirmación, usar la flecha desplegable y selecciona “Save with a description”.  Los mensajes se almacenan en el historial de revisiones de cada script guardado.</p>
 
 <p><br />
-<img src="../fig/02_getlink.png" border="10" width="75%" height="75%" />
+<img src="../fig/02_getlinkN.png" border="10" width="100%" height="100%" />
 <br /><br /></p>
 
 <p><em>Note: Si no hiciste ningún cambio en el script, el botón</em> <strong>Save</strong> <em>se oscurecerá.</em></p>

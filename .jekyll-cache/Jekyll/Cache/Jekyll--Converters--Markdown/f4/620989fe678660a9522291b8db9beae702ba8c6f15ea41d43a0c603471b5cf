@@ -1,4 +1,4 @@
-I"F<h1 id="descripción-general-de-classifiers">Descripción General de Classifiers</h1>
+I"F<h1 id="descripción-general-de-classifiers">Descripción General de Classifiers</h1>
 
 <p>Google Earth Engine ofrece a los usuarios la oportunidad de realizar muchos análisis avanzados, como la spectral un-mixing, object-based methods, eigen analysis and linear modeling.  También se dispone de técnicas de machine learning para la clasificación supervisada y no supervisada. En este ejemplo, utilizaremos la clasificación supervisada para la clasificación de la cobertura terrestre.</p>
 
@@ -15,7 +15,7 @@
 <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// Definir una región de interés como un punto.  Cambiar las coordenadas</span>
 <span class="c1">// para seleccionar ROI en su área de interés.</span>
 <span class="c1">// Puede usar la herramienta de inspección para encontrar sus coordenadas</span>
-<span class="kd">var</span> <span class="nx">roi</span> <span class="o">=</span> <span class="nx">ee</span><span class="p">.</span><span class="nx">Geometry</span><span class="p">.</span><span class="nx">Point</span><span class="p">(</span><span class="o">-</span><span class="mf">95.6223</span><span class="p">,</span> <span class="mf">29.7381</span><span class="p">);</span></code></pre></figure>
+<span class="kd">var</span> <span class="nx">roi</span> <span class="o">=</span> <span class="nx">ee</span><span class="p">.</span><span class="nx">Geometry</span><span class="p">.</span><span class="nx">Point</span><span class="p">(</span><span class="o">-</span><span class="mf">74.58</span><span class="p">,</span><span class="o">-</span><span class="mf">8.39</span><span class="p">);</span></code></pre></figure>
 
 <h3 id="cargar-una-imagecollection-ya-filtrarla-para-obtener-una-sola-imágen">Cargar una <code class="language-plaintext highlighter-rouge">ImageCollection</code> ya filtrarla para obtener una sola imágen</h3>
 
@@ -105,7 +105,7 @@
 <p>Deberías obtener una imagen que se parezca a la de abajo. ¡Desplácese por el mapa y use el inspector para ver cómo lo hizo!</p>
 
 <p><br />
-<img src="../fig/03_classified.png" border="10" width="100%" height="100%" />
+<img src="../fig/03_classifiedN.png" border="10" width="100%" height="100%" />
 <br /><br /></p>
 
 <h3 id="evaluar-la-precisión">Evaluar la precisión</h3>

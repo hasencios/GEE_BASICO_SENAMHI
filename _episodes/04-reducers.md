@@ -29,13 +29,13 @@ En Google Earth Engine (GEE), [reducers](https://developers.google.com/earth-eng
 
 Las reducciones también pueden ocurrir en el espacio, sobre las bandas dentro de una imagen, o sobre los atributos de una `FeatureCollection`. Ver el [Reducer Overview](https://developers.google.com/earth-engine/reducers_intro) en la Guía del Desarrollador de Google para más información.
 
-En el Módulo 03: Accediendo al Catálogo de Imágenes de Satélite, usamos un límite vectorial y un rango de fechas para filtrar una colección de imágenes, aplicamos un algoritmo (NDVI) sobre esa colección, y luego la redujimos a una imagen en la que cada valor de píxel era su máximo NDVI. Aquí seguimos el mismo flujo de trabajo, pero en su lugar reduciremos usando `imageCollection.sum()` para calcular la precipitación anual total para cada píxel en los EE.UU. (reductores temporales). Luego daremos un paso más y usaremos el reductor espacial 'reduceRegions' para calcular la precipitación anual total para cada condado de los EE.UU.
+En el Módulo 03: Accediendo al Catálogo de Imágenes de Satélite, usamos un límite vectorial y un rango de fechas para filtrar una colección de imágenes, aplicamos un algoritmo (NDVI) sobre esa colección, y luego la redujimos a una imagen en la que cada valor de píxel era su máximo NDVI. Aquí seguimos el mismo flujo de trabajo, pero en su lugar reduciremos usando `imageCollection.sum()` para calcular la precipitación anual total para cada píxel a nivel global (reductores temporales). Luego daremos un paso más y usaremos el reductor espacial 'reduceRegions' para calcular la precipitación anual total para cada región del Perú.
 
 # Ejercicio: Obtener datos climáticos desde GEE
-Aquí demostraremos cómo aplicar un reductor temporal y espacial para obtener datos de precipitación anual por condado para los EE.UU.
+Aquí demostraremos cómo aplicar un reductor temporal y espacial para obtener datos de precipitación anual por región del Perú.
 
 ### El catálogo de datos de GEE
-Un objetivo secundario de este ejercicio es utilizar GEE para acceder a bases de datos comunes almacenados en archivo que puedan resultar atractivos para quienes no estén directamente relacionados con el sensoramiento remoto. Como se describe en la [Introducción](https://hasencios.github.io/GEE_BASICO_SENAMHI/01-introduction/), GEE provee diferentes bases de datos pertinentes para los análisis de los sistemas terrestres. El archivo completo puede ser consultado [here](https://code.earthengine.google.com/datasets/). En este ejercicio, usaremos el [GRIDMET Meteorological Dataset](https://code.earthengine.google.com/dataset/IDAHO_EPSCOR/GRIDMET) para obtener precipitaciones. GRIDMET combina PRISM y NLDAS para producir una base de datos climáticos diarios, en grillas de 4 km, para los Estados Unidos desde 1979 hasta el presente.
+Un objetivo secundario de este ejercicio es utilizar GEE para acceder a bases de datos comunes almacenados en archivo que puedan resultar atractivos para quienes no estén directamente relacionados con el sensoramiento remoto. Como se describe en la [Introducción](https://hasencios.github.io/GEE_BASICO_SENAMHI/01-introduction/), GEE provee diferentes bases de datos pertinentes para los análisis de los sistemas terrestres. El archivo completo puede ser consultado [here](https://code.earthengine.google.com/datasets/). En este ejercicio, usaremos el [CHIRPS Daily: Climate Hazards Group InfraRed Precipitation with Station Data (version 2.0 final)](https://developers.google.com/earth-engine/datasets/catalog/UCSB-CHG_CHIRPS_DAILY) para obtener información de precipitaciones. CHIRPS es una base de datos de precipitaciones cuasi mundiales de más de 30 años (desde 1981-hasta la actualidad), que incorpora imágenes satelitales de 0.05° de resolución espacial con datos estaciones in situ para crear series temporales de grillas de precipitación para el análisis de tendencias y el monitoreo estacional de sequías.
 
 ### Temporal Reducer: Generar un Image Statistics en el tiempo
 Tal como se discutió en el [módulo Accediendo al catálogo de imágenes de satélite
@@ -47,21 +47,21 @@ Tal como se discutió en el [módulo Accediendo al catálogo de imágenes de sat
   * Visualizar el resultado
 
 #### Cargar y filtrar una ImageCollection
-Primero, necesitamos identificar el **ImageCollection ID** para el producto de datos GRIDMET y el **band name** para los datos de precipitación (y comprobar cualquier metadato relevante). Esto se puede encontrar en el [data catalog](https://code.earthengine.google.com/datasets/) o directamente en el [GEE Code Editor](https://code.earthengine.google.com/) en la parte superior del panel central.
+Primero, necesitamos identificar el **ImageCollection ID** para el producto de datos CHIRPS y el **band name** para los datos de precipitación (y comprobar cualquier metadato relevante). Esto se puede encontrar en el [data catalog](https://code.earthengine.google.com/datasets/) o directamente en el [GEE Code Editor](https://code.earthengine.google.com/) en la parte superior del panel central.
 
-Para la [GRIDMET description](https://code.earthengine.google.com/dataset/IDAHO_EPSCOR/GRIDMET), sabemos que el ID de ImageCollection = 'IDAHO_EPSCOR/GRIDMET' y el nombre de la banda de precipitación es 'pr'. Específicamente `select` esta banda solamente.
+Para la [CHIRPS](https://developers.google.com/earth-engine/datasets/catalog/UCSB-CHG_CHIRPS_DAILY#description), sabemos que el ID de ImageCollection = 'UCSB-CHG/CHIRPS/DAILY' y el nombre de la banda de precipitación es 'precipitation'. Específicamente `select` esta banda solamente.
 
 {% highlight javascript %}
 
-// carga datos de precipitación (mm/día): 365 imágenes por año
-var precipCollection = ee.ImageCollection('IDAHO_EPSCOR/GRIDMET')
-                    .select('pr')   // select  precip band only
-                    .filterDate('2017-01-01', '2017-12-31');
-print(precipCollection, 'precipCollection');
+// cargar datos de precipitación (mm/día): 365 imágenes por año 
+var precipCollection = ee.ImageCollection("UCSB-CHG/CHIRPS/DAILY")
+                    .select('precipitation')   // seleccionar solo la banda precipitation
+                    .filterDate('2019-01-01', '2019-12-31');
+print(precipCollection, 'precipCollection');  
 
 {% endhighlight %}
 
-Al imprimir la colección resultante en la consola, podemos ver que hemos accedido a 365 imágenes, cada una con una banda llamada 'pr'.
+Al imprimir la colección resultante en la consola, podemos ver que hemos accedido a 365 imágenes, cada una con una banda llamada 'precipitation'.
 
 #### Aplicar un Sum Reducer y visualizar los resultados
 El operador `imageCollection.reduce()` permite aplicar cualquier función de la clase `ee.Reducer()` a todas las imágenes de la colección. Si tu `ImageCollection` tenía múltiples bandas, el reductor se aplica por separado a todas las bandas (a menos que el reductor utilice múltiples bandas como entradas, en cuyo caso el número de bandas de la colección de imágenes debe coincidir con el número de entradas que requiere el reductor). Puede encontrar los reductores disponibles y sus descripciones en la referencia de la API que se puede buscar en la pestaña **Docs** en el panel superior izquierdo del Code Editor.
@@ -74,29 +74,29 @@ Algunos reductores comúnmente usados tienen una sintaxis abreviada, como `image
 
 {% highlight javascript %}
 
-// carga datos de precipitación (mm/día): 365 imágenes por año
-var precipCollection = ee.ImageCollection('IDAHO_EPSCOR/GRIDMET')
-                    .select('pr')   // select  precip band only
-                    .filterDate('2017-01-01', '2017-12-31');
-print(precipCollection);  
+// cargar datos de precipitación (mm/día): 365 imágenes por año 
+var precipCollection = ee.ImageCollection("UCSB-CHG/CHIRPS/DAILY")
+                    .select('precipitation')   // seleccionar solo la banda precipitation
+                    .filterDate('2019-01-01', '2019-12-31');
+print(precipCollection, 'precipCollection');  
 
-// reducir la colección de imágenes a una sola imagen sumando los 365 patrones diarios
+// reducir la image collection a una sola imagen sumando los 365 patrones diarios
 var annualPrecip = precipCollection.reduce(ee.Reducer.sum());
-print(annualPrecip);
+print(annualPrecip, 'annualPrecip');
 
 // sintaxis equivalente
 var annualPrecip2 = precipCollection.sum();
 
 // visualizar la precipitación anual
-var precipPal = ['white','blue'] // store palette as variable               
+var precipPal = ['white','blue']; // store palette as variable        
 Map.addLayer(annualPrecip, {min: 60, max: 3000, palette: precipPal}, 'precip');
 
 {% endhighlight %}
 
-Al imprimir la imagen resultante en la consola, podemos ver que ahora tenemos una imagen con una banda llamada 'pr_sum'. Esto es lo que parece:
+Al imprimir la imagen resultante en la consola, podemos ver que ahora tenemos una imagen con una banda llamada 'precipitation_sum'. Esto es lo que parece:
 
 <br>
-<img src="../fig/04_annualPrecipMap.PNG" border = "10">
+<img src="../fig/04_annualPrecipMapN.PNG" border = "10">
 <br><br>
 
 ### Spatial Reducer: Generar un Image Statistics por regiones
@@ -109,41 +109,38 @@ Ahora tomemos la imagen de la precipitación anual que acabamos de crear y obten
 #### Cargar los límites de países (Data Vectorial)
 
 Hay tres maneras de obtener datos de vectores en GEE, como se examina en el [módulo 03 Accediendo al catálogo de imágenes de satélite
-](https://hasencios.github.io/GEE_BASICO_SENAMHI/03-load-imagery/). Aquí usaremos un [existing public fusion table of county boundaries](https://fusiontables.google.com/data?docid=1xdysxZ94uUFIit9eXmnw1fYc6VcQiXhceFd_CVKa#map:id=2) de la Oficina del Censo de los Estados Unidos.
-
-Este base de datos incluye entidades fuera de los Estados Unidos como Alaska, Puerto Rico y Samoa Americana. Las eliminaremos basándonos en sus ID en un atributo de propiedad que contiene códigos FIPS "state" para demostrar el filtrado de vectores.
+](https://hasencios.github.io/GEE_BASICO_SENAMHI/03-load-imagery/). Aquí usaremos una [existing asset of political regions boundaries](https://developers.google.com/earth-engine/importing) descargado del INEI del Perú.
 
 {% highlight javascript %}
-// cargar regiones: condados de una tabla de fusión pública, eliminando los estados que no nos interesan
-// usando un filtro personalizado
-var nonCONUS = [2,15,60,66,69,72,78] // state FIPS codes that we don't want
-var counties = ee.FeatureCollection('ft:1ZMnPbFshUI3qbk9XE0H7t1N5CjsEGyl8lZfWfVn4')
-        .filter(ee.Filter.inList('STATEFP',nonCONUS).not());
-print(counties, 'counties');
+// cargar regiones: data vectorial pública
+// usar un filtro personalizado si es necesario
+var regions = ee.FeatureCollection('users/hasencios/Regiones_Peru');
+print(regions, 'regions');
 
-// visualizar
-Map.addLayer(counties,{},'counties');  
+// visualizamos
+Map.centerObject(regions, 5);
+Map.addLayer(regions,{},'regions');       
 {% endhighlight %}
 
-Al imprimir el featureCollection, vemos que hay 3108 polígonos de condado y 11 columnas de datos de atributos.
+Al imprimir el featureCollection, vemos que hay 25 polígonos de regiones y 6 columnas de datos de atributos.
 
 <br>
-<img src="../fig/04_countyMap.png" border = "10">
+<img src="../fig/04_countyMapN.png" border = "10">
 <br><br>
 
 #### Aplicar el spatial reducer
 
 {% highlight javascript %}
-// obtener los valores medios de precipitación por polígono de condado
-var countyPrecip = annualPrecip.reduceRegions({
-  collection: counties,
+// obtener los valores medios de precipitación por polígono
+var regionPrecip = annualPrecip.reduceRegions({
+  collection: regions,
   reducer: ee.Reducer.mean(),
-  scale: 4000 // the resolution of the GRIDMET dataset
+  scale: 5000 // la resolución de la base de datos CHIRPS
 });
-print(countyPrecip);
+print(regionPrecip);
 {% endhighlight %}
 
-Al imprimir la featureCollection countyPrecip, vemos que hay 3108 polígonos de condado y ahora 12 columnas de datos de atributos, con la adición de la columna "mean".
+Al imprimir la featureCollection regionsPrecip, vemos que hay 25 polígonos de condado y ahora 6 columnas de datos de atributos, con la adición de la columna "mean".
 
 ### Acondicionar los resultados para exportarlos
 GEE puede exportar tablas en CSV (default), GeoJSON, KML o KMZ. Aquí, hacemos un pequeño formateo para preparar nuestra FeatureCollection para exportar como CSV.
@@ -155,27 +152,27 @@ El formato incluye:
 
 {% highlight javascript %}
 
-// Dejar caer la columna .geo (no es necesario si el objetivo son los datos tabulares)
-var polyOut = countyPrecip.select(['.*'],null,false);
+// Dejar fuera la columna .geo (no es necesario si el objetivo son los datos tabulares)
+var polyOut = regionPrecip.select(['.*'],null,false);
 
-// añadir una nueva columna de año a cada característica de la feature collection
+// añadir una nueva columna por año a cada característica en la feature collection
 polyOut = polyOut.map(function(feature){
-return feature.set('Year',2017);
+  return feature.set('Year',2019);
 });
 
-// Ejemplo para exportar tablas
-
+// Exportar ---------------------------------------------------------------------
+// Un ejemplo de cómo exportar
 Export.table.toDrive({
   collection: polyOut,
-  description: 'GRIDMET_annual_precip_by_county',
+  description: 'CHIRPS_annual_precip_by_region',
   folder: 'GEE_SENAMHI',
   fileFormat: 'CSV'
-});   
+});       
 
 // Y PULSE 'RUN' EN LA PESTAÑA DE TAREAS EN EL PANEL SUPERIOR DERECHO
 {% endhighlight %}
 
-Nota sobre el nombre de la carpeta: si esta carpeta existe dentro de su unidad de Google, GEE la encontrará y exportará aquí independientemente de la ruta completa de su archivo. Si la carpeta no existe, GEE la creará al momento de la exportación.
+Nota sobre el nombre de la carpeta: si esta carpeta existe dentro de su unidad de Google, GEE la encontrará y exportará allí independientemente de la ruta completa de su archivo. Si la carpeta no existe, GEE la creará al momento de la exportación.
 
 ### Comenzar a Exportar
 
@@ -184,7 +181,7 @@ Para poder exportar realmente tus datos, tienes que pulsar explícitamente el bo
 Se ha añadido una nueva y útil función en la que se puede mantener el ratón sobre el lado derecho de la tarea completada y hacer clic en el signo de interrogación para abrir una ventana con los detalles de la tarea como en el diagrama siguiente.
 
 <br>
-<img src="../fig/04_runTask.png" border = "10" width="50%" height="50%">
+<img src="../fig/04_runTaskN.png" border = "10" width="50%" height="50%">
 <br><br>
 
 Enlace a una versión estática del script completo usado en este módulo:

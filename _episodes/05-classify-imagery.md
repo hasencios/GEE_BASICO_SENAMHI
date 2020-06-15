@@ -39,7 +39,7 @@ Primero, necesitamos definir una región de interés (ROI). En lugar de utilizar
 // Definir una región de interés como un punto.  Cambiar las coordenadas
 // para seleccionar ROI en su área de interés.
 // Puede usar la herramienta de inspección para encontrar sus coordenadas
-var roi = ee.Geometry.Point(-95.6223, 29.7381);
+var roi = ee.Geometry.Point(-74.58,-8.39);
 {% endhighlight %}
 
 ### Cargar una `ImageCollection` ya filtrarla para obtener una sola imágen
@@ -144,7 +144,7 @@ Map.addLayer(classified, {min: 0, max: 2, palette: palette}, 'Land Use Classific
 Deberías obtener una imagen que se parezca a la de abajo. ¡Desplácese por el mapa y use el inspector para ver cómo lo hizo!
 
 <br>
-<img src="../fig/03_classified.png" border = "10" width="100%" height="100%">
+<img src="../fig/03_classifiedN.png" border = "10" width="100%" height="100%">
 <br><br>
 
 
