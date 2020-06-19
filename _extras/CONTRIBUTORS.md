@@ -4,7 +4,7 @@ title: Acerca de los Colaboradores
 permalink: /contributors/
 ---
 
-El material en este repositorio, **Google Earth Engine - Nivel Básico**, fue desarrollado, adaptado y es constantemente revisado por el MSc. Henry Asencios. Algunas partes de estas lecciones fueron adaptadas de diversos repositorios en Github y los apuntes de clase de la pasantía en el INPE de Brasil que el autor tuvo la oportunidad de cursar en el año 2019, así como la participación en el evento *<a href="https://www.amerigeoss.org/amerigeoss-events/amerigeoss-week-2019" target="_blank">AmeriGeoss 2019</a>*.
+El material en este repositorio, **Google Earth Engine - Nivel Básico**, fue desarrollado, adaptado y es constantemente revisado por el MSc. Henry Asencios. Algunas partes de estas lecciones fueron adaptadas de diversos repositorios en Github y los apuntes en clase de la pasantía en el INPE de Brasil que el autor tuvo la oportunidad de cursar en el año 2019, así como la participación en el evento *<a href="https://www.amerigeoss.org/amerigeoss-events/amerigeoss-week-2019" target="_blank">AmeriGeoss 2019</a>*.
 
 <!--
 Los materiales en este repositorio **python-ecology-lesson** fueron inicialmente desarrollados, adaptados y son constantemente revisados por muchos colaboradores. Algunas partes de esta lección fueron adaptadas de los materiales de Software Carpentry.
