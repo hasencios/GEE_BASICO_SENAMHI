@@ -12,7 +12,7 @@ maintainers:
 
 Este curso básico de GEE está diseñado para los servidores del [Servicio Nacional de Meteorología e Hidrología del Perú (SENAMHI)](https://www.senamhi.gob.pe/) que no presentan conocimientos previos de la plataforma. Las lecciones tendrán una duración de 2 días (~ 16 horas) de trabajo. 
 
-Se comenzará con una descripción general GEE (Componentes de GEE, Code Editor, Explorer y Clientes API). Se mostrará diversos productos generados con la base de datos disponibles y los algorítmos de GEE. Se presentará las nociones básicas de Code Editor. Una introducción al lenguaje Javascript. Descripción General del Code Editor. API Javascript de GEE. Convenciones: Guía de Estilo. Acceso a las funcionalidades de la API. Consultar la documentación de las funciones. Tipo de datos (Listas, Diccionarios, etc.). Funciones definidas por el usuario. En la última sesión se mosrtrará como utilizar la API GEE en un entorno Python.
+Se comenzará con una descripción general GEE (Componentes de GEE, Code Editor, Explorer y Clientes API). Se mostrará diversos productos generados con la base de datos disponibles y los algorítmos de GEE. Se presentará las nociones básicas de Code Editor. Una introducción al lenguaje Javascript. Descripción General del Code Editor. API Javascript de GEE. Convenciones: Guía de Estilo. Acceso a las funcionalidades de la API. Consultar la documentación de las funciones. Tipo de datos (Listas, Diccionarios, etc.). Funciones definidas por el usuario. En la última sesión se mostrará como utilizar la API GEE en un entorno Python.
 
 > ## Antes de empezar
 >
@@ -20,14 +20,12 @@ Se comenzará con una descripción general GEE (Componentes de GEE, Code Editor,
 > a fin de asegurar un correcto uso de la plataforma para un desarrollo
 > eficiente de los ejercicios. <br>**Estas lecciones asumen que los participantes no presentan conomientos previos de la plataforma GEE.**
 >
-> Para comenzar, seguir el procedimiento mostrado en la pestaña "[Setup][lesson-setup]"
+> Para comenzar, seguir el procedimiento mostrado en la pestaña "[Episodios]"
 > y descargar la data proporcionada para el desarrollo de los ejercicios.
 >
 > #### Prerequisitos
 >
 > Las lecciones requieren de conocimientos previos de algún lenguaje de programación tales como: **Python**, **R**, **Matlab**, **Fortran**, **C++**, **C**, **JavaScript**, etc. Asimismo, conocimientos de **Sensoramiento Remoto** y **Sistemas de Información Geográfica**.
-> <br>Para un mayor provecho de los ejercicios, por favor, asegurese de instalar las herramientas necesarias
-> *antes* de iniciar las lecciones.
 {: .prereq}
 
 <!--  
