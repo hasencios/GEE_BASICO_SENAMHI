@@ -17,7 +17,7 @@ keypoints:
 
 Por favor, complete este el procedimiento antes de tomar las lecciones. Siga los pasos que se indican a continuación para registrarse en una cuenta de Google Earth Engine y únase a nuestro repositorio compartido.
 
-### 1. Registering for a Google Earth Engine account
+### 1. Registrarse para obtener una cuenta en Google Earth Engine
 
   - Ir a la [página web de GEE sign up](https://signup.earthengine.google.com/#!/) e ingresar > el correo electrónico que deseas usar para tu cuenta GEE. Una cuenta gmail es mejor la mejor opción.
   - Introduzca su correo electrónico, su afiliación y su región/país. Cuando le pregunte qué desea lograr, mencione que labora en una institución del estado peruano (SENAMHI).
