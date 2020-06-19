@@ -22,6 +22,8 @@ keypoints:
 
 # Descripción General de Classifiers
 
+<!--
+
 Google Earth Engine ofrece a los usuarios la oportunidad de realizar muchos análisis avanzados, como la spectral un-mixing, object-based methods, eigen analysis and linear modeling.  También se dispone de técnicas de machine learning para la clasificación supervisada y no supervisada. En este ejemplo, utilizaremos la clasificación supervisada para la clasificación de la cobertura terrestre.
 
 El propósito es obtener un mapa clasificado de la cobertura terrestre en un área de interés. Examinaremos las imágenes Landsat e identificaremos manualmente un conjunto de puntos de entrenamiento para tres clases (agua, bosque, urbano). Luego usaremos esos puntos para entrenar un clasificador. El algorítmo se utilizará para clasificar el resto de la imagen Landsat en esas tres categorías. Finalmente, podremos evaluar la precisión de nuestra clasificación usando `classifier.confusionMatrix()`.
@@ -164,3 +166,4 @@ Advertencia: En este ejemplo en particular, sólo estamos observando el `trainAc
 
 Enlace al código completo que usamos en esta sesión:
 [https://code.earthengine.google.com/86b72b6fb9040967b66f09b17ce26c84](https://code.earthengine.google.com/86b72b6fb9040967b66f09b17ce26c84)
+-->

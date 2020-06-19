@@ -19,6 +19,7 @@ keypoints:
 - Las imágenes y las tablas pueden ser exportadas para su uso posterior con GEE o otras herramientas como **QGIS**
 ---
 
+
 # Descripción general: Catálogo de imágenes satelitales a escala regional
 La mayoría de los productos satelitales se dividen en bloques para su distribución. Los datos globales de Landsat se dividen en escenas de ~180 km<sup>2</sup>, con identificadores únicos de path/row. *<a href="https://www.sciencedirect.com/science/article/abs/pii/S0034425715302194" target="_blank">Wulder et al. (2016)</a>* sugieren  que cada escena es fotografiada cada 16 días por Landsat 8 y cada 16 días por Landsat 7 (aproximadamente 45 veces al año). Los bordes de cada trayectoria se superponen, proporcionando una mayor frecuencia temporal en estas áreas. Sin embargo, los cielos nublados durante el paso de los satélites y otras anomalías de adquisición hacen que ciertas escenas o píxeles sean inutilizables.
 
@@ -42,6 +43,8 @@ La mayoría de los productos satelitales se dividen en bloques para su distribuc
 <br><br>
 
 Para la mayoría de las aplicaciones a escala regional, se tendrá que combinar múltiples imágenes de satélite para cubrir completamente su extensión espacial y completar los datos faltantes causados por las nubes, etc. Google Earth Engine (GEE) es particularmente adecuado para estas tareas.
+
+<!--
 
 # Ejericio: Flujo básico de trabajo GEE
 Aquí, aprovecharemos GEE para crear un composite que represente el pico de la temporada de crecimiento de cultivos para una cuenca de interés.
@@ -356,3 +359,4 @@ Export.image.toAsset({
 {% endhighlight %}
 
 Se puede acceder a una versión estática del script aquí: [https://code.earthengine.google.com/8418ba2b48095a765720d79982bcfab7](https://code.earthengine.google.com/8418ba2b48095a765720d79982bcfab7)
+-->

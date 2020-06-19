@@ -21,6 +21,9 @@ keypoints:
 
 Este código permite a los usuarios generar gráficos de series de tiempo a partir de puntos que son elegidos dinámicamente en un mapa. Las series temporales muestran los compuestos de 16 días del Normalized Difference Vegetation Index (NDVI) y Enhanced Vegetation Index (EVI) con una resolución de 250 m. Estos índices se derivan de MODIS.
 
+<!--
+
+
 ## Definir especificaciones
 
 Este script está estructurado para facilitar al usuario la selección de diferentes imágenes, fechas y regiones. Para este ejercicio, vamos a dejar los parámetros tal como están para establecer la extensión como área de estudio en el Medio Oeste, la Cuenca Republican River Basin
@@ -237,3 +240,5 @@ Si estás calculando índices en este script, o tienes muchos puntos o áreas de
 
 Enlace a una versión estática del script completo utilizado en este módulo:
 [https://code.earthengine.google.com/c5d83beb8d7c31404517eb127f6a1e06](https://code.earthengine.google.com/c5d83beb8d7c31404517eb127f6a1e06)
+
+-->
