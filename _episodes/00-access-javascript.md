@@ -44,7 +44,7 @@ GEE nos permite tener carpetas de grupo compartidas/repositorios para los script
 JavaScript, que no debe confundirse con Java, es un lenguaje de programación ampliamente utilizado en el desarrollo web junto con HTML y CSS. Puede aprender JavaScript usando cualquier tutoriales en línea, como los que ofrece <a href="https://www.w3schools.com/js/" target="_blank">w3schools</a> .
 
 
-At geohackweek, we access Google Earth Engine by entering JavaScript commands into an online integrated development environment (IDE) called the Code Editor. It is not necessary to formally learn JavaScript to work with Google Earth Engine. Below we provide examples and resources for getting started.  
+Accederemos al motor de Google Earth introduciendo comandos de JavaScript en un entorno de desarrollo integrado (IDE) en línea llamado Code Editor. No es necesario aprender formalmente el JavaScript para trabajar con GEE. A continuación proporcionamos ejemplos y recursos para empezar.
 
 A lo largo de las lecciones, accederemos a Google Earth Engine introduciendo comandos de JavaScript en un entorno de desarrollo integrado (IDE) en línea denominado Code Editor. No es necesario aprender formalmente JavaScript para trabajar con Google Earth Engine. A continuación te proporcionamos ejemplos y recursos para empezar.  
 
