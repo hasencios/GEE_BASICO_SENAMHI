@@ -142,9 +142,9 @@ Esto te mostrará sólo las primeras cinco imágenes para que puedas ver la cole
 
 Las herramientas de dibujo geométrico situadas en la parte superior izquierda del visor de mapas pueden utilizarse para crear manualmente puntos, líneas o polígonos. Ahora vamos a definir un área de estudio usando un punto que seleccionamos en el mapa. Utilizaremos las **Geometry Tools** para crear ese objeto.
 
-1. Escriba "Lake Powell, AZ" en la barra de herramientas de búsqueda y pulse intro. Esto te llevará a Lake Powell en Arizona, EE.UU.
+1. Escriba "Junin, Peru" en la barra de herramientas de búsqueda y pulse intro. Nos debería de llevar a las pampas de Junín.
 2. En el lado izquierdo del mapa, haz clic en el pequeño icono del marcador. El cursor se convertirá en una cruz.
-3. Cambia el mapa y deja caer el cursor en el centro del lago, que está justo al lado de Lee Vining.
+3. Cambia el mapa y deja caer el cursor en el centro del lago.
 4. Ahora, ve a la ventana Geometry Imports que ha aparecido. En esa ventana, nombre el punto "roi" y cambie el desplegable de **Geometry** a **FeatureCollection**.
 
 Ahora ha creado un nuevo objeto punto y lo ha cargado como una `FeatureCollection`. Ahora puede usar esta `FeatureCollection` como una forma de filtrar geográficamente conjuntos de datos sólo para tu región.
