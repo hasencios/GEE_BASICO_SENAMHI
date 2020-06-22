@@ -1,4 +1,4 @@
-I"�d<h1 id="vista-general-del-code-editor">Vista general del Code Editor</h1>
+I"yd<h1 id="vista-general-del-code-editor">Vista general del Code Editor</h1>
 
 <p>GEE tiene un entorno de desarrollo integrado (IDE) llamado Editor de código. El Editor de código tiene varias características para ayudar a hacer más fácil la programación en este entorno que exploraremos en este tutorial. Para una descripción exhaustiva, véase el <a href="https://developers.google.com/earth-engine/playground#api-reference-docs-tab" target="_blank">Earth Engine Code Editor help page</a> en las guías de usuario de GEE.</p>
 
@@ -110,9 +110,9 @@ problema. Asegúrate de que todos los assets personales que utilices sean compar
 <p>Las herramientas de dibujo geométrico situadas en la parte superior izquierda del visor de mapas pueden utilizarse para crear manualmente puntos, líneas o polígonos. Ahora vamos a definir un área de estudio usando un punto que seleccionamos en el mapa. Utilizaremos las <strong>Geometry Tools</strong> para crear ese objeto.</p>
 
 <ol>
-  <li>Escriba “Lake Powell, AZ” en la barra de herramientas de búsqueda y pulse intro. Esto te llevará a Lake Powell en Arizona, EE.UU.</li>
+  <li>Escriba “Junin, Peru” en la barra de herramientas de búsqueda y pulse intro. Nos debería de llevar a las pampas de Junín.</li>
   <li>En el lado izquierdo del mapa, haz clic en el pequeño icono del marcador. El cursor se convertirá en una cruz.</li>
-  <li>Cambia el mapa y deja caer el cursor en el centro del lago, que está justo al lado de Lee Vining.</li>
+  <li>Cambia el mapa y deja caer el cursor en el centro del lago.</li>
   <li>Ahora, ve a la ventana Geometry Imports que ha aparecido. En esa ventana, nombre el punto “roi” y cambie el desplegable de <strong>Geometry</strong> a <strong>FeatureCollection</strong>.</li>
 </ol>
 
