@@ -1,4 +1,4 @@
-I"yd<h1 id="vista-general-del-code-editor">Vista general del Code Editor</h1>
+I"Xd<h1 id="vista-general-del-code-editor">Vista general del Code Editor</h1>
 
 <p>GEE tiene un entorno de desarrollo integrado (IDE) llamado Editor de código. El Editor de código tiene varias características para ayudar a hacer más fácil la programación en este entorno que exploraremos en este tutorial. Para una descripción exhaustiva, véase el <a href="https://developers.google.com/earth-engine/playground#api-reference-docs-tab" target="_blank">Earth Engine Code Editor help page</a> en las guías de usuario de GEE.</p>
 
@@ -131,10 +131,10 @@ problema. Asegúrate de que todos los assets personales que utilices sean compar
 <p>Vamos a filtrar la colección a una imagen por:</p>
 
 <ul>
-  <li>filtrándolo a nuestra área de estudio que definimos con un punto</li>
-  <li>filtrándolo hasta sólo un año de imágenes (2018)</li>
+  <li>nuestra área de estudio que definimos con un punto</li>
+  <li>sólo un año de imágenes (2018)</li>
   <li>clasificando las imágenes por la cobertura total de nubes (de menos nubes a más nubes)</li>
-  <li>eligiendo la imagen superior (menos nublada)</li>
+  <li>eligiendo la imágen superior (menos nublada)</li>
 </ul>
 
 <p>En esencia, esto nos permite ordenar la colección completa de Landsat 8 y cargar la mejor imagen disponible para nuestra región de interés para el 2018.</p>

@@ -1,4 +1,4 @@
-I"g�<h1 id="descripción-general-catálogo-de-imágenes-satelitales-a-escala-regional">Descripción general: Catálogo de imágenes satelitales a escala regional</h1>
+I"��<h1 id="descripción-general-catálogo-de-imágenes-satelitales-a-escala-regional">Descripción general: Catálogo de imágenes satelitales a escala regional</h1>
 <p>La mayoría de los productos satelitales se dividen en bloques para su distribución. Los datos globales de Landsat se dividen en escenas de ~180 km<sup>2</sup>, con identificadores únicos de path/row. <em><a href="https://www.sciencedirect.com/science/article/abs/pii/S0034425715302194" target="_blank">Wulder et al. (2016)</a></em> sugieren  que cada escena es fotografiada cada 16 días por Landsat 8 y cada 16 días por Landsat 7 (aproximadamente 45 veces al año). Los bordes de cada trayectoria se superponen, proporcionando una mayor frecuencia temporal en estas áreas. Sin embargo, los cielos nublados durante el paso de los satélites y otras anomalías de adquisición hacen que ciertas escenas o píxeles sean inutilizables.</p>
 
 <p><img src="../fig/03_worldLandsat.png" width="100%" height="100%" />
@@ -21,18 +21,16 @@
 
 <p>Para la mayoría de las aplicaciones a escala regional, se tendrá que combinar múltiples imágenes de satélite para cubrir completamente su extensión espacial y completar los datos faltantes causados por las nubes, etc. Google Earth Engine (GEE) es particularmente adecuado para estas tareas.</p>
 
-<p>&lt;!–</p>
-
 <h1 id="ejericio-flujo-básico-de-trabajo-gee">Ejericio: Flujo básico de trabajo GEE</h1>
 <p>Aquí, aprovecharemos GEE para crear un composite que represente el pico de la temporada de crecimiento de cultivos para una cuenca de interés.</p>
 
 <h3 id="image-collections">Image Collections</h3>
-<p>Una pila o serie temporal de imágenes se llaman <code class="language-plaintext highlighter-rouge">Image Collections</code>. Cada fuente de datos disponible en GEE tiene su propia Image Collection y su propio ID (por ejemplo, el <a href="https://developers.google.com/earth-engine/datasets/catalog/LANDSAT_LT05_C01_T1_SR">Landsat 5 SR collection</a>, o la <a href="https://code.earthengine.google.com/dataset/IDAHO_EPSCOR/GRIDMET">GRIDMET meteorological data collection</a>). También se puede crear Image Collection a partir de imágenes individuales o fusionar colecciones existentes. Puede encontrar más información sobre las Image Collection <a href="https://developers.google.com/earth-engine/ic_creating">here in the GEE Developer’s Guide</a>.</p>
+<p>Una pila o serie temporal de imágenes se llaman <code class="language-plaintext highlighter-rouge">Image Collections</code>. Cada fuente de datos disponible en GEE tiene su propia Image Collection y su propio ID (por ejemplo, el <a href="https://developers.google.com/earth-engine/datasets/catalog/LANDSAT_LT05_C01_T1_SR">Landsat 5 SR collection</a>, o el producto <a href="https://developers.google.com/earth-engine/datasets/catalog/UCSB-CHG_CHIRPS_DAILY">CHIRPS Daily: Climate Hazards Group InfraRed Precipitation with Station Data (version 2.0 final)</a>. También se puede crear Image Collection a partir de imágenes individuales o fusionar colecciones existentes. Puede encontrar más información sobre las Image Collection <a href="https://developers.google.com/earth-engine/ic_creating">here in the GEE Developer’s Guide</a>.</p>
 
-<p>Para generar imágenes que cubran grandes áreas espaciales y para llenar los huecos de imagen debidos a las nubes, etc., podemos cargar una <code class="language-plaintext highlighter-rouge">ImageCollection</code> completa, pero filtrar la colección para devolver sólo los períodos de tiempo o las ubicaciones espaciales que sean de interés. Hay filtros de acceso directo para los que se utilizan comúnmente (imageCollection.filterDate(), imageCollection.filterBounds()…), pero pueden utilizarse la mayoría de los filtros de la sección <code class="language-plaintext highlighter-rouge">ee.Filter()</code> de la pestaña Docs. Más información sobre <a href="https://developers.google.com/earth-engine/ic_filtering">filters on the Developer’s Guide</a>.</p>
+<p>Para generar imágenes que cubran grandes áreas espaciales y para llenar los vacíos de una imágen debido a las nubes, etc., podemos cargar una <code class="language-plaintext highlighter-rouge">ImageCollection</code> completa, pero filtrar la colección para devolver sólo los períodos de tiempo o las ubicaciones espaciales que sean de interés. Hay filtros de acceso directo para los que se utilizan comúnmente (imageCollection.filterDate(), imageCollection.filterBounds()…), pero pueden utilizarse la mayoría de los filtros de la sección <code class="language-plaintext highlighter-rouge">ee.Filter()</code> de la pestaña Docs. Más información sobre <a href="https://developers.google.com/earth-engine/ic_filtering">filters on the Developer’s Guide</a>.</p>
 
 <h3 id="cargar-archivos-vectoriales">Cargar archivos vectoriales</h3>
-<p>Trabajaremos en la creación de un composite para una cuenca de los EE.UU. La forma más fácil de filtrar una ubicación irregular sin tener que identificar las rutas y filas de los mosaicos de la imagen satelital es usar un polígono vectorial.</p>
+<p>Trabajaremos en la creación de un composite para una cuenca del Perú. La forma más fácil de filtrar una ubicación irregular sin tener que identificar las rutas y filas de los mosaicos de la imagen satelital es usar un polígono vectorial.</p>
 
 <p>Hay tres maneras de obtener datos de vectores en GEE:</p>
 
@@ -42,7 +40,7 @@
   <li>Dibuje manualmente puntos, líneas y polígonos usando las herramientas de geometría del Code Editor. Haremos esto en el <a href="https://hasencios.github.io/GEE_BASICO_SENAMHI/05-classify-imagery/">Modulo de Clasificación Supervisada de Imágenes de Satélite</a>.</li>
 </ul>
 
-<p>Aquí, usaremos un activo vectorial existente, el <a href="https://code.earthengine.google.com/dataset/USGS/WBD/2017/HUC12">USGS Watershed Boundaries - HUC12</a></p>
+<p>Aquí, usaremos un activo vectorial existente, el archivo de cuencas del Perú que ha sido cargado por el instructor como un Asset <a href="https://code.earthengine.google.com/dataset/USGS/WBD/2017/HUC12">USGS Watershed Boundaries - HUC12</a></p>
 
 <p>Para cargar un archivo vectorial de sus Assets en su espacio de trabajo, necesitamos usar el “filepath” y lanzarlo a un tipo de datos <code class="language-plaintext highlighter-rouge">ee.FeatureCollection</code>. Lee más aquí: <a href="https://developers.google.com/earth-engine/asset_manager#importing-assets-to-your-script">“Managing Assets” in the Developer’s Guide</a>.</p>
 

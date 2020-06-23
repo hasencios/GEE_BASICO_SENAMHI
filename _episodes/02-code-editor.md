@@ -14,8 +14,8 @@ objectives:
 keypoints:
 - "El code editor es una ventana única para acceder al catálogo de datos GEE y realizar análisis geoespaciales."
 - "Se puede usar el code editor para desarrollar, compartir y gestionar scripts."
-- "Se usar el code editor para importar, exportar, compartir y administrar tus datasets de datos raster y/o vectoriales."
-- "Utiliza la pestaña Docs, otros scripts y el botón Help para acceder a las Guías del usuario y al Foro de ayuda."
+- "Se puede usar el code editor para importar, exportar, compartir y administrar tus datasets de datos raster y/o vectoriales."
+- "Se puede utilizar la pestaña Docs, otros scripts y el botón Help para acceder a las Guías del usuario y al Foro de ayuda."
 
 ---
 
@@ -163,10 +163,10 @@ Uno de los mayores beneficios de la API de JavaScript frente a la de Python es l
 
 Vamos a filtrar la colección a una imagen por:
 
-  - filtrándolo a nuestra área de estudio que definimos con un punto
-  - filtrándolo hasta sólo un año de imágenes (2018)
+  - nuestra área de estudio que definimos con un punto
+  - sólo un año de imágenes (2018)
   - clasificando las imágenes por la cobertura total de nubes (de menos nubes a más nubes)
-  - eligiendo la imagen superior (menos nublada)
+  - eligiendo la imágen superior (menos nublada)
 
 En esencia, esto nos permite ordenar la colección completa de Landsat 8 y cargar la mejor imagen disponible para nuestra región de interés para el 2018.
 

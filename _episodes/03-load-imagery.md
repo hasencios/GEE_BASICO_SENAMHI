@@ -44,19 +44,17 @@ La mayoría de los productos satelitales se dividen en bloques para su distribuc
 
 Para la mayoría de las aplicaciones a escala regional, se tendrá que combinar múltiples imágenes de satélite para cubrir completamente su extensión espacial y completar los datos faltantes causados por las nubes, etc. Google Earth Engine (GEE) es particularmente adecuado para estas tareas.
 
-<!--
-
 # Ejericio: Flujo básico de trabajo GEE
 Aquí, aprovecharemos GEE para crear un composite que represente el pico de la temporada de crecimiento de cultivos para una cuenca de interés.
 
 
 ### Image Collections
-Una pila o serie temporal de imágenes se llaman `Image Collections`. Cada fuente de datos disponible en GEE tiene su propia Image Collection y su propio ID (por ejemplo, el [Landsat 5 SR collection](https://developers.google.com/earth-engine/datasets/catalog/LANDSAT_LT05_C01_T1_SR), o la [GRIDMET meteorological data collection](https://code.earthengine.google.com/dataset/IDAHO_EPSCOR/GRIDMET)). También se puede crear Image Collection a partir de imágenes individuales o fusionar colecciones existentes. Puede encontrar más información sobre las Image Collection [here in the GEE Developer's Guide](https://developers.google.com/earth-engine/ic_creating).
+Una pila o serie temporal de imágenes se llaman `Image Collections`. Cada fuente de datos disponible en GEE tiene su propia Image Collection y su propio ID (por ejemplo, el [Landsat 5 SR collection](https://developers.google.com/earth-engine/datasets/catalog/LANDSAT_LT05_C01_T1_SR), o el producto [CHIRPS Daily: Climate Hazards Group InfraRed Precipitation with Station Data (version 2.0 final)](https://developers.google.com/earth-engine/datasets/catalog/UCSB-CHG_CHIRPS_DAILY). También se puede crear Image Collection a partir de imágenes individuales o fusionar colecciones existentes. Puede encontrar más información sobre las Image Collection [here in the GEE Developer's Guide](https://developers.google.com/earth-engine/ic_creating).
 
-Para generar imágenes que cubran grandes áreas espaciales y para llenar los huecos de imagen debidos a las nubes, etc., podemos cargar una `ImageCollection` completa, pero filtrar la colección para devolver sólo los períodos de tiempo o las ubicaciones espaciales que sean de interés. Hay filtros de acceso directo para los que se utilizan comúnmente (imageCollection.filterDate(), imageCollection.filterBounds()...), pero pueden utilizarse la mayoría de los filtros de la sección `ee.Filter()` de la pestaña Docs. Más información sobre [filters on the Developer's Guide](https://developers.google.com/earth-engine/ic_filtering).
+Para generar imágenes que cubran grandes áreas espaciales y para llenar los vacíos de una imágen debido a las nubes, etc., podemos cargar una `ImageCollection` completa, pero filtrar la colección para devolver sólo los períodos de tiempo o las ubicaciones espaciales que sean de interés. Hay filtros de acceso directo para los que se utilizan comúnmente (imageCollection.filterDate(), imageCollection.filterBounds()...), pero pueden utilizarse la mayoría de los filtros de la sección `ee.Filter()` de la pestaña Docs. Más información sobre [filters on the Developer's Guide](https://developers.google.com/earth-engine/ic_filtering).
 
 ### Cargar archivos vectoriales
-Trabajaremos en la creación de un composite para una cuenca de los EE.UU. La forma más fácil de filtrar una ubicación irregular sin tener que identificar las rutas y filas de los mosaicos de la imagen satelital es usar un polígono vectorial.
+Trabajaremos en la creación de un composite para una cuenca del Perú. La forma más fácil de filtrar una ubicación irregular sin tener que identificar las rutas y filas de los mosaicos de la imagen satelital es usar un polígono vectorial.
 
 Hay tres maneras de obtener datos de vectores en GEE:
 
@@ -64,15 +62,17 @@ Hay tres maneras de obtener datos de vectores en GEE:
   * Utilizar un conjunto de datos de vectores existente en GEE. [Navegue por el catálogo de datos vectoriales aquí](https://developers.google.com/earth-engine/vector_datasets).
   * Dibuje manualmente puntos, líneas y polígonos usando las herramientas de geometría del Code Editor. Haremos esto en el [Modulo de Clasificación Supervisada de Imágenes de Satélite](https://hasencios.github.io/GEE_BASICO_SENAMHI/05-classify-imagery/).
 
-Aquí, usaremos un activo vectorial existente, el [USGS Watershed Boundaries - HUC12](https://code.earthengine.google.com/dataset/USGS/WBD/2017/HUC12)
+Aquí, usaremos un activo vectorial existente, el archivo de cuencas del Perú que ha sido cargado por el instructor como un Asset [aquí](https://github.com/hasencios/GEE_BASICO_SENAMHI/blob/gh-pages/data/Cuencas2012Peru.zip).
+
 
 Para cargar un archivo vectorial de sus Assets en su espacio de trabajo, necesitamos usar el "filepath" y lanzarlo a un tipo de datos `ee.FeatureCollection`. Lee más aquí: ["Managing Assets" in the Developer's Guide](https://developers.google.com/earth-engine/asset_manager#importing-assets-to-your-script).
 
 {% highlight javascript %}
 // cargar un polígono de límite de cuenca (una base de datos vectorial pública ya en GEE)
 // nota: véase el tutorial mencionado arriba para obtener orientación sobre la importación de bases de datos de vectores
-var watersheds = ee.FeatureCollection('users/hasencios/Cuencas_2012_gcs');
+var watersheds = ee.FeatureCollection('users/hasencios/Cuencas_Peru');
 print(watersheds.limit(5));
+Map.centerObject(watersheds,5);
 Map.addLayer(watersheds, {}, 'watersheds')
 
 {% endhighlight %}
@@ -100,7 +100,7 @@ var watershed = watersheds.filterMetadata('NOMBRE', 'equals', 'Cuenca Mantaro');
 print('Cuenca Mantaro',watershed);
 
 // establecer la vista del mapa y el zoom, y añadir la línea divisoria de aguas al mapa
-Map.centerObject(watershed,8);
+Map.centerObject(watershed,6);
 Map.addLayer(watershed,{},'Cuencas Mantaro');
 {% endhighlight %}
 
@@ -198,7 +198,7 @@ print(ee.Image(l8ndvi.first()));
 {% endhighlight %}
 
 ### Crear un Composite "Greenest Pixel"
-Ahora necesitamos reunir la Image Collection para crear una imagen continua a través de la cuenca. Hay varias opciones de mosaico/composición disponibles, desde simples composiciones de valor máximo (`imageCollection.max()`) y mosaicos sencillos con la imagen más reciente (`imageCollection.mosaic()`).   [Compositing and Mosaicking page on the Developer's Guide](https://developers.google.com/earth-engine/ic_composite_mosaic) proporciona ejemplos de estos.
+Ahora necesitamos reunir la Image Collection para crear una imagen continua a través de la cuenca. Hay varias opciones de mosaico/composición disponibles, desde simples composiciones de valor máximo (`imageCollection.max()`) y mosaicos sencillos con la imagen más reciente (`imageCollection.mosaic()`).   [Compositing and Mosaicking page on the Developer's Guide](https://developers.google.com/earth-engine/ic_composite_mosaic) proporciona más ejemplos.
 
 Aquí, usaremos la función `imageCollection.qualityMosaic()`. Al priorizar la imagen a utilizar en base a una banda específica, este método asegura que los valores de todas las bandas se tomen de la misma imagen. A cada píxel se le asignan los valores de la imagen con el valor más alto de la banda deseada.
 
@@ -236,7 +236,7 @@ Map.addLayer(composite, {bands: ['B4', 'B3', 'B2'], min: 0, max: 2000}, 'true co
 <br><br>
 
 ### Visualizar los resultados en un gráfico
-Para ilustrar brevemente la capacidad de GEE de generar gráficos de datos, cargamos el producto de datos MODIS NDVI para trazar la serie temporal anual de NDVI medio de nuestra cuenca. La generación de gráficos también está cubierto en el [módulo 04 Reductores espaciales y temporales](https://hasencios.github.io/GEE_BASICO_SENAMHI/04-reducers/).
+Para ilustrar brevemente la capacidad de GEE de generar gráficos, cargamos el producto de datos MODIS NDVI para trazar la serie temporal anual de NDVI medio de nuestra cuenca. La generación de gráficos también está cubierto en el [módulo 04 Reductores espaciales y temporales](https://hasencios.github.io/GEE_BASICO_SENAMHI/04-reducers/).
 
 {% highlight javascript %}
 
@@ -339,7 +339,7 @@ Export.image.toDrive({
   description: 'SENAMHI_2017_L8_NDVI_image',
   scale: 30,
   region: watershed.geometry().bounds(), // .geometry().bounds() needed for multipolygon
-  crs: 'EPSG:5070',
+  crs: 'EPSG:32718',
   folder: 'GEE_SENAMHI',
   maxPixels: 2000000000
 });
