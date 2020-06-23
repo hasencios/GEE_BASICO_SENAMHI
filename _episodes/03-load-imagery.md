@@ -26,7 +26,7 @@ La mayoría de los productos satelitales se dividen en bloques para su distribuc
 
 <img src="../fig/03_worldLandsat.png" width="100%" height="100%" />
 <sub>*USGS Landsat archive holdings as of January 1, 2015 (Wulder et al. (2016)).*</sub>
-<!--
+
 <img src="https://3c1703fe8d.site.internapcdn.net/newman/gfx/news/hires/2013/76fuygfd.gif" width="100%" height="100%" />
 <sub>*Forest loss in Sumatra's Riau province, Indonesia, 2000-2012. Credit: Hansen, Potapov, Moore, Hancher et al., 2013*</sub>
 -->
@@ -359,4 +359,3 @@ Export.image.toAsset({
 {% endhighlight %}
 
 Se puede acceder a una versión estática del script aquí: [https://code.earthengine.google.com/8418ba2b48095a765720d79982bcfab7](https://code.earthengine.google.com/8418ba2b48095a765720d79982bcfab7)
--->
