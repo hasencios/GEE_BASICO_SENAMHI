@@ -22,7 +22,6 @@ keypoints:
 
 # Descripción General de Classifiers
 
-<!--
 
 Google Earth Engine ofrece a los usuarios la oportunidad de realizar muchos análisis avanzados, como la spectral un-mixing, object-based methods, eigen analysis and linear modeling.  También se dispone de técnicas de machine learning para la clasificación supervisada y no supervisada. En este ejemplo, utilizaremos la clasificación supervisada para la clasificación de la cobertura terrestre.
 
@@ -166,4 +165,3 @@ Advertencia: En este ejemplo en particular, sólo estamos observando el `trainAc
 
 Enlace al código completo que usamos en esta sesión:
 [https://code.earthengine.google.com/86b72b6fb9040967b66f09b17ce26c84](https://code.earthengine.google.com/86b72b6fb9040967b66f09b17ce26c84)
--->
