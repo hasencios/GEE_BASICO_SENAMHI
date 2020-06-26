@@ -7,7 +7,7 @@ questions:
 - "¿Cómo graficar la serie de tiempo en Google Earth Engine?"
 - "¿Cómo realizar gráficos interactivos?"
 objectives:
-- "Cargar una base de datos de cultivos de alta resolución."
+- "Cargar una base de datos previamente guardada como un Asset."
 - "Seleccionar de forma dinámica la lat/lon para crear gráficos de series de tiempo."
 - "Generar una serie de tiempo de NDVI y EVI para los puntos seleccionados."
 keypoints:
@@ -21,7 +21,6 @@ keypoints:
 
 Este código permite a los usuarios generar gráficos de series de tiempo a partir de puntos que son elegidos dinámicamente en un mapa. Las series temporales muestran los compuestos de 16 días del Normalized Difference Vegetation Index (NDVI) y Enhanced Vegetation Index (EVI) con una resolución de 250 m. Estos índices se derivan de MODIS.
 
-<!--
 
 
 ## Definir especificaciones
@@ -241,4 +240,3 @@ Si estás calculando índices en este script, o tienes muchos puntos o áreas de
 Enlace a una versión estática del script completo utilizado en este módulo:
 [https://code.earthengine.google.com/c5d83beb8d7c31404517eb127f6a1e06](https://code.earthengine.google.com/c5d83beb8d7c31404517eb127f6a1e06)
 
--->
